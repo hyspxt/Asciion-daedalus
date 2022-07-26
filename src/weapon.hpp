@@ -4,7 +4,7 @@ class Weapon {
 
     protected:
         char weaponName[20];
-        double damage;       // Damage per hit
+        int damage;       // Damage per hit
 
     public:
         Weapon();

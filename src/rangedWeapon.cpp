@@ -1,8 +1,10 @@
 #include "rangedWeapon.hpp"
 
 RangedWeapon::RangedWeapon(){}
-RangedWeapon::RangedWeapon(char bSKin, int bSpeed, int bRange){
+RangedWeapon::RangedWeapon(char wpnName[], int dmg, char bSKin, int bSpeed, int bRange){
 
+    strcpy(weaponName, wpnName);
+    this->damage = dmg;
     this->bulletSkin = bSKin;
     this->bulletSpeed = bSpeed;
     this->bulletRange = bRange;
