@@ -2,7 +2,7 @@
 
 Enemy::Enemy() : Entity::Entity() {} // First the son, then the father
 Enemy::Enemy(int x, int y, char skin, int lifepoints, int damage, int killScore, int height, int width)
-    : Entity::Entity(x, y, skin, lifepoints, damage)
+    : Entity::Entity(x, y, skin, lifepoints)
 {
     this->killScore = killScore;
     this->height = height;

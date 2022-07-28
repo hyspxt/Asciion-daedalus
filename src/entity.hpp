@@ -18,15 +18,14 @@ class Entity{
         int y;
         int direction;  // ncurses Getch() char
         char skin;
-        int lifepoints;
-        int damage;   // In this case, refers to the melee damage
+        int lifepoints; 
         bool enemy;   // true if the entity is an enemy, false otherwise
         RangedWeapon rWeapon;
         p_bullet bullet;
 
     public:
         Entity();
-        Entity(int x, int y, char skin, int lifepoints, int damage); // The rest of the parameters aren't needed
+        Entity(int x, int y, char skin, int lifepoints); // The rest of the parameters aren't needed
 
         void setX(int x);
         int getX();
@@ -40,10 +39,6 @@ class Entity{
         int getLifePoints();
         void increaseLifePoints(int lifepoints);
         void decreaseLifePoints(int lifepoints);
-
-        void setMeleeDamage(int damage);
-        int getMeleeDamage();
-        void increaseMeleeDamage(int damage);
 
         void dirUp();
         void dirDown();

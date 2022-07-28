@@ -1,13 +1,12 @@
 #include "entity.hpp"
 
 Entity::Entity(){}
-Entity::Entity(int x, int y, char skin, int lifepoints, int damage){
+Entity::Entity(int x, int y, char skin, int lifepoints){
     this->x = x;
     this->y = y;
     this->direction = 0; // The entity is initially not moving
     this->skin = skin;
     this->lifepoints = lifepoints;
-    this->damage = damage;
 }
 
 void Entity::setX(int x){
@@ -41,16 +40,6 @@ void Entity::increaseLifePoints(int lifepoints){
 }
 void Entity::decreaseLifePoints(int lifepoints){
     this->lifepoints -= lifepoints;
-}
-
-void Entity::setMeleeDamage(int damage){
-    this->damage = damage;
-}
-int Entity::getMeleeDamage(){
-    return(this->damage);
-}
-void Entity::increaseMeleeDamage(int damage){
-    this->damage += damage;
 }
 
 // Keep in mind that is considered on ncurses
