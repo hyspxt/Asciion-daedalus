@@ -6,9 +6,8 @@ class Player : public Entity
 
 protected:
     Weapon weapon;
-    RangedWeapon rWeapon;
 
 public:
     Player();
-    Player(int x, int y, int skin, int lifepoints, Weapon weapon, RangedWeapon rWeapon);
+    Player(int x, int y, int skin, int lifepoints, Weapon weapon);
 };
