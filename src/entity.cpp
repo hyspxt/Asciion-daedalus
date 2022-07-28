@@ -43,13 +43,13 @@ void Entity::decreaseLifePoints(int lifepoints){
     this->lifepoints -= lifepoints;
 }
 
-void Entity::setDamage(int damage){
+void Entity::setMeleeDamage(int damage){
     this->damage = damage;
 }
-int Entity::getDamage(){
+int Entity::getMeleeDamage(){
     return(this->damage);
 }
-void Entity::increaseDamage(int damage){
+void Entity::increaseMeleeDamage(int damage){
     this->damage += damage;
 }
 

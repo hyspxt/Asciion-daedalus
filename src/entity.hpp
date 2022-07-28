@@ -41,9 +41,9 @@ class Entity{
         void increaseLifePoints(int lifepoints);
         void decreaseLifePoints(int lifepoints);
 
-        void setDamage(int damage);
-        int getDamage();
-        void increaseDamage(int damage);
+        void setMeleeDamage(int damage);
+        int getMeleeDamage();
+        void increaseMeleeDamage(int damage);
 
         void dirUp();
         void dirDown();
