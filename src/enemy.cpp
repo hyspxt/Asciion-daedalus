@@ -1,7 +1,7 @@
 #include "enemy.hpp"
 
 Enemy::Enemy() : Entity::Entity() {} // First the son, then the father
-Enemy::Enemy(int x, int y, char skin, int lifepoints, int damage, int killScore, int height, int width)
+Enemy::Enemy(int x, int y, char skin, int lifepoints, int killScore, int height, int width)
     : Entity::Entity(x, y, skin, lifepoints)
 {
     this->killScore = killScore;
@@ -34,4 +34,13 @@ void Enemy::setWidth(int width)
 int Enemy::getWidth()
 {
     return (this->width);
+}
+
+void Enemy::setMeleeDamage(int mDamage)
+{
+    this->meleeDamage = mDamage;
+}
+int Enemy::getMeleeDamage()
+{
+    return (this->meleeDamage);
 }

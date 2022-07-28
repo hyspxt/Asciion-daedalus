@@ -6,10 +6,11 @@ protected:
     int killScore; // n. of points given to player when the enemy is killed
     int height;
     int width;
+    int meleeDamage; // When the player touch the enemy, it deal this amount of damage
 
 public:
     Enemy();
-    Enemy(int x, int y, char skin, int lifepoints, int damage, int killScore, int height, int width);
+    Enemy(int x, int y, char skin, int lifepoints, int killScore, int height, int width);
 
     void setKillScore(int killScore);
     int getKillScore();
@@ -19,6 +20,9 @@ public:
 
     void setWidth(int width);
     int getWidth();
+
+    void setMeleeDamage(int mDamage);
+    int getMeleeDamage();
 };
 
 struct EnemyList
