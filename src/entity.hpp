@@ -19,7 +19,7 @@ class Entity{
         int direction;  // ncurses Getch() char
         char skin;
         int lifepoints;
-        int damage;   // In this case, refers to the melee damage and bullet damage (player stat are calculated in another way)
+        int damage;   // In this case, refers to the melee damage
         bool enemy;   // true if the entity is an enemy, false otherwise
         RangedWeapon rWeapon;
         p_bullet bullet;
