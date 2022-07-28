@@ -66,3 +66,14 @@ void Entity::dirLeft(){
 void Entity::dirRight(){
     x++;
 }
+
+void Entity::setRWeapon(RangedWeapon rWeapon){
+    this->rWeapon = rWeapon;
+}
+RangedWeapon Entity::getRWeapon(){
+    return(this->rWeapon);
+}
+void Entity::setRWeaponDamage(int damage){
+    this->rWeapon.setDamage(damage);
+    
+}
