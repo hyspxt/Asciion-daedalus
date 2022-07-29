@@ -10,7 +10,7 @@ protected:
 
 public:
     Enemy();
-    Enemy(int x, int y, char skin, int lifepoints, int killScore, int height, int width);
+    Enemy(int x, int y, char skin, int lifepoints, int killScore, int height, int width, int meleeDamage);
 
     void setKillScore(int killScore);
     int getKillScore();

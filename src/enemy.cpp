@@ -1,7 +1,7 @@
 #include "enemy.hpp"
 
 Enemy::Enemy() : Entity::Entity() {} // First the son, then the father
-Enemy::Enemy(int x, int y, char skin, int lifepoints, int killScore, int height, int width)
+Enemy::Enemy(int x, int y, char skin, int lifepoints, int killScore, int height, int width, int meleeDamage)
     : Entity::Entity(x, y, skin, lifepoints)
 {
     this->killScore = killScore;
