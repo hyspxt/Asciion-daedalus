@@ -8,6 +8,7 @@ protected:
     int id;
     int x;
     int y;
+    char skin;
 
 public:
     Item();
@@ -21,4 +22,7 @@ public:
 
     void setY(int y);
     int getY();
+
+    void setSkin(char skin);
+    char getSkin();
 };

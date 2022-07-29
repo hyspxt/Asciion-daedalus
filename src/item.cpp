@@ -27,3 +27,10 @@ void Item::setY(int y){
 int Item::getY(){
     return(this->y);
 }
+
+void Item::setSkin(char skin){
+    this->skin = skin;
+}
+char Item::getSkin(){
+    return(this->skin);
+}
