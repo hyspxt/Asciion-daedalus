@@ -7,7 +7,8 @@ class Artifact : public Item{
 
     public:
         Artifact();
-        
+        Artifact(char itName[], int id, int x, int y, char skin, int lifeBoost);
 
-
+        void setLifeBoost(int lifeBoost);
+        int getLifeBoost();
 };
