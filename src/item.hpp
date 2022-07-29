@@ -3,14 +3,22 @@
 class Item
 {
 
-    protected: 
-        char itemName[30];
-        int id;
-        
-    public:
-        Item();
-        Item(char itName[], int id);
+protected:
+    char itemName[30];
+    int id;
+    int x;
+    int y;
 
-        void setId(int id);
-        int getId();
+public:
+    Item();
+    Item(char itName[], int id);
+
+    void setId(int id);
+    int getId();
+
+    void setX(int x);
+    int getX();
+
+    void setY(int y);
+    int getY();
 };
