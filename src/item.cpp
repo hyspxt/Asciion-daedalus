@@ -1,11 +1,12 @@
 #include "item.hpp"
 
 Item::Item(){}
-Item::Item(char itName[], int id){
+Item::Item(char itName[], int id, int x, int y, char skin){
     strcpy(this->itemName, itName);
     this->id = id;
     this->x = x;
     this->y = y;
+    this->skin = skin;
 }
 
 void Item::setId(int id){

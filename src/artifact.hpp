@@ -3,8 +3,11 @@
 class Artifact : public Item{
 
     protected:
-        int life;
+        int lifeBoost;
 
     public:
+        Artifact();
+        
+
 
 };

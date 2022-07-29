@@ -12,7 +12,7 @@ protected:
 
 public:
     Item();
-    Item(char itName[], int id);
+    Item(char itName[], int id, int x, int y, char skin);
 
     void setId(int id);
     int getId();
