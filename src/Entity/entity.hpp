@@ -1,5 +1,5 @@
-#include "weapon.hpp"
-#include "rangedWeapon.hpp"
+#include "../Weapon/weapon.hpp"
+#include "../Weapon/rangedWeapon.hpp"
 
 struct bullet{
     int x;

@@ -1,5 +1,5 @@
 #include "entity.hpp"
-#include "weapon.hpp"
+#include "../Weapon/weapon.hpp"
 
 class Player : public Entity
 {
