@@ -6,38 +6,38 @@ LIBRARY = -lncurses
 main: $(OBJECTS)
 		$(CC) -o main $(OBJECTS) $(LIBRARY)
 
-main.o: main.cpp entity/entity.hpp entity/player.hpp entity/enemy.hpp gameEnvironment/gameEnvironment.hpp gameEnvironment/coordinate.hpp weapon/weapon.hpp weapon/rangedWeapon.hpp item/item.hpp item/power.hpp item/artifact.hpp
+main.o: main.cpp src/entity/entity.hpp src/entity/player.hpp src/entity/enemy.hpp src/gameEnvironment/gameEnvironment.hpp src/gameEnvironment/coordinate.hpp src/weapon/weapon.hpp src/weapon/rangedWeapon.hpp src/item/item.hpp src/item/power.hpp src/item/artifact.hpp
 		$(CC) $(CFLAGS) main.cpp
 
-entity.o: entity/entity.hpp entity/entity.cpp
-		$(CC) $(CFLAGS) entity/entity.cpp
+entity.o: src/entity/entity.cpp src/entity/entity.hpp
+		$(CC) $(CFLAGS) src/entity/entity.cpp
 		
-player.o: entity/player.hpp entity/player.cpp
-		$(CC) $(CFLAGS) entity/player.cpp
+player.o: src/entity/player.hpp src/entity/player.cpp
+		$(CC) $(CFLAGS) src/entity/player.cpp
 
-enemy.o: entity/enemy.hpp entity/enemy.cpp
-		$(CC) $(CFLAGS) entity/enemy.cpp
+enemy.o: src/entity/enemy.hpp src/entity/enemy.cpp
+		$(CC) $(CFLAGS) src/entity/enemy.cpp
 
-gameEnvironment.o: gameEnvironment/gameEnvironment.hpp gameEnvironment/gameEnvironment.cpp
-		$(CC) $(CFLAGS) gameEnvironment/gameEnvironment.cpp
+gameEnvironment.o: src/gameEnvironment/gameEnvironment.hpp src/gameEnvironment/gameEnvironment.cpp
+		$(CC) $(CFLAGS) src/gameEnvironment/gameEnvironment.cpp
 
-coordinate.o: gameEnvironment/coordinate.hpp gameEnvironment/coordinate.cpp
-		$(CC) $(CFLAGS) gameEnvironment/coordinate.cpp
+coordinate.o: src/gameEnvironment/coordinate.hpp src/gameEnvironment/coordinate.cpp
+		$(CC) $(CFLAGS) src/gameEnvironment/coordinate.cpp
 
-weapon.o: weapon/weapon.hpp weapon/weapon.cpp
-		$(CC) $(CFLAGS) weapon/weapon.cpp
+weapon.o: src/weapon/weapon.hpp src/weapon/weapon.cpp
+		$(CC) $(CFLAGS) src/weapon/weapon.cpp
 
-weapon.o: weapon/rangedWeapon.hpp weapon/rangedWeapon.cpp
-		$(CC) $(CFLAGS) weapon/rangedWeapon.cpp
+rangedWeapon.o: src/weapon/rangedWeapon.hpp src/weapon/rangedWeapon.cpp
+		$(CC) $(CFLAGS) src/weapon/rangedWeapon.cpp
 
-item.o: item/item.hpp item/item.cpp
-		$(CC) $(CFLAGS) item/item.cpp
+item.o: src/item/item.hpp src/item/item.cpp
+		$(CC) $(CFLAGS) src/item/item.cpp
 
-power.o: item/power.hpp item/power.cpp
-		$(CC) $(CFLAGS) item/power.cpp
+power.o: src/item/power.hpp src/item/power.cpp
+		$(CC) $(CFLAGS) src/item/power.cpp
 
-artifact.o: item/artifact.hpp item/artifact.cpp
-		$(CC) $(CFLAGS) item/artifact.cpp
+artifact.o: src/item/artifact.hpp src/item/artifact.cpp
+		$(CC) $(CFLAGS) src/item/artifact.cpp
 
 launch: 
 		./main
