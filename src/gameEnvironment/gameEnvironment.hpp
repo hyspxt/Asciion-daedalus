@@ -10,5 +10,6 @@ class GameEnvironment {
     void printMenuLogo();
     void printMenuChoices(int choice);
     void printHowToPlay();
+    void escHowToPlay(int key);
 
 };

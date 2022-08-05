@@ -38,6 +38,7 @@ void GameEnvironment::printMenuLogo()
     endwin(); // Remember to delete the Getch and deallocation of ncurses!! TODO
     getch();
 }
+
 void GameEnvironment::printMenuChoices(int choice)
 { // Choice variable colors active button
 
@@ -140,5 +141,46 @@ void GameEnvironment::printMenuChoices(int choice)
 
 void GameEnvironment::printHowToPlay()
 {
-    
+    refresh();
+    clear();
+    initscr();
+    start_color();
+
+    init_pair(3, COLOR_YELLOW, 232);
+    attron(COLOR_PAIR(3));
+    mvprintw(LINES / 2 - 12, COLS / 2 - 50,
+             "                             _  _              _              _           "
+             "                           ");
+    mvprintw(LINES / 2 - 11, COLS / 2 - 50,
+             "                            | || |_____ __ __ | |_ ___   _ __| |__ _ _  _ "
+             "                           ");
+    mvprintw(LINES / 2 - 10, COLS / 2 - 50,
+             "                            | __ / _ \\ V  V / |  _/ _ \\ | '_ \\ / _` | || |"
+             "                           ");
+    mvprintw(LINES / 2 - 9, COLS / 2 - 50,
+             "                            |_||_\\___/\\_/\\_/   \\__\\___/ | .__/_\\__,_|\\_, |"
+             "                           ");
+    mvprintw(LINES / 2 - 8, COLS / 2 - 50,
+             "                                                        |_|          |__/ "
+             "                           ");
+    mvprintw(LINES / 2 - 7, COLS / 2 - 50,
+             "                                                                   "
+             "                                  ");
+    attroff(COLOR_PAIR(3));
+
+    // COMMANDS TODO
+
+    noraw();
+    endwin(); // Remember to delete the Getch and deallocation of ncurses!! TODO
+    getch();
+}
+
+void GameEnvironment::escHowToPlay(int key)
+{
+    key = 0;
+    while (key != 27)
+    { // spacebar key
+        printHowToPlay();
+        key = getch();
+    }
 }
