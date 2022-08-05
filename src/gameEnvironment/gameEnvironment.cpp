@@ -5,34 +5,140 @@
 #include <ctime>
 #include <string.h>
 #include <unistd.h>
+#include <cmath>
 
-void GameEnvironment::printMenu()
+GameEnvironment::GameEnvironment(){};
+void GameEnvironment::printMenuLogo()
 {
+    initscr();
+    start_color();
     init_pair(1, COLOR_CYAN, 232);
     attron(COLOR_PAIR(1));
+    mvprintw(LINES / 2 - 12, COLS / 2 - 54,
+             "                                                                                                            ");
+    mvprintw(LINES / 2 - 11, COLS / 2 - 54,
+             "    #     #####   #####  ### ###                   ######                                                   ");
     mvprintw(LINES / 2 - 10, COLS / 2 - 54,
-             "                                                                   "
-             "                                         ");
+             "   # #   #     # #     #  #   #   ####  #    #     #     #   ##   ###### #####    ##   #      #    #  ####  ");
     mvprintw(LINES / 2 - 9, COLS / 2 - 54,
-             "    b    d  P*Y  8b 8 8  d 88888 Yb  dP        A   8**Y  P*Y   "
-             "P**b8   b    8     Yb  dP 8**Y .P*Y8 88888   ");
+             "  #   #  #       #        #   #  #    # ##   #     #     #  #  #  #      #    #  #  #  #      #    # #      ");
     mvprintw(LINES / 2 - 8, COLS / 2 - 54,
-             "    8b  d8 P   Y 8Yb8 8od  8__    YbdP        PY   8__P P   Y P   "
-             "`*   PY   8      YbdP  8__P `Yo.* 8__     ");
+             " #     #  #####  #        #   #  #    # # #  #     #     # #    # #####  #    # #    # #      #    #  ####  ");
     mvprintw(LINES / 2 - 7, COLS / 2 - 54,
-             "    8Yb P8 b   d 8 Y8 8*Y  8**     8P        P__Y  8**  b   P Y    "
-             "   P__Y  8  .o   8P   8**  o.`Y8 8**     ");
+             " #######       # #        #   #  #    # #  # #     #     # ###### #      #    # ###### #      #    #      # ");
     mvprintw(LINES / 2 - 6, COLS / 2 - 54,
-             "    8 Y  8  Ybo  8  Y 8  Y 88888  dP        P****Y 8     P*Y   "
-             "YoodP P****Y 8ood8  dP    8     8oP* 88888   ");
+             " #     # #     # #     #  #   #  #    # #   ##     #     # #    # #      #    # #    # #      #    # #    # ");
     mvprintw(LINES / 2 - 5, COLS / 2 - 54,
-             "                                                                   "
-             "                                         ");
+             " #     #  #####   #####  ### ###  ####  #    #     ######  #    # ###### #####  #    # ######  ####   ####  ");
     mvprintw(LINES / 2 - 4, COLS / 2 - 54,
-             "     TESING!                    "
-             "                                         ");
-    mvprintw(LINES / 2 - 3, COLS / 2 - 54,
-             "                                                                   "
-             "                                         ");
+             "                                                                                                            ");
     attroff(COLOR_PAIR(1));
+
+    noraw();
+    endwin(); // Remember to delete the Getch and deallocation of ncurses!! TODO
+    getch();
+}
+void GameEnvironment::printMenuChoices(int choice)
+{ // Choice variable colors active button
+
+    init_pair(2, COLOR_BLACK, COLOR_CYAN);
+
+    mvprintw(LINES / 2 - 2, COLS / 2 - 17,
+             "                             ");
+    mvprintw(LINES / 2 - 1, COLS / 2 - 17,
+             "            PLAY!            ");
+    mvprintw(LINES / 2, COLS / 2 - 17,
+             "                             ");
+
+    mvprintw(LINES / 2 + 1, COLS / 2 - 17,
+             "                             ");
+    mvprintw(LINES / 2 + 2, COLS / 2 - 17,
+             "          HOW TO PLAY        ");
+    mvprintw(LINES / 2 + 3, COLS / 2 - 17,
+             "                             ");
+
+    mvprintw(LINES / 2 + 4, COLS / 2 - 17,
+             "                             ");
+    mvprintw(LINES / 2 + 5, COLS / 2 - 17,
+             "          SCOREBOARD         ");
+    mvprintw(LINES / 2 + 6, COLS / 2 - 17,
+             "                             ");
+
+    mvprintw(LINES / 2 + 7, COLS / 2 - 17,
+             "                             ");
+    mvprintw(LINES / 2 + 8, COLS / 2 - 17,
+             "           SETTINGS          ");
+    mvprintw(LINES / 2 + 9, COLS / 2 - 17,
+             "                             ");
+
+    mvprintw(LINES / 2 + 10, COLS / 2 - 17,
+             "                             ");
+    mvprintw(LINES / 2 + 11, COLS / 2 - 17,
+             "             QUIT            ");
+    mvprintw(LINES / 2 + 12, COLS / 2 - 17,
+             "                             ");
+
+    switch (choice)
+    { // This switch draw the selected colored button
+    case 0:
+        attron(COLOR_PAIR(2));
+        mvprintw(LINES / 2 - 2, COLS / 2 - 17,
+                 "                             ");
+        mvprintw(LINES / 2 - 1, COLS / 2 - 17,
+                 "            PLAY!            ");
+        mvprintw(LINES / 2, COLS / 2 - 17,
+                 "                             ");
+        attroff(COLOR_PAIR(2));
+        break;
+    case 1:
+        attron(COLOR_PAIR(2));
+        mvprintw(LINES / 2 + 1, COLS / 2 - 17,
+                 "                             ");
+        mvprintw(LINES / 2 + 2, COLS / 2 - 17,
+                 "          HOW TO PLAY        ");
+        mvprintw(LINES / 2 + 3, COLS / 2 - 17,
+                 "                             ");
+        attroff(COLOR_PAIR(2));
+        break;
+    case 2:
+        attron(COLOR_PAIR(2));
+        mvprintw(LINES / 2 + 4, COLS / 2 - 17,
+                 "                             ");
+        mvprintw(LINES / 2 + 5, COLS / 2 - 17,
+                 "          SCOREBOARD         ");
+        mvprintw(LINES / 2 + 6, COLS / 2 - 17,
+                 "                             ");
+        attroff(COLOR_PAIR(2));
+        break;
+    case 3:
+        attron(COLOR_PAIR(2));
+        mvprintw(LINES / 2 + 7, COLS / 2 - 17,
+                 "                             ");
+        mvprintw(LINES / 2 + 8, COLS / 2 - 17,
+                 "           SETTINGS          ");
+        mvprintw(LINES / 2 + 9, COLS / 2 - 17,
+                 "                             ");
+        attroff(COLOR_PAIR(2));
+        break;
+    case 4:
+        attron(COLOR_PAIR(2));
+        mvprintw(LINES / 2 + 10, COLS / 2 - 17,
+                 "                             ");
+        mvprintw(LINES / 2 + 11, COLS / 2 - 17,
+                 "             QUIT            ");
+        mvprintw(LINES / 2 + 12, COLS / 2 - 17,
+                 "                             ");
+        attroff(COLOR_PAIR(2));
+        break;
+    }
+    mvprintw(LINES / 2 + 14, COLS / 2 - 17,
+             "  PRESS [SPACE] TO CONTINUE       ");
+    noraw();
+    endwin(); // Remember to delete the Getch and deallocation of ncurses!! TODO
+    getch();
+}
+
+void GameEnvironment::printHowToPlay()
+{
+    
 }

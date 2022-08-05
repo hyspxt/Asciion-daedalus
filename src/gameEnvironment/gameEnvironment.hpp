@@ -1,5 +1,4 @@
 #include "coordinate.hpp"
-#include "../entity/entity.hpp"
 #include "../entity/enemy.hpp"
 
 class GameEnvironment {
@@ -8,7 +7,8 @@ class GameEnvironment {
     GameEnvironment();
     
     // Menu Printing
-    void printMenu();
-    void printChoices();
+    void printMenuLogo();
+    void printMenuChoices(int choice);
+    void printHowToPlay();
 
 };

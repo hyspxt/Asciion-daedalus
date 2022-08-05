@@ -1,6 +1,4 @@
 #include "weapon.hpp"
-#include <string.h>
-#include <iostream>
 
 Weapon::Weapon() {}
 Weapon::Weapon(char wpnName[], int dmg)
