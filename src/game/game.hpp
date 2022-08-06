@@ -20,6 +20,4 @@ public:
     Game(int leftDistance, int rightDistance, int topDistance, int bottomDistance, int startX, int startY);
 
     void ncursesSetup();
-    
-
 };
