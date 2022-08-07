@@ -184,3 +184,36 @@ void GameEnvironment::escHowToPlay(int key)
         key = getch();
     }
 }
+
+void GameEnvironment::drawRoom(int rightDistance, int bottomDistance, int startX, int startY, bool noEnemy)
+{
+
+    refresh();
+    clear();
+    initscr();
+    start_color();
+
+    init_pair(3, COLOR_YELLOW, 232);
+
+    for (int i = startY; i < rightDistance; i++)
+    {
+        mvprintw(startX, i, "-");
+        mvprintw(bottomDistance, i, "-");
+    }
+    for (int i = startX; i < bottomDistance; i++)
+    {
+        mvprintw(i, startY, "|");
+        mvprintw(i, rightDistance, "|");
+    }
+    mvprintw(startX, rightDistance, "o");
+    mvprintw(startX, startY, "o");
+    mvprintw(bottomDistance, startY, "o");
+    mvprintw(bottomDistance, rightDistance, "o");
+    // COMMANDS TODO
+}
+
+void GameEnvironment::drawCharacter(int x, int y, char c){
+    move(y, x);
+    printw("%c", c);
+}
+

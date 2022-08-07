@@ -1,5 +1,6 @@
 #include "coordinate.hpp"
-#include "../entity/enemy.hpp"
+
+// #include "../entity/enemy.hpp"
 
 class GameEnvironment {
 
@@ -11,6 +12,13 @@ class GameEnvironment {
     void printMenuChoices(int choice);
     void printHowToPlay();
     void escHowToPlay(int key);
+
+    // Room drawing
+    void drawRoom(int leftDistance, int bottomDistance, int startX, int startY, bool noEnemy);
+
+    // Player and elements moving
+    void drawCharacter(int x, int y, char c);
+    
 };
 
 struct Room{

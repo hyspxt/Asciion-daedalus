@@ -1,6 +1,6 @@
 CC = g++
 CFLAGS = -c -Wall
-OBJECTS= main.o entity.o player.o enemy.o gameEnvironment.o coordinate.o weapon.o rangedWeapon.o item.o power.o artifact.o 
+OBJECTS= main.o entity.o player.o enemy.o gameEnvironment.o game.o coordinate.o weapon.o rangedWeapon.o item.o power.o artifact.o 
 LIBRARY = -lncurses
 
 main: $(OBJECTS)
@@ -20,6 +20,9 @@ enemy.o: src/entity/enemy.hpp src/entity/enemy.cpp
 
 gameEnvironment.o: src/gameEnvironment/gameEnvironment.hpp src/gameEnvironment/gameEnvironment.cpp
 		$(CC) $(CFLAGS) src/gameEnvironment/gameEnvironment.cpp
+
+game.o: src/game/game.hpp src/game/game.cpp
+		$(CC) $(CFLAGS) src/game/game.cpp
 
 coordinate.o: src/gameEnvironment/coordinate.hpp src/gameEnvironment/coordinate.cpp
 		$(CC) $(CFLAGS) src/gameEnvironment/coordinate.cpp

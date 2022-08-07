@@ -1,4 +1,4 @@
-#include "../entity/enemy.hpp"
+#include "../entity/player.hpp"
 
 class Game
 {
@@ -12,12 +12,14 @@ protected:
     int bottomDistance;
 
     // These are the starting point for the cursor to draw rooms
-    int startX;
-    int startY;
+    int maxX;
+    int maxY;
 
 public:
     Game();
-    Game(int leftDistance, int rightDistance, int topDistance, int bottomDistance, int startX, int startY);
+    Game(int leftDistance, int rightDistance, int topDistance, int bottomDistance, int maxX, int maxY);
 
     void ncursesSetup();
+    void ncursesStop();
+    void movePlayer(Player player);
 };

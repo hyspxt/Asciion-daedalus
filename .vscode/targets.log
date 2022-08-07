@@ -8,7 +8,7 @@ make: *** No rule to make target 'all'.  Stop.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Sat Aug  6 15:36:48 2022
+# Make data base, printed on Sun Aug  7 15:02:20 2022
 
 # Variables
 
@@ -47,7 +47,7 @@ SHELL = /bin/sh
 # environment
 GDM_LANG = it
 # environment
-VSCODE_NLS_CONFIG = {"locale":"it","availableLanguages":{"*":"it"},"_languagePackId":"ab4c584458951cae9fe6dd31374e1344.it","_translationsConfigFile":"/home/pxt/.config/Code/clp/ab4c584458951cae9fe6dd31374e1344.it/tcf.json","_cacheRoot":"/home/pxt/.config/Code/clp/ab4c584458951cae9fe6dd31374e1344.it","_resolvedLanguagePackCoreLocation":"/home/pxt/.config/Code/clp/ab4c584458951cae9fe6dd31374e1344.it/da76f93349a72022ca4670c1b84860304616aaa2","_corruptedFile":"/home/pxt/.config/Code/clp/ab4c584458951cae9fe6dd31374e1344.it/corrupted.info","_languagePackSupport":true}
+VSCODE_NLS_CONFIG = {"locale":"it","availableLanguages":{"*":"it"},"_languagePackId":"35bb7f4c3ea1aa810fd49c1141563929.it","_translationsConfigFile":"/home/pxt/.config/Code/clp/35bb7f4c3ea1aa810fd49c1141563929.it/tcf.json","_cacheRoot":"/home/pxt/.config/Code/clp/35bb7f4c3ea1aa810fd49c1141563929.it","_resolvedLanguagePackCoreLocation":"/home/pxt/.config/Code/clp/35bb7f4c3ea1aa810fd49c1141563929.it/da76f93349a72022ca4670c1b84860304616aaa2","_corruptedFile":"/home/pxt/.config/Code/clp/35bb7f4c3ea1aa810fd49c1141563929.it/corrupted.info","_languagePackSupport":true}
 # environment
 _ = /usr/share/code/code
 # environment
@@ -91,7 +91,7 @@ GPG_AGENT_INFO = /run/user/1000/gnupg/S.gpg-agent:0:1
 # environment
 XCURSOR_THEME = DMZ-Black
 # environment
-SESSION_MANAGER = local/hys:@/tmp/.ICE-unix/1400,unix/hys:/tmp/.ICE-unix/1400
+SESSION_MANAGER = local/hys:@/tmp/.ICE-unix/1308,unix/hys:/tmp/.ICE-unix/1308
 # environment
 XDG_RUNTIME_DIR = /run/user/1000
 # environment
@@ -107,7 +107,7 @@ LS_COLORS =
 # environment
 XDG_SESSION_DESKTOP = plasma
 # environment
-SSH_AUTH_SOCK = /tmp/ssh-GpSLfOhlEmzu/agent.1118
+SSH_AUTH_SOCK = /tmp/ssh-VcJzxJxVKMZO/agent.1116
 # automatic
 %F = $(notdir $%)
 # environment
@@ -121,7 +121,7 @@ KDE_SESSION_VERSION = 5
 # environment
 XDG_SEAT = seat0
 # environment
-SSH_AGENT_PID = 1214
+SSH_AGENT_PID = 1213
 # environment
 ORIGINAL_XDG_CURRENT_DESKTOP = KDE
 # environment
@@ -137,7 +137,7 @@ VSCODE_CODE_CACHE_PATH = /home/pxt/.config/Code/CachedData/da76f93349a72022ca467
 # environment
 LOGNAME = pxt
 # environment
-APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = 1
+APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = true
 # automatic
 +F = $(notdir $+)
 # environment
@@ -225,13 +225,13 @@ LC_IDENTIFICATION = it_IT.UTF-8
 # default
 .RECIPEPREFIX := 
 # makefile (from 'makefile', line 3)
-OBJECTS = main.o entity.o player.o enemy.o gameEnvironment.o coordinate.o weapon.o rangedWeapon.o item.o power.o artifact.o 
+OBJECTS = main.o entity.o player.o enemy.o gameEnvironment.o game.o coordinate.o weapon.o rangedWeapon.o item.o power.o artifact.o 
 # environment
 LC_ADDRESS = it_IT.UTF-8
 # environment
 LANG = C
 # environment
-VSCODE_PID = 2202
+VSCODE_PID = 1953
 # environment
 KDE_SESSION_UID = 1000
 # variable set hash-table stats:
@@ -243,9 +243,9 @@ KDE_SESSION_UID = 1000
 
 # Directories
 
-# . (device 66306, inode 25827708): 10 files, no impossibilities.
+# . (device 66306, inode 25827708): 23 files, no impossibilities.
 
-# 10 files, no impossibilities in 1 directories.
+# 23 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
@@ -270,7 +270,7 @@ power.o: src/item/power.hpp src/item/power.cpp
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'makefile', line 37):
+#  recipe to execute (from 'makefile', line 40):
 		$(CC) $(CFLAGS) src/item/power.cpp
 
 # Not a target:
@@ -296,8 +296,14 @@ weapon.o: src/weapon/weapon.hpp src/weapon/weapon.cpp
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'makefile', line 28):
+#  recipe to execute (from 'makefile', line 31):
 		$(CC) $(CFLAGS) src/weapon/weapon.cpp
+
+# Not a target:
+src/game/game.hpp:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
 
 # Not a target:
 src/gameEnvironment/coordinate.hpp:
@@ -313,9 +319,9 @@ src/item/artifact.hpp:
 
 # Not a target:
 src/entity/enemy.cpp:
+ 
 #  Implicit rule search has not been done.
 #  Modification time never checked.
- 
 #  File has not been updated.
 
 # Not a target:
@@ -335,13 +341,13 @@ artifact.o: src/item/artifact.hpp src/item/artifact.cpp
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'makefile', line 40):
+#  recipe to execute (from 'makefile', line 43):
 		$(CC) $(CFLAGS) src/item/artifact.cpp
 
 # Not a target:
 makefile:
 #  Implicit rule search has been done.
-#  Last modified 2022-08-03 21:09:08.048639915
+#  Last modified 2022-08-06 19:00:12.176007331
 #  File has been updated.
 #  Successfully updated.
 
@@ -355,7 +361,7 @@ item.o: src/item/item.hpp src/item/item.cpp
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'makefile', line 34):
+#  recipe to execute (from 'makefile', line 37):
 		$(CC) $(CFLAGS) src/item/item.cpp
 
 # Not a target:
@@ -368,7 +374,7 @@ rangedWeapon.o: src/weapon/rangedWeapon.hpp src/weapon/rangedWeapon.cpp
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'makefile', line 31):
+#  recipe to execute (from 'makefile', line 34):
 		$(CC) $(CFLAGS) src/weapon/rangedWeapon.cpp
 
 # Not a target:
@@ -413,14 +419,14 @@ coordinate.o: src/gameEnvironment/coordinate.hpp src/gameEnvironment/coordinate.
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'makefile', line 25):
+#  recipe to execute (from 'makefile', line 28):
 		$(CC) $(CFLAGS) src/gameEnvironment/coordinate.cpp
 
 clean:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'makefile', line 46):
+#  recipe to execute (from 'makefile', line 49):
 		rm *.o main
 	
 
@@ -429,6 +435,13 @@ src/item/item.hpp:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
+
+game.o: src/game/game.hpp src/game/game.cpp
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'makefile', line 25):
+		$(CC) $(CFLAGS) src/game/game.cpp
 
 # Not a target:
 src/entity/player.cpp:
@@ -454,7 +467,7 @@ src/entity/entity.hpp:
 #  Modification time never checked.
 #  File has not been updated.
 
-main: main.o entity.o player.o enemy.o gameEnvironment.o coordinate.o weapon.o rangedWeapon.o item.o power.o artifact.o
+main: main.o entity.o player.o enemy.o gameEnvironment.o game.o coordinate.o weapon.o rangedWeapon.o item.o power.o artifact.o
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
@@ -484,12 +497,18 @@ launch:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'makefile', line 43):
+#  recipe to execute (from 'makefile', line 46):
 		./main
 	
 
 # Not a target:
 src/item/power.hpp:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+src/game/game.cpp:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
@@ -502,19 +521,19 @@ player.o: src/entity/player.hpp src/entity/player.cpp
 		$(CC) $(CFLAGS) src/entity/player.cpp
 
 # files hash-table stats:
-# Load=39/1024=4%, Rehash=0, Collisions=0/102=0%
+# Load=42/1024=4%, Rehash=0, Collisions=0/109=0%
 # VPATH Search Paths
 
 # No 'vpath' search paths.
 
 # No general ('VPATH' variable) search path.
 
-# strcache buffers: 1 (0) / strings = 49 / storage = 750 B / avg = 15 B
-# current buf: size = 8162 B / used = 750 B / count = 49 / avg = 15 B
+# strcache buffers: 1 (0) / strings = 52 / storage = 793 B / avg = 15 B
+# current buf: size = 8162 B / used = 793 B / count = 52 / avg = 15 B
 
-# strcache performance: lookups = 89 / hit rate = 44%
+# strcache performance: lookups = 107 / hit rate = 51%
 # hash-table stats:
-# Load=49/8192=1%, Rehash=0, Collisions=1/89=1%
-# Finished Make data base on Sat Aug  6 15:36:48 2022
+# Load=52/8192=1%, Rehash=0, Collisions=1/107=1%
+# Finished Make data base on Sun Aug  7 15:02:20 2022
 
  

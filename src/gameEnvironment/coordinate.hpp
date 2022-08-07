@@ -1,3 +1,11 @@
+
+struct Position     // Represents the position of some items / entities
+{
+    int x;
+    int y;
+    Position *next;
+};
+typedef Position *p_Position;
 class Coordinate
 {
 protected:
@@ -10,10 +18,3 @@ public:
     Position getPosition();
 };
 
-struct Position     // Represents the position of some items / entities
-{
-    int x;
-    int y;
-    Position *next;
-};
-typedef Position *p_Position;
