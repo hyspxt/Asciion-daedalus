@@ -8,7 +8,7 @@ make: *** No rule to make target 'all'.  Stop.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Sun Aug  7 15:02:20 2022
+# Make data base, printed on Mon Aug  8 15:01:23 2022
 
 # Variables
 
@@ -91,7 +91,7 @@ GPG_AGENT_INFO = /run/user/1000/gnupg/S.gpg-agent:0:1
 # environment
 XCURSOR_THEME = DMZ-Black
 # environment
-SESSION_MANAGER = local/hys:@/tmp/.ICE-unix/1308,unix/hys:/tmp/.ICE-unix/1308
+SESSION_MANAGER = local/hys:@/tmp/.ICE-unix/1316,unix/hys:/tmp/.ICE-unix/1316
 # environment
 XDG_RUNTIME_DIR = /run/user/1000
 # environment
@@ -107,7 +107,7 @@ LS_COLORS =
 # environment
 XDG_SESSION_DESKTOP = plasma
 # environment
-SSH_AUTH_SOCK = /tmp/ssh-VcJzxJxVKMZO/agent.1116
+SSH_AUTH_SOCK = /tmp/ssh-3hVKivFjSDhZ/agent.1124
 # automatic
 %F = $(notdir $%)
 # environment
@@ -121,7 +121,7 @@ KDE_SESSION_VERSION = 5
 # environment
 XDG_SEAT = seat0
 # environment
-SSH_AGENT_PID = 1213
+SSH_AGENT_PID = 1207
 # environment
 ORIGINAL_XDG_CURRENT_DESKTOP = KDE
 # environment
@@ -231,7 +231,7 @@ LC_ADDRESS = it_IT.UTF-8
 # environment
 LANG = C
 # environment
-VSCODE_PID = 1953
+VSCODE_PID = 1908
 # environment
 KDE_SESSION_UID = 1000
 # variable set hash-table stats:
@@ -292,6 +292,7 @@ src/gameEnvironment/gameEnvironment.cpp:
 #  Modification time never checked.
 #  File has not been updated.
 
+ 
 weapon.o: src/weapon/weapon.hpp src/weapon/weapon.cpp
 #  Implicit rule search has not been done.
 #  Modification time never checked.
@@ -319,7 +320,6 @@ src/item/artifact.hpp:
 
 # Not a target:
 src/entity/enemy.cpp:
- 
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
@@ -534,6 +534,6 @@ player.o: src/entity/player.hpp src/entity/player.cpp
 # strcache performance: lookups = 107 / hit rate = 51%
 # hash-table stats:
 # Load=52/8192=1%, Rehash=0, Collisions=1/107=1%
-# Finished Make data base on Sun Aug  7 15:02:20 2022
+# Finished Make data base on Mon Aug  8 15:01:23 2022
 
  

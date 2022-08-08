@@ -13,13 +13,15 @@ int main()
     game.ncursesSetup();
 
     // game.ncursesSetup();
-    gameEnvironment.drawRoom(71, 20, 7, 22, true);
+    /* gameEnvironment.drawRoom(71, 20, 7, 22, true);
     gameEnvironment.drawCharacter(30, 19, 'c');
 
     Weapon weapon("Test", 30);
     Player player(30, 19, 'c', 75, weapon);
     
     game.movePlayer(player);
+    */
+    game.choiceHandler(gameEnvironment);
 
     game.ncursesStop();
     

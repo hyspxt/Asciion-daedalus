@@ -33,10 +33,6 @@ void GameEnvironment::printMenuLogo()
     mvprintw(LINES / 2 - 4, COLS / 2 - 54,
              "                                                                                                            ");
     attroff(COLOR_PAIR(1));
-
-    noraw();
-    endwin(); // Remember to delete the Getch and deallocation of ncurses!! TODO
-    getch();
 }
 
 void GameEnvironment::printMenuChoices(int choice)
@@ -134,9 +130,6 @@ void GameEnvironment::printMenuChoices(int choice)
     }
     mvprintw(LINES / 2 + 14, COLS / 2 - 17,
              "  PRESS [SPACE] TO CONTINUE       ");
-    noraw();
-    endwin(); // Remember to delete the Getch and deallocation of ncurses!! TODO
-    getch();
 }
 
 void GameEnvironment::printHowToPlay()
@@ -167,18 +160,12 @@ void GameEnvironment::printHowToPlay()
              "                                                                   "
              "                                  ");
     attroff(COLOR_PAIR(3));
-
-    // COMMANDS TODO
-
-    noraw();
-    endwin(); // Remember to delete the Getch and deallocation of ncurses!! TODO
-    getch();
 }
 
 void GameEnvironment::escHowToPlay(int key)
 {
     key = 0;
-    while (key != 27)
+    while (key != 10)
     { // spacebar key
         printHowToPlay();
         key = getch();
