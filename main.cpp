@@ -1,4 +1,4 @@
-#include "src/gameEnvironment/gameEnvironment.hpp"
+
 #include "src/game/game.hpp"
 #include <unistd.h>
 #include <string>

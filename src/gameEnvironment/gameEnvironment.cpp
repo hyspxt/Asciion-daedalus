@@ -129,7 +129,7 @@ void GameEnvironment::printMenuChoices(int choice)
         break;
     }
     mvprintw(LINES / 2 + 14, COLS / 2 - 17,
-             "  PRESS [SPACE] TO CONTINUE       ");
+             "  PRESS [ENTER] TO CONTINUE       ");
 }
 
 void GameEnvironment::printHowToPlay()
@@ -199,8 +199,8 @@ void GameEnvironment::drawRoom(int rightDistance, int bottomDistance, int startX
     // COMMANDS TODO
 }
 
-void GameEnvironment::drawCharacter(int x, int y, char c){
+void GameEnvironment::drawCharacter(int x, int y, char c)
+{
     move(y, x);
     printw("%c", c);
 }
-

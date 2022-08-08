@@ -1,4 +1,9 @@
+
+#ifndef ENTITY
+#define ENTITY
 #include "entity.hpp"
+#endif
+
 class Enemy : public Entity
 {
 

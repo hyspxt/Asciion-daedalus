@@ -1,10 +1,16 @@
-#include "../entity/player.hpp"
 #include "../gameEnvironment/gameEnvironment.hpp"
 
+#ifndef ENEMY
+#define ENEMY
+#include "../entity/enemy.hpp"
+#endif
+
+#include "../entity/player.hpp"
 class Game
 {
 
 protected:
+
     // Represents the distance and the limit (border of room)
     // in the specified direction. Serves for collision checks, etc...
     int leftDistance;
@@ -30,4 +36,7 @@ public:
 
     void menuChoice(GameEnvironment gameEnvironment, int *key, int *selection);
     void choiceHandler(GameEnvironment gameEnvironment);
+
+    p_bullet generateBullet(Entity entity, p_bullet &bulletList, int direction, bool enemyBull);
+    void enemyBullets(Player player, p_EnemyList h_enemyList, p_bullet &h_enemyBulletList);
 };

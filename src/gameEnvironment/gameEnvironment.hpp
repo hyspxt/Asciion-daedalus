@@ -1,7 +1,5 @@
 #include "coordinate.hpp"
 
-// #include "../entity/enemy.hpp"
-
 class GameEnvironment {
 
     public:

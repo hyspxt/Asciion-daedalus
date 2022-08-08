@@ -1,5 +1,6 @@
 #include "game.hpp"
 
+
 #include <ncurses.h>
 #include <ctime>
 #include <cmath>
@@ -47,8 +48,11 @@ void Game::movePlayer(Player player)
     int ch = 0;
 
     while (direction != 10)
-    {                         // In future in this while needs to stay all commands available during the play
-        if (direction == 258) // Down
+    { // In future in this while needs to stay all commands available during the play
+        move(3, 3);
+        printw("%i", direction);
+
+        if (direction == 115 || direction == 83) // Down
         {
             ch = mvinch(y + 1, x) & A_CHARTEXT;
             if (ch != '-')
@@ -60,7 +64,7 @@ void Game::movePlayer(Player player)
                 printw("C");
             }
         }
-        if (direction == 259) // Up
+        if (direction == 119 || direction == 87) // Up
         {
             ch = mvinch(y - 1, x) & A_CHARTEXT;
             if (ch != '-')
@@ -72,7 +76,7 @@ void Game::movePlayer(Player player)
                 printw("C");
             }
         }
-        if (direction == 260) // Left
+        if (direction == 97 || direction == 65) // Left
         {
             ch = mvinch(y, x - 1) & A_CHARTEXT;
             if (ch != '|')
@@ -84,7 +88,7 @@ void Game::movePlayer(Player player)
                 printw("C");
             }
         }
-        if (direction == 261) // Right
+        if (direction == 100 || direction == 68) // Right
         {
             ch = mvinch(y, x + 1) & A_CHARTEXT;
             if (ch != '|')
@@ -208,5 +212,65 @@ void Game::choiceHandler(GameEnvironment gameEnvironment)
             break;
         }
         }
+    }
+}
+
+p_bullet Game::generateBullet(Entity entity, p_bullet &bulletList, int direction, bool enemyBull)
+{
+    p_bullet h_bullet = new bullet;
+    if (direction == 261)
+    { // shooting left
+        h_bullet->x = entity.getX() + 1;
+        h_bullet->y = entity.getY();
+    }
+    else if (direction == 260)
+    { // shooting right
+        h_bullet->x = entity.getX() - 1;
+        h_bullet->y = entity.getY();
+    }
+    else if (direction == 259)
+    { // shooting up
+        h_bullet->x = entity.getX();
+        h_bullet->y = entity.getY() - 1;
+    }
+    else if (direction == 258)
+    { // shooting down
+        h_bullet->x = entity.getX();
+        h_bullet->y = entity.getY() + 1;
+    }
+
+    h_bullet->skin = entity.getRWeapon().getBulletSkin();
+    h_bullet->speed = 1;
+    h_bullet->enemyBullet = enemyBull;
+    h_bullet->next = bulletList;
+
+    return h_bullet;
+}
+
+void Game::enemyBullets(Player player, p_EnemyList h_enemyList, p_bullet &h_enemyBulletList) // keep attention that Entity is refered to the player
+{
+    // This function handle the generation of enemy bullets (but not their movements!!)
+    int distanceX, distanceY, direction;
+
+    while (h_enemyList != NULL){
+        distanceX = player.getX() - h_enemyList->enemy.getX();
+        distanceY = player.getY() - h_enemyList->enemy.getY();
+
+        // TODO get an eye on this piece of code
+
+        if (distanceX > distanceY){
+            if (distanceX > 0)
+                direction = 260;  // Shooting right
+            else direction = 261; // Shooting left
+        }
+        else  {
+            if (distanceY > 0) // Shooting down
+                direction = 258;
+            else direction = 259;
+        }
+        
+        h_enemyBulletList = generateBullet(h_enemyList->enemy, h_enemyBulletList, direction, true);
+
+        h_enemyList = h_enemyList -> next;
     }
 }
