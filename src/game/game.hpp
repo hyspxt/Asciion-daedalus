@@ -10,7 +10,6 @@ class Game
 {
 
 protected:
-
     // Represents the distance and the limit (border of room)
     // in the specified direction. Serves for collision checks, etc...
     int leftDistance;
@@ -18,7 +17,7 @@ protected:
     int topDistance;
     int bottomDistance;
 
-    // These are high leftcornerX low righcornerY
+    // These are left-up cornerX right-low cornerY
     int maxX;
     int maxY;
 
@@ -37,6 +36,13 @@ public:
     void menuChoice(GameEnvironment gameEnvironment, int *key, int *selection);
     void choiceHandler(GameEnvironment gameEnvironment);
 
-    p_bullet generateBullet(Entity entity, p_bullet &bulletList, int direction, bool enemyBull);
+    p_bullet generateBullet(Entity entity, p_bullet &bulletList, int dir, bool enemyBull);
     void enemyBullets(Player player, p_EnemyList h_enemyList, p_bullet &h_enemyBulletList);
+    void moveBullets(p_bullet h_bulletList);
+    void destroyBullet(p_bullet &h_bulletList, int bulletX, int bulletY);
+
+    bool isEmpty(int x, int y);
+    bool isItem(int x, int y);
+    bool isBullet(int x, int y);
+    bool isEnemy(int x, int y);
 };

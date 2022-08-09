@@ -5,7 +5,8 @@ struct bullet{
     int x;
     int y;
     char skin;
-    double speed;      
+    double speed;     
+    int direction;
     bool enemyBullet; // True: enemy shot, False: player shot
     bullet *next;
 };

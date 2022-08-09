@@ -1,6 +1,5 @@
 #include "game.hpp"
 
-
 #include <ncurses.h>
 #include <ctime>
 #include <cmath>
@@ -215,25 +214,25 @@ void Game::choiceHandler(GameEnvironment gameEnvironment)
     }
 }
 
-p_bullet Game::generateBullet(Entity entity, p_bullet &bulletList, int direction, bool enemyBull)
+p_bullet Game::generateBullet(Entity entity, p_bullet &bulletList, int dir, bool enemyBull)
 {
     p_bullet h_bullet = new bullet;
-    if (direction == 261)
-    { // shooting left
+    if (dir == 261)
+    { // shooting right
         h_bullet->x = entity.getX() + 1;
         h_bullet->y = entity.getY();
     }
-    else if (direction == 260)
-    { // shooting right
+    else if (dir == 260)
+    { // shooting left
         h_bullet->x = entity.getX() - 1;
         h_bullet->y = entity.getY();
     }
-    else if (direction == 259)
+    else if (dir == 259)
     { // shooting up
         h_bullet->x = entity.getX();
         h_bullet->y = entity.getY() - 1;
     }
-    else if (direction == 258)
+    else if (dir == 258)
     { // shooting down
         h_bullet->x = entity.getX();
         h_bullet->y = entity.getY() + 1;
@@ -241,6 +240,7 @@ p_bullet Game::generateBullet(Entity entity, p_bullet &bulletList, int direction
 
     h_bullet->skin = entity.getRWeapon().getBulletSkin();
     h_bullet->speed = 1;
+    h_bullet->direction = dir;
     h_bullet->enemyBullet = enemyBull;
     h_bullet->next = bulletList;
 
@@ -252,25 +252,164 @@ void Game::enemyBullets(Player player, p_EnemyList h_enemyList, p_bullet &h_enem
     // This function handle the generation of enemy bullets (but not their movements!!)
     int distanceX, distanceY, direction;
 
-    while (h_enemyList != NULL){
+    while (h_enemyList != NULL)
+    {
         distanceX = player.getX() - h_enemyList->enemy.getX();
         distanceY = player.getY() - h_enemyList->enemy.getY();
 
         // TODO get an eye on this piece of code
 
-        if (distanceX > distanceY){
+        if (distanceX > distanceY)
+        {
             if (distanceX > 0)
-                direction = 260;  // Shooting right
-            else direction = 261; // Shooting left
+                direction = 260; // Shooting right
+            else
+                direction = 261; // Shooting left
         }
-        else  {
+        else
+        {
             if (distanceY > 0) // Shooting down
                 direction = 258;
-            else direction = 259;
+            else
+                direction = 259; // Shooting up
         }
-        
+
         h_enemyBulletList = generateBullet(h_enemyList->enemy, h_enemyBulletList, direction, true);
 
-        h_enemyList = h_enemyList -> next;
+        h_enemyList = h_enemyList->next;
     }
+}
+
+void Game::moveBullets(p_bullet h_bulletList)
+{
+    // This function handle the bullet movements, both for player and enemies
+    char b_trail[2]; // Bullet trail keep count of the bullet skins along the firing, one char will be always "" and the other will be the bullet skin
+    while (h_bulletList != NULL)
+    {
+        if ((!h_bulletList->enemyBullet && h_bulletList->direction == 261) || (h_bulletList->enemyBullet && h_bulletList->direction == 260))
+            h_bulletList->x += h_bulletList->speed;
+        else if ((!h_bulletList->enemyBullet && h_bulletList->direction == 260) || (h_bulletList->enemyBullet && h_bulletList->direction == 261))
+            h_bulletList->x -= h_bulletList->speed;
+        else if ((!h_bulletList->enemyBullet && h_bulletList->direction == 258) || (h_bulletList->enemyBullet && h_bulletList->direction == 259))
+            h_bulletList->y += h_bulletList->speed;
+        else if ((!h_bulletList->enemyBullet && h_bulletList->direction == 259) || (h_bulletList->enemyBullet && h_bulletList->direction == 258))
+            h_bulletList->y -= h_bulletList->speed;
+
+        move(h_bulletList->y, h_bulletList->x);
+        b_trail[0] = h_bulletList->skin;
+        if (h_bulletList->enemyBullet)
+        { // If its a bullet enemy, color red the bullet
+            init_pair(3, COLOR_RED, 232);
+            attron(COLOR_PAIR(3));
+            printw(b_trail);
+            attroff(COLOR_PAIR(3));
+        }
+        else
+            printw(b_trail);
+
+        h_bulletList = h_bulletList->next;
+    }
+}
+
+void Game::destroyBullet(p_bullet &h_bulletList, int bulletX, int bulletY)
+{
+    if (bulletX == this->leftDistance || bulletX == this->rightDistance // if the bullet is shooted against the border
+        || bulletY == this->bottomDistance || bulletY == this->topDistance)
+        h_bulletList = NULL;
+    else
+    {
+        p_bullet head = h_bulletList, prev = h_bulletList;
+        p_bullet tmp;
+        bool destroy;
+
+        // qui mettere le direzioni
+        while (head != NULL)
+        {
+            if ((!head->enemyBullet && head->direction == 261) || (head->enemyBullet && head->direction == 260))
+            {
+                // Right
+                destroy = (!isEmpty(head->x + 1, head->y)) &&
+                          (!isItem(head->x + 1, head->y)) &&
+                          (!isEnemy(head->x + 1, head->y));
+
+                if (head->enemyBullet)
+                    destroy &= (!isBullet(head->x + 1, head->y));
+            }
+            else if ((!head->enemyBullet && head->direction == 260) || (head->enemyBullet && head->direction == 261))
+            {
+                // Left
+                destroy = (!isEmpty(head->x - 1, head->y)) &&
+                          (!isItem(head->x - 1, head->y)) &&
+                          (!isEnemy(head->x - 1, head->y));
+
+                if (head->enemyBullet)
+                    destroy &= (!isBullet(head->x - 1, head->y));
+            }
+            else if ((!head->enemyBullet && head->direction == 258) || (head->enemyBullet && head->direction == 259))
+            {
+                // Down
+                destroy = (!isEmpty(head->x, head->y + 1)) &&
+                          (!isItem(head->x, head->y + 1)) &&
+                          (!isEnemy(head->x, head->y + 1));
+
+                if (head->enemyBullet)
+                    destroy &= (!isBullet(head->x, head->y - 1));
+            }
+            else if ((!head->enemyBullet && head->direction == 259) || (head->enemyBullet && head->direction == 258))
+            {
+                // Up
+                destroy = (!isEmpty(head->x, head->y - 1)) &&
+                          (!isItem(head->x, head->y - 1)) &&
+                          (!isEnemy(head->x, head->y - 1));
+
+                if (head->enemyBullet)
+                    destroy &= (!isBullet(head->x, head->y + 1));
+            }
+
+            if (destroy || head->x > (rightDistance - 1) || head->x < (leftDistance + 1) || head->y < bottomDistance + 1 || head->y > topDistance - 1)
+            {
+                if (head == h_bulletList)
+                {
+                    tmp = h_bulletList;
+                    h_bulletList = head->next;
+                    delete tmp;
+                    prev = h_bulletList;
+                    head = h_bulletList;
+                }
+                else
+                {
+                    tmp = prev->next;
+                    prev->next = head->next;
+                    delete tmp;
+                    head = prev->next;
+                }
+            }
+            else
+            {
+                prev = head;
+                head = head->next;
+            }
+        }
+    }
+}
+
+bool Game::isEmpty(int x, int y)
+{
+    if (mvinch(y, x) == ' ')
+        return true;
+}
+bool Game::isItem(int x, int y)
+{
+    if (mvinch(y, x) == 'A' || mvinch(y, x) == 'P' || mvinch(y, x) == '?')
+        return true;
+}
+bool Game::isBullet(int x, int y)
+{
+    if (mvinch(y, x) == '=' || mvinch(y, x) == '*' || mvinch(y, x) == '0')
+        return true;
+}
+bool Game::isEnemy(int x, int y)
+{
+    if (mvinch(y, x) == '@')
+        ;
 }
