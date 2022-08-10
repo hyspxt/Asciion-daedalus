@@ -24,6 +24,8 @@ protected:
     // Pause the game execution
     bool pause;
 
+    p_bullet playerBullets;
+
 public:
     Game();
     Game(int leftDistance, int rightDistance, int topDistance, int bottomDistance, int maxX, int maxY);
@@ -31,7 +33,7 @@ public:
     void ncursesSetup();
     void ncursesStop();
 
-    void movePlayer(Player player);
+    void movePlayer(Entity entity);
 
     void menuChoice(GameEnvironment gameEnvironment, int *key, int *selection);
     void choiceHandler(GameEnvironment gameEnvironment);
@@ -40,6 +42,9 @@ public:
     void enemyBullets(Player player, p_EnemyList h_enemyList, p_bullet &h_enemyBulletList);
     void moveBullets(p_bullet h_bulletList);
     void destroyBullet(p_bullet &h_bulletList, int bulletX, int bulletY);
+    void bulletCollision(p_bullet &h_bulletList, p_EnemyList h_enemyList);  //TODO add points here
+
+    p_EnemyList destroyEnemy(p_EnemyList h_enemyList, Enemy enemy);
 
     bool isEmpty(int x, int y);
     bool isItem(int x, int y);

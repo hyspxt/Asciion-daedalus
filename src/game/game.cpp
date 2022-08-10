@@ -17,6 +17,7 @@ Game::Game(int leftDistance, int rightDistance, int topDistance, int bottomDista
     this->maxX = maxX;
     this->maxY = maxY;
     this->pause = true;
+    this->playerBullets = NULL;
 }
 
 void Game::ncursesSetup()
@@ -38,12 +39,13 @@ void Game::ncursesStop()
     getch();
 }
 
-void Game::movePlayer(Player player)
+void Game::movePlayer(Entity entity)
 {
 
     int direction = getch();
-    int y = player.getY();
-    int x = player.getX();
+    int y = entity.getY();
+    int x = entity.getX();
+
     int ch = 0;
 
     while (direction != 10)
@@ -62,6 +64,8 @@ void Game::movePlayer(Player player)
                 move(y, x);
                 printw("C");
             }
+            entity.setX(x);
+            entity.setY(y);
         }
         if (direction == 119 || direction == 87) // Up
         {
@@ -74,6 +78,8 @@ void Game::movePlayer(Player player)
                 move(y, x);
                 printw("C");
             }
+            entity.setX(x);
+            entity.setY(y);
         }
         if (direction == 97 || direction == 65) // Left
         {
@@ -86,6 +92,8 @@ void Game::movePlayer(Player player)
                 move(y, x);
                 printw("C");
             }
+            entity.setX(x);
+            entity.setY(y);
         }
         if (direction == 100 || direction == 68) // Right
         {
@@ -97,6 +105,22 @@ void Game::movePlayer(Player player)
                 move(y, x);
                 printw("C");
             }
+            entity.setX(x);
+            entity.setY(y);
+        }
+        if (direction == 261 || direction == 260 || direction == 258 || direction == 259)
+        {
+
+            int range = entity.getRWeapon().getBulletRange();
+
+            // Correction needed here: the bullet fly but only with the command
+            // they should be moving on their own until their range is 0
+
+            // After that, verify the implementation with destroyBullet()
+
+            this->playerBullets = generateBullet(entity, this->playerBullets, direction, false);
+            moveBullets(this->playerBullets);
+            range--;
         }
         direction = getch();
     }
@@ -158,10 +182,11 @@ void Game::choiceHandler(GameEnvironment gameEnvironment)
             gameEnvironment.drawRoom(71, 20, 7, 22, true);
             gameEnvironment.drawCharacter(30, 19, 'c');
 
-            Weapon weapon("Test", 30);
-            Player player(30, 19, 'c', 75, weapon);
+            RangedWeapon rWp("Luha", 3, '-m', 1, 4);
+            Entity entity(20, 29, 'C', 50);
+            entity.setRWeapon(rWp);
 
-            movePlayer(player);
+            movePlayer(entity);
             selection = 5;
             break;
         }
@@ -262,9 +287,9 @@ void Game::enemyBullets(Player player, p_EnemyList h_enemyList, p_bullet &h_enem
         if (distanceX > distanceY)
         {
             if (distanceX > 0)
-                direction = 260; // Shooting right
+                direction = 261; // Shooting right
             else
-                direction = 261; // Shooting left
+                direction = 260; // Shooting left
         }
         else
         {
@@ -297,9 +322,9 @@ void Game::moveBullets(p_bullet h_bulletList)
 
         move(h_bulletList->y, h_bulletList->x);
         b_trail[0] = h_bulletList->skin;
-        if (h_bulletList->enemyBullet)
+        if (!h_bulletList->enemyBullet)
         { // If its a bullet enemy, color red the bullet
-            init_pair(3, COLOR_RED, 232);
+            init_pair(3, COLOR_RED, -1);
             attron(COLOR_PAIR(3));
             printw(b_trail);
             attroff(COLOR_PAIR(3));
@@ -412,4 +437,40 @@ bool Game::isEnemy(int x, int y)
 {
     if (mvinch(y, x) == '@')
         ;
+}
+
+p_EnemyList Game::destroyEnemy(p_EnemyList h_enemyList, Enemy enemy)
+{
+    p_EnemyList head = h_enemyList, prev = h_enemyList, tmp;
+    char skinReplace[2];
+    while (h_enemyList != NULL)
+    {
+        if ((h_enemyList->enemy.getX() == enemy.getX()) &&
+            (h_enemyList->enemy.getY() == enemy.getY()))
+        {
+            skinReplace[0] = h_enemyList->enemy.getSkin();
+            mvprintw(h_enemyList->enemy.getY(), h_enemyList->enemy.getX(), skinReplace);
+            if (h_enemyList == head)
+            {
+                tmp = head;
+                head = h_enemyList->next;
+                delete tmp;
+                prev = head;
+                h_enemyList = head;
+            }
+            else
+            {
+                tmp = prev->next;
+                prev->next = h_enemyList->next;
+                delete tmp;
+                h_enemyList = prev->next;
+            }
+        }
+        else
+        {
+            prev = h_enemyList;
+            h_enemyList = h_enemyList->next;
+        }
+    }
+    return head;
 }

@@ -1,0 +1,17 @@
+make --dry-run --always-make --keep-going --print-directory
+make: Entering directory '/home/pxt/Asciion-daedalus'
+g++ -c -Wall main.cpp
+g++ -c -Wall src/entity/entity.cpp
+g++ -c -Wall src/entity/player.cpp
+g++ -c -Wall src/entity/enemy.cpp
+g++ -c -Wall src/gameEnvironment/gameEnvironment.cpp
+g++ -c -Wall src/game/game.cpp
+g++ -c -Wall src/gameEnvironment/coordinate.cpp
+g++ -c -Wall src/weapon/weapon.cpp
+g++ -c -Wall src/weapon/rangedWeapon.cpp
+g++ -c -Wall src/item/item.cpp
+g++ -c -Wall src/item/power.cpp
+g++ -c -Wall src/item/artifact.cpp
+g++ -o main main.o entity.o player.o enemy.o gameEnvironment.o game.o coordinate.o weapon.o rangedWeapon.o item.o power.o artifact.o  -lncurses
+make: Leaving directory '/home/pxt/Asciion-daedalus'
+ 
