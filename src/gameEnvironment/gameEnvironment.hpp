@@ -44,7 +44,7 @@ struct Room
 {
 
     p_itemList itemList;
-    char map[100];
+    int roomTracker; // It track the exaxt room to draw based on the file where resides
 
     // Four direction, the room point to another linked in the map
     // points to NULL if there is no more rooms in that direction
