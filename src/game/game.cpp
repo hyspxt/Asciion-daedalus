@@ -6,6 +6,7 @@
 #include <iostream>
 #include <unistd.h>
 #include <string.h>
+#include <locale.h>
 
 Game::Game() {}
 Game::Game(int leftDistance, int rightDistance, int topDistance, int bottomDistance, int maxX, int maxY)
@@ -18,10 +19,14 @@ Game::Game(int leftDistance, int rightDistance, int topDistance, int bottomDista
     this->maxY = maxY;
     this->pause = true;
     this->playerBullets = NULL;
+    this->enemyBullets = NULL;
+    this->timer = 0;
+    this->enemyTimer = 0;
 }
 
 void Game::ncursesSetup()
 {
+    setlocale(LC_ALL, "");
     initscr();
     cbreak();
     curs_set(0);
@@ -39,7 +44,7 @@ void Game::ncursesStop()
     getch();
 }
 
-void Game::movePlayer(Entity entity)
+void Game::gameInputs(Entity entity)
 {
 
     int direction = getch();
@@ -126,7 +131,7 @@ void Game::movePlayer(Entity entity)
     }
 }
 
-void Game::menuChoice(GameEnvironment gameEnvironment, int *key, int *selection)
+void Game::menuChoice(GameEnvironment gameEnvironment, int *key, int *choice)
 {
     // This function select between the menu choices based on the hovered button
     int menuCounter = 0;
@@ -139,7 +144,7 @@ void Game::menuChoice(GameEnvironment gameEnvironment, int *key, int *selection)
         *key = getch();
 
         if (*key == 10)
-            *selection = menuCounter; // When ENTER is pressed, start the relative section
+            *choice = menuCounter; // When ENTER is pressed, start the relative section
         else if (*key == 259)
         {
             menuCounter--;
@@ -148,11 +153,12 @@ void Game::menuChoice(GameEnvironment gameEnvironment, int *key, int *selection)
         {
             menuCounter++;
         }
-        // gameEnvironment.printMenuChoices(menuCounter);
 
-        // The counter can go over the max. number of choice
-        // so it turn back to 0 when it happens
-        // otherwise for <0
+        /*
+        The counter can go over the max. number of choice
+        so it turn back to 0 when it happens
+        otherwise for < 0
+        */
 
         if (menuCounter > 4)
             menuCounter = 0;
@@ -164,30 +170,31 @@ void Game::menuChoice(GameEnvironment gameEnvironment, int *key, int *selection)
 void Game::choiceHandler(GameEnvironment gameEnvironment)
 {
     // This function initialize the game based on the choice made in the menu section
-    int key, selection;
+    int key, choice;
     ncursesSetup();
-    menuChoice(gameEnvironment, &key, &selection);
+    menuChoice(gameEnvironment, &key, &choice);
     refresh();
     clear();
     while (pause)
     {
-        switch (selection)
+        switch (choice)
         {
         case 0: // The game here starts
         {
             pause = false;
             clear();
 
-            // Fodder values
-            gameEnvironment.drawRoom(71, 20, 7, 22, true);
-            gameEnvironment.drawCharacter(30, 19, 'c');
-
-            RangedWeapon rWp("Luha", 3, '-m', 1, 4);
-            Entity entity(20, 29, 'C', 50);
+            RangedWeapon rWp("Luha", 3, '0', 2, 4);
+            Entity entity(25, 15, 'C', 30);
             entity.setRWeapon(rWp);
 
-            movePlayer(entity);
-            selection = 5;
+            // Fodder values
+            gameEnvironment.drawRoom(71, 20, 7, 22, true);
+            gameEnvironment.drawInfo(71, 20, 7, 22, true, entity, 100);
+           
+
+            gameInputs(entity);
+            choice = 5;
             break;
         }
             // TODO FINISH
@@ -196,27 +203,27 @@ void Game::choiceHandler(GameEnvironment gameEnvironment)
             clear();
 
             gameEnvironment.escHowToPlay(key);
-
-            selection = 5;
+            choice = 5;
             break;
         }
 
         case 2: // Scoreboard TODO
         {       // FODDER
+
             clear();
 
-            gameEnvironment.escHowToPlay(key);
+            gameEnvironment.escScoreboard(key);
 
-            selection = 5;
+            choice = 5;
             break;
         }
         case 3: // Settings TODO
         {       // FODDER
             clear();
 
-            gameEnvironment.escHowToPlay(key);
+            gameEnvironment.escLoss(key, 1000);
 
-            selection = 5;
+            choice = 5;
             break;
         }
         case 4: // QUIT
@@ -262,9 +269,11 @@ p_bullet Game::generateBullet(Entity entity, p_bullet &bulletList, int dir, bool
         h_bullet->x = entity.getX();
         h_bullet->y = entity.getY() + 1;
     }
+    
+    // The bullets fly a little too fast, try with a cooldown 
 
     h_bullet->skin = entity.getRWeapon().getBulletSkin();
-    h_bullet->speed = 1;
+    h_bullet->speed = entity.getRWeapon().getBulletSpeed();
     h_bullet->direction = dir;
     h_bullet->enemyBullet = enemyBull;
     h_bullet->next = bulletList;
@@ -272,35 +281,37 @@ p_bullet Game::generateBullet(Entity entity, p_bullet &bulletList, int dir, bool
     return h_bullet;
 }
 
-void Game::enemyBullets(Player player, p_EnemyList h_enemyList, p_bullet &h_enemyBulletList) // keep attention that Entity is refered to the player
+void Game::handleEnemyBullets(Player player, p_EnemyList h_enemyList, p_bullet &h_enemyBulletList) // keep attention that Entity is refered to the player
 {
     // This function handle the generation of enemy bullets (but not their movements!!)
     int distanceX, distanceY, direction;
 
     while (h_enemyList != NULL)
     {
-        distanceX = player.getX() - h_enemyList->enemy.getX();
-        distanceY = player.getY() - h_enemyList->enemy.getY();
-
-        // TODO get an eye on this piece of code
-
-        if (distanceX > distanceY)
+        if (this->enemyTimer % 15 == 0) // The enemies will shot every 15 cycles
         {
-            if (distanceX > 0)
-                direction = 261; // Shooting right
-            else
-                direction = 260; // Shooting left
-        }
-        else
-        {
-            if (distanceY > 0) // Shooting down
-                direction = 258;
-            else
-                direction = 259; // Shooting up
-        }
+            distanceX = player.getX() - h_enemyList->enemy.getX();
+            distanceY = player.getY() - h_enemyList->enemy.getY();
 
-        h_enemyBulletList = generateBullet(h_enemyList->enemy, h_enemyBulletList, direction, true);
+            // TODO get an eye on this piece of code
 
+            if (distanceX > distanceY)
+            {
+                if (distanceX > 0)
+                    direction = 261; // Shooting right
+                else
+                    direction = 260; // Shooting left
+            }
+            else
+            {
+                if (distanceY > 0) // Shooting down
+                    direction = 258;
+                else
+                    direction = 259; // Shooting up
+            }
+
+            h_enemyBulletList = generateBullet(h_enemyList->enemy, h_enemyBulletList, direction, true);
+        }
         h_enemyList = h_enemyList->next;
     }
 }
@@ -311,6 +322,9 @@ void Game::moveBullets(p_bullet h_bulletList)
     char b_trail[2]; // Bullet trail keep count of the bullet skins along the firing, one char will be always "" and the other will be the bullet skin
     while (h_bulletList != NULL)
     {
+        
+        
+
         if ((!h_bulletList->enemyBullet && h_bulletList->direction == 261) || (h_bulletList->enemyBullet && h_bulletList->direction == 260))
             h_bulletList->x += h_bulletList->speed;
         else if ((!h_bulletList->enemyBullet && h_bulletList->direction == 260) || (h_bulletList->enemyBullet && h_bulletList->direction == 261))
@@ -322,8 +336,10 @@ void Game::moveBullets(p_bullet h_bulletList)
 
         move(h_bulletList->y, h_bulletList->x);
         b_trail[0] = h_bulletList->skin;
+      
+        
         if (!h_bulletList->enemyBullet)
-        { // If its a bullet enemy, color red the bullet
+        { // If its a bullet enemy,  the bullet
             init_pair(3, COLOR_RED, -1);
             attron(COLOR_PAIR(3));
             printw(b_trail);
@@ -336,10 +352,10 @@ void Game::moveBullets(p_bullet h_bulletList)
     }
 }
 
-void Game::destroyBullet(p_bullet &h_bulletList, int bulletX, int bulletY)
+void Game::destroyBullet(p_bullet &h_bulletList, int playerX, int playerY)
 {
-    if (bulletX == this->leftDistance || bulletX == this->rightDistance // if the bullet is shooted against the border
-        || bulletY == this->bottomDistance || bulletY == this->topDistance)
+    if (playerX == this->leftDistance || playerX == this->rightDistance // if the bullet is shooted against the border
+        || playerY == this->bottomDistance || playerY == this->topDistance)
         h_bulletList = NULL;
     else
     {
@@ -435,8 +451,7 @@ bool Game::isBullet(int x, int y)
 }
 bool Game::isEnemy(int x, int y)
 {
-    if (mvinch(y, x) == '@')
-        ;
+    if (mvinch(y, x) == '@');
 }
 
 p_EnemyList Game::destroyEnemy(p_EnemyList h_enemyList, Enemy enemy)
@@ -473,4 +488,93 @@ p_EnemyList Game::destroyEnemy(p_EnemyList h_enemyList, Enemy enemy)
         }
     }
     return head;
+}
+
+void Game::bulletCollision(p_bullet &h_bulletList, p_EnemyList h_enemyList, Entity entity, int &points)
+{
+    bool wallHit = false, enemyHit = false, playerHit = false;
+    int wallX, wallY, enemyX, enemyY, playerX, playerY;
+    p_bullet head = h_bulletList;
+    p_EnemyList tmpEnemy = h_enemyList;
+    while (h_enemyList != NULL && !wallHit && !enemyHit && !playerHit)
+    {
+        while (h_bulletList != NULL && !wallHit && !enemyHit && !playerHit)
+        {
+            if (!h_bulletList->enemyBullet)
+            {
+                enemyX = h_enemyList->enemy.getX();
+                enemyY = h_enemyList->enemy.getY();
+                if (((enemyX == h_bulletList->x + 1) && enemyY == h_bulletList->y) || ((enemyX == h_bulletList->x - 1) && enemyY == h_bulletList->y))
+                    enemyHit = true;
+            }
+            else
+            {
+                playerX = entity.getX();
+                playerY = entity.getY();
+                if (((playerX == h_bulletList->x + 1) && playerY == h_bulletList->y) || ((playerX == h_bulletList->x - 1) && playerY == h_bulletList->y))
+                    playerHit = true;
+            }
+            if (mvinch(h_bulletList->x, h_bulletList->y + 1) == '-' || mvinch(h_bulletList->x + 1, h_bulletList->y) == '|' || mvinch(h_bulletList->x, h_bulletList->y - 1) == '-' || mvinch(h_bulletList->x - 1, h_bulletList->y) == '|')
+            {
+                wallHit = true;
+            }
+            h_bulletList = h_bulletList->next;
+        }
+        h_bulletList = head;
+        if (wallHit || enemyHit || playerHit)
+            break;
+        else
+            h_enemyList = h_enemyList->next;
+    }
+    char skinReplace[2];
+    init_pair(3, COLOR_RED, -1);
+    attron(COLOR_PAIR(3));
+    
+    if (enemyHit)
+    {
+        skinReplace[0] = h_enemyList->enemy.getSkin();
+        mvprintw(h_enemyList->enemy.getY(), h_enemyList->enemy.getX(), skinReplace);
+        h_enemyList->enemy.decreaseLifePoints(entity.getRWeapon().getDamage());
+        if (h_enemyList->enemy.getLifePoints() <= 0)
+        { // kill the enemy
+            h_enemyList = destroyEnemy(tmpEnemy, h_enemyList->enemy);
+            increasePoints(points, h_enemyList->enemy.getKillScore());
+        }
+        else if (playerHit)
+        {
+            entity.decreaseLifePoints(h_enemyList->enemy.getRWeapon().getDamage());
+            checkPlayerDeath(entity, false); // check player death
+            skinReplace[0] = entity.getSkin();
+            mvprintw(entity.getY(), entity.getX(), skinReplace);
+        }
+        else if (wallHit)
+        {
+            destroyBullet(h_bulletList, h_bulletList->x, h_bulletList->y);
+        }
+        attroff(COLOR_PAIR(3));
+    }
+}
+
+void Game::checkPlayerDeath(Entity entity, bool pause)
+{
+    if (entity.getLifePoints() <= 0)
+    {
+        pause = true;
+    }
+}
+
+void Game::increasePoints(int &gamePoints, int p_add)
+{
+    // This function increase the game points with the specified quantity
+    gamePoints += p_add;
+}
+
+void Game::pointsOverTime(double &points)
+{
+    points++;
+    timer++;
+}
+
+void Game::setPause(int direction){
+    if(direction == 10) pause = true;
 }

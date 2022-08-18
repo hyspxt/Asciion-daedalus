@@ -35,3 +35,4 @@ void Item::setSkin(char skin){
 char Item::getSkin(){
     return(this->skin);
 }
+

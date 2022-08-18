@@ -5,7 +5,10 @@
 #include "../entity/enemy.hpp"
 #endif
 
+#ifndef PLAYER
+#define PLAYER
 #include "../entity/player.hpp"
+#endif
 class Game
 {
 
@@ -24,7 +27,11 @@ protected:
     // Pause the game execution
     bool pause;
 
+    int timer;
+    int enemyTimer;
+
     p_bullet playerBullets;
+    p_bullet enemyBullets;
 
 public:
     Game();
@@ -33,21 +40,30 @@ public:
     void ncursesSetup();
     void ncursesStop();
 
-    void movePlayer(Entity entity);
+    void gameInputs(Entity entity);
 
     void menuChoice(GameEnvironment gameEnvironment, int *key, int *selection);
     void choiceHandler(GameEnvironment gameEnvironment);
 
     p_bullet generateBullet(Entity entity, p_bullet &bulletList, int dir, bool enemyBull);
-    void enemyBullets(Player player, p_EnemyList h_enemyList, p_bullet &h_enemyBulletList);
+    void handleEnemyBullets(Player player, p_EnemyList h_enemyList, p_bullet &h_enemyBulletList);
     void moveBullets(p_bullet h_bulletList);
     void destroyBullet(p_bullet &h_bulletList, int bulletX, int bulletY);
-    void bulletCollision(p_bullet &h_bulletList, p_EnemyList h_enemyList);  //TODO add points here
+    void bulletCollision(p_bullet &h_bulletList, p_EnemyList h_enemyList, Entity entity, int &points);  //TODO add points here
 
     p_EnemyList destroyEnemy(p_EnemyList h_enemyList, Enemy enemy);
+
+
+    void increasePoints(int &points, int p_add);
+    void pointsOverTime(double &points);
+    void checkPlayerDeath(Entity entity, bool pause);
 
     bool isEmpty(int x, int y);
     bool isItem(int x, int y);
     bool isBullet(int x, int y);
     bool isEnemy(int x, int y);
+
+    void setPause(int direction);
+
+    void gameHandler(GameEnvironment gameEnvironment, int direction);
 };

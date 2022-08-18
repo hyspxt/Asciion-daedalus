@@ -26,3 +26,8 @@ public:
     void setSkin(char skin);
     char getSkin();
 };
+struct itemList {
+    Item item;
+    itemList *next;
+};
+typedef itemList *p_itemList;

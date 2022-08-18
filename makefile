@@ -1,7 +1,7 @@
 CC = g++
 CFLAGS = -c -Wall
 OBJECTS= main.o entity.o player.o enemy.o gameEnvironment.o game.o coordinate.o weapon.o rangedWeapon.o item.o power.o artifact.o 
-LIBRARY = -lncurses
+LIBRARY = -lncursesw
 
 main: $(OBJECTS)
 		$(CC) -o main $(OBJECTS) $(LIBRARY)
@@ -47,6 +47,9 @@ launch:
 	
 clean:
 		rm *.o main
+
+scoreboard:
+		sort -rk 3n scoreboard.txt
 	
 
 
