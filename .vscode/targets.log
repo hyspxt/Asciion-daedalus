@@ -8,7 +8,7 @@ make: *** No rule to make target 'all'.  Stop.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Thu Aug 18 16:40:40 2022
+# Make data base, printed on Thu Aug 25 16:01:46 2022
 
 # Variables
 
@@ -47,7 +47,7 @@ SHELL = /bin/sh
 # environment
 GDM_LANG = it
 # environment
-VSCODE_NLS_CONFIG = {"locale":"it","availableLanguages":{"*":"it"},"_languagePackId":"712a61babeaf7b66367c01733516ce6a.it","_translationsConfigFile":"/home/pxt/.config/Code/clp/712a61babeaf7b66367c01733516ce6a.it/tcf.json","_cacheRoot":"/home/pxt/.config/Code/clp/712a61babeaf7b66367c01733516ce6a.it","_resolvedLanguagePackCoreLocation":"/home/pxt/.config/Code/clp/712a61babeaf7b66367c01733516ce6a.it/6d9b74a70ca9c7733b29f0456fd8195364076dda","_corruptedFile":"/home/pxt/.config/Code/clp/712a61babeaf7b66367c01733516ce6a.it/corrupted.info","_languagePackSupport":true}
+VSCODE_NLS_CONFIG = {"locale":"it","availableLanguages":{"*":"it"},"_languagePackId":"733e63a346861b85a80ab453548d8e7a.it","_translationsConfigFile":"/home/pxt/.config/Code/clp/733e63a346861b85a80ab453548d8e7a.it/tcf.json","_cacheRoot":"/home/pxt/.config/Code/clp/733e63a346861b85a80ab453548d8e7a.it","_resolvedLanguagePackCoreLocation":"/home/pxt/.config/Code/clp/733e63a346861b85a80ab453548d8e7a.it/e4503b30fc78200f846c62cf8091b76ff5547662","_corruptedFile":"/home/pxt/.config/Code/clp/733e63a346861b85a80ab453548d8e7a.it/corrupted.info","_languagePackSupport":true}
 # environment
 _ = /usr/share/code/code
 # environment
@@ -107,7 +107,7 @@ LS_COLORS =
 # environment
 XDG_SESSION_DESKTOP = plasma
 # environment
-SSH_AUTH_SOCK = /tmp/ssh-gCixXLQQXeP4/agent.1128
+SSH_AUTH_SOCK = /tmp/ssh-sBoPynxnSI0r/agent.1128
 # automatic
 %F = $(notdir $%)
 # environment
@@ -133,7 +133,7 @@ HOME = /home/pxt
 # environment
 LESSCLOSE = /usr/bin/lesspipe %s %s
 # environment
-VSCODE_CODE_CACHE_PATH = /home/pxt/.config/Code/CachedData/6d9b74a70ca9c7733b29f0456fd8195364076dda
+VSCODE_CODE_CACHE_PATH = /home/pxt/.config/Code/CachedData/e4503b30fc78200f846c62cf8091b76ff5547662
 # environment
 LOGNAME = pxt
 # environment
@@ -185,7 +185,7 @@ LANGUAGE = it:en_US
 # environment
 XDG_SEAT_PATH = /org/freedesktop/DisplayManager/Seat0
 # environment
-VSCODE_IPC_HOOK = /run/user/1000/vscode-f6366448-1.70.1-main.sock
+VSCODE_IPC_HOOK = /run/user/1000/vscode-f6366448-1.70.2-main.sock
 # makefile
 MAKEFLAGS = pqrR
 # environment
@@ -231,7 +231,7 @@ LC_ADDRESS = it_IT.UTF-8
 # environment
 LANG = C
 # environment
-VSCODE_PID = 2158
+VSCODE_PID = 2073
 # environment
 KDE_SESSION_UID = 1000
 # variable set hash-table stats:
@@ -243,9 +243,9 @@ KDE_SESSION_UID = 1000
 
 # Directories
 
-# . (device 66306, inode 25827708): 25 files, no impossibilities.
+# . (device 66306, inode 25827708): 24 files, no impossibilities.
 
-# 25 files, no impossibilities in 1 directories.
+# 24 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
@@ -280,6 +280,7 @@ src/item/artifact.cpp:
 #  File has not been updated.
 
 # Not a target:
+ 
 all:
 #  Command line target.
 #  Implicit rule search has been done.
@@ -296,7 +297,6 @@ weapon.o: src/weapon/weapon.hpp src/weapon/weapon.cpp
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
- 
 #  recipe to execute (from 'makefile', line 31):
 		$(CC) $(CFLAGS) src/weapon/weapon.cpp
 
@@ -347,7 +347,7 @@ artifact.o: src/item/artifact.hpp src/item/artifact.cpp
 # Not a target:
 makefile:
 #  Implicit rule search has been done.
-#  Last modified 2022-08-15 18:58:41.99430074
+#  Last modified 2022-08-23 15:23:07.493099545
 #  File has been updated.
 #  Successfully updated.
 
@@ -426,7 +426,7 @@ clean:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'makefile', line 49):
+#  recipe to execute (from 'makefile', line 50):
 		rm *.o main
 
 # Not a target:
@@ -446,8 +446,8 @@ scoreboard:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'makefile', line 52):
-		sort -rk 3n scoreboard.txt
+#  recipe to execute (from 'makefile', line 53):
+		sort -k 2 -r -o scoreboard.txt scoreboard.txt
 	
 
 # Not a target:
@@ -505,6 +505,7 @@ launch:
 #  Modification time never checked.
 #  File has not been updated.
 #  recipe to execute (from 'makefile', line 46):
+		sort -k 2 -r -o scoreboard.txt scoreboard.txt
 		./main
 	
 
@@ -535,12 +536,12 @@ player.o: src/entity/player.hpp src/entity/player.cpp
 
 # No general ('VPATH' variable) search path.
 
-# strcache buffers: 1 (0) / strings = 55 / storage = 835 B / avg = 15 B
-# current buf: size = 8162 B / used = 835 B / count = 55 / avg = 15 B
+# strcache buffers: 1 (0) / strings = 54 / storage = 819 B / avg = 15 B
+# current buf: size = 8162 B / used = 819 B / count = 54 / avg = 15 B
 
-# strcache performance: lookups = 111 / hit rate = 50%
+# strcache performance: lookups = 110 / hit rate = 50%
 # hash-table stats:
-# Load=55/8192=1%, Rehash=0, Collisions=1/111=1%
-# Finished Make data base on Thu Aug 18 16:40:40 2022
+# Load=54/8192=1%, Rehash=0, Collisions=1/110=1%
+# Finished Make data base on Thu Aug 25 16:01:46 2022
 
  

@@ -12,5 +12,5 @@ protected:
 
 public:
     Player();
-    Player(int x, int y, int skin, int tmpLifepoints, Weapon weapon);
+    Player(int x, int y, int skin, int tmpLifepoints);
 };

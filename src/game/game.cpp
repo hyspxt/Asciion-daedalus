@@ -8,6 +8,8 @@
 #include <string.h>
 #include <locale.h>
 
+int points = 0;
+
 Game::Game() {}
 Game::Game(int leftDistance, int rightDistance, int topDistance, int bottomDistance, int maxX, int maxY)
 {
@@ -44,91 +46,63 @@ void Game::ncursesStop()
     getch();
 }
 
-void Game::gameInputs(Entity entity)
+Entity Game::gameInputs(GameEnvironment gameEnvironment, Entity entity, int direction)
 {
+    int ch;
 
-    int direction = getch();
-    int y = entity.getY();
-    int x = entity.getX();
-
-    int ch = 0;
-
-    while (direction != 10)
-    { // In future in this while needs to stay all commands available during the play
+    if (direction == 115 || direction == 83) // Down
+    {
+        // ch = mvinch(entity.getY() + 1, entity.getX()) & A_CHARTEXT;
+        if (isEmpty(entity.getX(), entity.getY() + 1))
+        {
+            entity.dirDown();
+        }
+        else if (isItem(entity.getX(), entity.getY() - 1))
+        {
+        }
         move(3, 3);
-        printw("%i", direction);
-
-        if (direction == 115 || direction == 83) // Down
-        {
-            ch = mvinch(y + 1, x) & A_CHARTEXT;
-            if (ch != '-')
-            {
-
-                mvprintw(y, x, " ");
-                y = y + 1;
-                move(y, x);
-                printw("C");
-            }
-            entity.setX(x);
-            entity.setY(y);
-        }
-        if (direction == 119 || direction == 87) // Up
-        {
-            ch = mvinch(y - 1, x) & A_CHARTEXT;
-            if (ch != '-')
-            {
-
-                mvprintw(y, x, " ");
-                y = y - 1;
-                move(y, x);
-                printw("C");
-            }
-            entity.setX(x);
-            entity.setY(y);
-        }
-        if (direction == 97 || direction == 65) // Left
-        {
-            ch = mvinch(y, x - 1) & A_CHARTEXT;
-            if (ch != '|')
-            {
-
-                mvprintw(y, x, " ");
-                x = x - 1;
-                move(y, x);
-                printw("C");
-            }
-            entity.setX(x);
-            entity.setY(y);
-        }
-        if (direction == 100 || direction == 68) // Right
-        {
-            ch = mvinch(y, x + 1) & A_CHARTEXT;
-            if (ch != '|')
-            {
-                mvprintw(y, x, " ");
-                x = x + 1;
-                move(y, x);
-                printw("C");
-            }
-            entity.setX(x);
-            entity.setY(y);
-        }
-        if (direction == 261 || direction == 260 || direction == 258 || direction == 259)
-        {
-
-            int range = entity.getRWeapon().getBulletRange();
-
-            // Correction needed here: the bullet fly but only with the command
-            // they should be moving on their own until their range is 0
-
-            // After that, verify the implementation with destroyBullet()
-
-            this->playerBullets = generateBullet(entity, this->playerBullets, direction, false);
-            moveBullets(this->playerBullets);
-            range--;
-        }
-        direction = getch();
+        printw("%i", entity.getY());
     }
+    if (direction == 119 || direction == 87) // Up
+    {
+
+        if (isEmpty(entity.getX(), entity.getY() - 1))
+        {
+            entity.setY(entity.getY() - 1);
+        }
+        move(3, 3);
+        printw("%i", direction + entity.getY());
+    }
+    if (direction == 97 || direction == 65) // Left
+    {
+
+        if (isEmpty(entity.getX() - 1, entity.getY()))
+        {
+            entity.dirLeft();
+        }
+    }
+    if (direction == 100 || direction == 68) // Right
+    {
+        if (isEmpty(entity.getX() + 1, entity.getY()))
+        {
+            entity.dirRight();
+        }
+    }
+    if (direction == 261 || direction == 260 || direction == 258 || direction == 259)
+    {
+
+        int range = entity.getRWeapon().getBulletRange();
+
+        // Correction needed here: the bullet fly but only with the command
+        // they should be moving on their own until their range is 0
+
+        // After that, verify the implementation with destroyBullet()
+
+        this->playerBullets = generateBullet(entity, this->playerBullets, direction, false);
+        moveBullets(this->playerBullets);
+        range--;
+    }
+    return (entity);
 }
 
 void Game::menuChoice(GameEnvironment gameEnvironment, int *key, int *choice)
@@ -181,19 +155,27 @@ void Game::choiceHandler(GameEnvironment gameEnvironment)
         {
         case 0: // The game here starts
         {
+
             pause = false;
             clear();
-
+            /*
             RangedWeapon rWp("Luha", 3, '0', 2, 4);
-            Entity entity(25, 15, 'C', 30);
+            Entity entity(46, 18, 'C', 30);
             entity.setRWeapon(rWp);
 
             // Fodder values
-            gameEnvironment.drawRoom(71, 20, 7, 22, true);
+            gameEnvironment.drawRoom(20, 7, 22, true, 0);
+
+            // O print the first room
+            // 14 print the second room
+
             gameEnvironment.drawInfo(71, 20, 7, 22, true, entity, 100);
-           
 
             gameInputs(entity);
+            */
+            gameHandler(gameEnvironment, key);
+            clear();
+            gameEnvironment.escLoss(key, points);
             choice = 5;
             break;
         }
@@ -269,8 +251,8 @@ p_bullet Game::generateBullet(Entity entity, p_bullet &bulletList, int dir, bool
         h_bullet->x = entity.getX();
         h_bullet->y = entity.getY() + 1;
     }
-    
-    // The bullets fly a little too fast, try with a cooldown 
+
+    // The bullets fly a little too fast, try with a cooldown
 
     h_bullet->skin = entity.getRWeapon().getBulletSkin();
     h_bullet->speed = entity.getRWeapon().getBulletSpeed();
@@ -322,8 +304,6 @@ void Game::moveBullets(p_bullet h_bulletList)
     char b_trail[2]; // Bullet trail keep count of the bullet skins along the firing, one char will be always "" and the other will be the bullet skin
     while (h_bulletList != NULL)
     {
-        
-        
 
         if ((!h_bulletList->enemyBullet && h_bulletList->direction == 261) || (h_bulletList->enemyBullet && h_bulletList->direction == 260))
             h_bulletList->x += h_bulletList->speed;
@@ -336,8 +316,7 @@ void Game::moveBullets(p_bullet h_bulletList)
 
         move(h_bulletList->y, h_bulletList->x);
         b_trail[0] = h_bulletList->skin;
-      
-        
+
         if (!h_bulletList->enemyBullet)
         { // If its a bullet enemy,  the bullet
             init_pair(3, COLOR_RED, -1);
@@ -451,7 +430,8 @@ bool Game::isBullet(int x, int y)
 }
 bool Game::isEnemy(int x, int y)
 {
-    if (mvinch(y, x) == '@');
+    if (mvinch(y, x) == '@')
+        ;
 }
 
 p_EnemyList Game::destroyEnemy(p_EnemyList h_enemyList, Enemy enemy)
@@ -529,7 +509,7 @@ void Game::bulletCollision(p_bullet &h_bulletList, p_EnemyList h_enemyList, Enti
     char skinReplace[2];
     init_pair(3, COLOR_RED, -1);
     attron(COLOR_PAIR(3));
-    
+
     if (enemyHit)
     {
         skinReplace[0] = h_enemyList->enemy.getSkin();
@@ -575,6 +555,110 @@ void Game::pointsOverTime(double &points)
     timer++;
 }
 
-void Game::setPause(int direction){
-    if(direction == 10) pause = true;
+void Game::setPause(int direction)
+{
+    if (direction == 10)
+        pause = true;
+}
+void Game::getInput(int &key)
+{
+    key = getch();
+}
+
+p_EnemyList Game::generateEnemy(GameEnvironment gameEnvironment, int enemyCounter, int enemyType, p_EnemyList h_enemyList)
+{
+
+    char enemySkin;
+    int enemyLp, enemyKs;
+    RangedWeapon enemyWeapon("Basic Weapon", 4, 'o', 1, 9);
+    switch (enemyType)
+    {
+    case 0: // First enemy type -> Snail
+        enemySkin = '@';
+        enemyLp = 25, enemyKs = 200;
+    case 1: // Second enemy type -> Smol Lynx
+        enemySkin = '§';
+        enemyLp = 40, enemyKs = 350;
+        enemyWeapon.setBulletSkin(',');
+        enemyWeapon.setDamage(6);
+    case 2: // Third enemy type -> Cobra
+        enemySkin = '£';
+        enemyLp = 65, enemyKs = 700;
+        enemyWeapon.setBulletSkin('°');
+        enemyWeapon.setDamage(9);
+    case 3: // Fourth enemy type -> Bear
+        enemySkin = '&';
+        enemyLp = 100, enemyKs = 1000;
+        enemyWeapon.setBulletSkin('#');
+        enemyWeapon.setDamage(13);
+    }
+    int x, y;
+    bool flag = true;
+    while (enemyCounter > 0)
+    { // The list here should be not NULL
+        x = gameEnvironment.randomCoordinate(39, 68).x;
+        y = gameEnvironment.randomCoordinate(9, 19).y;
+        p_EnemyList tmpHead = new EnemyList;
+        Enemy enemy(x, y, enemySkin, enemyLp, enemyKs, 1, 1, (h_enemyList->enemy).getRWeapon().getDamage());
+        enemy.setRWeapon(enemyWeapon);
+        tmpHead->enemy = enemy;
+        tmpHead->next = h_enemyList;
+        enemyCounter--;
+        h_enemyList = tmpHead;
+        flag = false;
+    }
+    if (!flag)
+    { // In case let's create a puppet useless enemy, (for the fake enemy generation, utils for put at least one element in the list)
+        enemyWeapon.setBulletSkin(' ');
+        p_EnemyList tmpHead = new EnemyList;
+        Enemy enemy(0, 0, ' ', enemyLp, enemyKs, 1, 1, 0);
+        tmpHead->enemy = enemy;
+        tmpHead->next = h_enemyList;
+        enemyCounter--;
+        h_enemyList = tmpHead;
+        flag = true;
+    }
+    return h_enemyList;
+}
+
+void Game::gameHandler(GameEnvironment gameEnvironment, int direction)
+{
+
+    RangedWeapon startWeapon("Magic gun", 8, 'o', 1, 10);
+    Entity player(46, 18, 'P', 30);
+    player.setRWeapon(startWeapon);
+
+    bool noEnemy = false;
+    int points = 0;
+    int enemyCounter = 1;
+
+    p_EnemyList h_enemyList = NULL;
+    p_itemList h_itemList = NULL;
+    p_Room h_roomList = new Room;
+
+    clear();
+    h_roomList = gameEnvironment.mapGenerator(h_roomList);
+
+    gameEnvironment.drawRoom(20, 7, 22, true, 0);
+    gameEnvironment.drawInfo(71, 20, 7, 22, true, player, points);
+    while (!pause)
+    {
+
+        // O print the first room
+        // 14 print the second room
+
+        h_roomList = gameEnvironment.roomChange(player, h_enemyList, h_roomList, h_itemList,
+                                                bottomDistance, rightDistance, maxX, maxY, noEnemy, points);
+        gameEnvironment.drawRoom(bottomDistance, maxX, maxY, noEnemy, h_roomList->roomTracker);
+
+        gameEnvironment.drawCharacter(player.getX(), player.getY(), player.getSkin());
+        // h_enemyList = generateEnemy(gameEnvironment, enemyCounter, 0, h_enemyList);
+        getInput(direction);
+        player = gameInputs(gameEnvironment, player, direction);
+        clear();
+
+        gameEnvironment.drawCharacter(player.getX(), player.getY(), player.getSkin());
+
+        gameEnvironment.drawInfo(rightDistance, bottomDistance, maxX, maxY, noEnemy, player, points);
+    }
 }

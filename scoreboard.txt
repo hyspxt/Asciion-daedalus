@@ -1,4 +1,4 @@
-aall:        1000
-ten:         1000
-yoo:         1500
-donny:       1000
+Cccc        2700
+Bbbb        2000
+Aaaa        1100
+Gio         1000

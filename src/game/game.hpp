@@ -40,7 +40,7 @@ public:
     void ncursesSetup();
     void ncursesStop();
 
-    void gameInputs(Entity entity);
+    Entity gameInputs(GameEnvironment gameEnvironment, Entity entity, int direction);
 
     void menuChoice(GameEnvironment gameEnvironment, int *key, int *selection);
     void choiceHandler(GameEnvironment gameEnvironment);
@@ -52,8 +52,9 @@ public:
     void bulletCollision(p_bullet &h_bulletList, p_EnemyList h_enemyList, Entity entity, int &points);  //TODO add points here
 
     p_EnemyList destroyEnemy(p_EnemyList h_enemyList, Enemy enemy);
+    p_EnemyList generateEnemy(GameEnvironment gameEnvironment, int enemyCounter, int enemyType, p_EnemyList h_enemyList);
 
-
+    void getInput(int &key);
     void increasePoints(int &points, int p_add);
     void pointsOverTime(double &points);
     void checkPlayerDeath(Entity entity, bool pause);
@@ -62,6 +63,8 @@ public:
     bool isItem(int x, int y);
     bool isBullet(int x, int y);
     bool isEnemy(int x, int y);
+
+    void mapGenerator();
 
     void setPause(int direction);
 

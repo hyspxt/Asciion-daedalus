@@ -166,7 +166,7 @@ void GameEnvironment::printHowToPlay()
              "                                                        |_|          |__/ "
              "                           ");
     attroff(COLOR_PAIR(3));
-    
+
     init_pair(1, COLOR_CYAN, 232);
     attron(COLOR_PAIR(1));
     mvprintw(LINES / 2 - 8, COLS / 2 - 49, "So, a new soul enters the Daedalus, what a rare event!");
@@ -184,10 +184,7 @@ void GameEnvironment::printHowToPlay()
     mvprintw(LINES / 2 + 10, COLS / 2 - 49, "That sould be all, I think?");
     mvprintw(LINES / 2 + 11, COLS / 2 - 49, "Oh! In the end, remember to write your name on some wall. The King loves it.");
 
-
-
-    attroff(COLOR_PAIR(1));    
-
+    attroff(COLOR_PAIR(1));
 }
 
 void GameEnvironment::escHowToPlay(int key)
@@ -200,10 +197,10 @@ void GameEnvironment::escHowToPlay(int key)
     }
 }
 
-void GameEnvironment::drawRoom(int rightDistance, int bottomDistance, int startX, int startY, bool noEnemy)
+void GameEnvironment::drawRoom(int bottomDistance, int startX, int startY, bool noEnemy, int lineCounter)
 {
 
-    init_pair(3, COLOR_YELLOW, 232);
+    /*
 
     for (int i = startY; i < rightDistance; i++)
     {
@@ -215,10 +212,17 @@ void GameEnvironment::drawRoom(int rightDistance, int bottomDistance, int startX
         mvprintw(i, startY, "|");
         mvprintw(i, rightDistance, "|");
     }
-    mvprintw(startX, rightDistance, "o");
-    mvprintw(startX, startY, "o");
-    mvprintw(bottomDistance, startY, "o");
-    mvprintw(bottomDistance, rightDistance, "o");
+    */
+
+    std::string s;
+
+    for (int i = startX; i <= bottomDistance; i++)
+    {
+        s = readNthLine(lineCounter);
+        mvprintw(i, startY, "%s", s.c_str());
+        lineCounter++;
+    }
+
     // COMMANDS TODO
 }
 
@@ -442,7 +446,7 @@ void GameEnvironment::save(char saveName[], int score)
     scoreboard.open("scoreboard.txt", std::ios::app);
     if (scoreboard && score > 0 && !flag)
     {
-        scoreboard << saveName << ":";
+        scoreboard << saveName;
         while (len < maxLen)
         {
             scoreboard << " ";
@@ -471,4 +475,205 @@ void GameEnvironment::drawEnemies(GameEnvironment gameEnvironment, p_EnemyList h
         gameEnvironment.drawCharacter(h_enemyList->enemy.getX(), h_enemyList->enemy.getY(), h_enemyList->enemy.getSkin());
         h_enemyList = h_enemyList->next;
     }
+}
+
+std::string GameEnvironment::readNthLine(int n)
+{
+    std::ifstream map("assets/map.txt");
+    std::string s;
+
+    s.reserve(22); // Prior to boost performance a little
+
+    // skip N lines
+    for (int i = 0; i < n; ++i)
+        std::getline(map, s);
+
+    std::getline(map, s);
+    return s;
+}
+
+p_Room GameEnvironment::saveRoomStateUp(p_itemList h_itemList, p_Room up_roomList, int roomTracker)
+{
+    p_Room head = new Room;
+    head->itemList = h_itemList;
+    head->roomTracker = roomTracker;
+    head->up = up_roomList;
+    up_roomList->down = head;
+    return up_roomList;
+}
+
+p_Room GameEnvironment::saveRoomStateDown(p_itemList h_itemList, p_Room down_roomList, int roomTracker)
+{
+    p_Room head = new Room;
+    head->itemList = h_itemList;
+    head->roomTracker = roomTracker;
+    head->down = down_roomList;
+    down_roomList->up = head;
+    return down_roomList;
+}
+
+p_Room GameEnvironment::saveRoomStateLeft(p_itemList h_itemList, p_Room left_roomList, int roomTracker)
+{
+    p_Room head = new Room;
+    head->itemList = h_itemList;
+    head->roomTracker = roomTracker;
+    head->left = left_roomList;
+    left_roomList->right = head;
+    return left_roomList;
+}
+
+p_Room GameEnvironment::saveRoomStateRight(p_itemList h_itemList, p_Room right_roomList, int roomTracker)
+{
+    p_Room head = new Room;
+    head->itemList = h_itemList;
+    head->roomTracker = roomTracker;
+    head->right = right_roomList;
+    right_roomList->left = head;
+    return right_roomList;
+}
+
+p_Room GameEnvironment::mapGenerator(p_Room h_roomList)
+{
+    p_Room map[17];
+    for (int i = 0; i < 16; i++)
+    {
+        map[i] = new Room;
+        map[i]->roomTracker = i*14;
+    }
+
+    map[0]->up = map[1];
+    map[0]->down = NULL;
+    map[0]->right = NULL;
+    map[0]->left = NULL;
+    
+    map[1]->up = map[12];
+    map[1]->down = map[0];
+    map[1]->right = map[2];
+    map[1]->left = map[8];
+
+    map[2]->up = map[3];
+    map[2]->down = NULL;
+    map[2]->right = map[4];
+    map[2]->left = map[1];
+
+    
+    map[3]->up = NULL;
+    map[3]->down = map[2];
+    map[3]->right = map[5];
+    map[3]->left = NULL;
+
+    map[4]->up = map[5];
+    map[4]->down = map[7];
+    map[4]->right = NULL;
+    map[4]->left = map[2];
+
+    map[5]->up = map[6];
+    map[5]->down = map[4];
+    map[5]->right = NULL;
+    map[5]->left = map[3];
+
+    map[6]->up = NULL;
+    map[6]->down = map[5];
+    map[6]->right = NULL;
+    map[6]->left = NULL;
+
+    map[7]->up = map[4];
+    map[7]->down = NULL;
+    map[7]->right = NULL;
+    map[7]->left = NULL;
+
+    
+    map[8]->up = map[10];
+    map[8]->down = map[9];
+    map[8]->right = map[1];
+    map[8]->left = NULL;
+
+    
+    map[9]->up = map[8];
+    map[9]->down = NULL;
+    map[9]->right = NULL;
+    map[9]->left = NULL;
+
+    map[10]->up = NULL;
+    map[10]->down = map[10];
+    map[10]->right = NULL;
+    map[10]->left = map[11];
+
+    map[11]->up = NULL;
+    map[11]->down = NULL;
+    map[11]->right = map[10];
+    map[11]->left = NULL;
+
+    map[12]->up = map[13];
+    map[12]->down = map[1];
+    map[12]->right = NULL;
+    map[12]->left = NULL;
+
+    map[13]->up = NULL;
+    map[13]->down = map[12];
+    map[13]->right = map[14];
+    map[13]->left = map[15];
+
+    map[14]->up = NULL;
+    map[14]->down = NULL;
+    map[14]->right = NULL;
+    map[14]->left = map[13];
+
+    map[15]->up = map[16];
+    map[15]->down = NULL;
+    map[15]->right = map[13];
+    map[15]->left = NULL;
+    
+    /*
+    map[16]->up = NULL;
+    map[16]->down = map[15];
+    map[16]->right = NULL;
+    map[16]->left = NULL;
+    */
+
+    return (map[0]);
+}
+
+p_Room GameEnvironment::roomChange(Entity &entity, p_EnemyList &h_enemyList, p_Room h_roomList, p_itemList h_itemList,
+                                   int bottomDistance, int rightDistance, int startX, int startY, bool noEnemy,
+                                   int points)
+{
+    if (entity.getX() >= 71)
+    {
+        entity.setX(23);
+        h_roomList = h_roomList -> right;
+        
+    }
+    if (entity.getX() <= 22)
+    {
+        entity.setX(70);
+         h_roomList = h_roomList -> left;
+       
+    }
+    if (entity.getY() <= 7)
+    {
+        entity.setY(19);
+        h_roomList = h_roomList -> up;
+      
+    }
+    if (entity.getY() >= 20)
+    {
+        entity.setY(8);
+         h_roomList = h_roomList -> down;
+    }
+    return (h_roomList);
+    // TODO add enemies generation and items generation
+}
+
+Position GameEnvironment::randomCoordinate(int start, int end)
+{
+    Position tmpPos;
+    tmpPos.x = start + (std::rand() % (end - start + 1));
+    tmpPos.y = start + (std::rand() % (end - start + 1));
+    while (!mvinch(tmpPos.y, tmpPos.x) == ' ')
+    {
+        tmpPos.x = start + (std::rand() % (end - start + 1));
+        tmpPos.y = start + (std::rand() % (end - start + 1));
+    }
+    return tmpPos;
 }

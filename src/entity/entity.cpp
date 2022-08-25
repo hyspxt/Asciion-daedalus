@@ -44,16 +44,16 @@ void Entity::decreaseLifePoints(int lifepoints){
 
 // Keep in mind that is considered on ncurses
 void Entity::dirUp(){
-    y--;
+    this->y--;
 }
 void Entity::dirDown(){
-    y++;
+    this->y++;
 }
 void Entity::dirLeft(){
-    x--;
+    this->x--;
 }
 void Entity::dirRight(){
-    x++;
+    this->x++;
 }
 
 void Entity::setRWeapon(RangedWeapon rWeapon){

@@ -43,13 +43,15 @@ artifact.o: src/item/artifact.hpp src/item/artifact.cpp
 		$(CC) $(CFLAGS) src/item/artifact.cpp
 
 launch: 
+		sort -k 2 -r -o scoreboard.txt scoreboard.txt
 		./main
 	
 clean:
 		rm *.o main
 
 scoreboard:
-		sort -rk 3n scoreboard.txt
+		sort -k 2 -r -o scoreboard.txt scoreboard.txt
+
 	
 
 
