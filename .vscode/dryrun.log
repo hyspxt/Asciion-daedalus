@@ -10,8 +10,6 @@ g++ -c -Wall src/gameEnvironment/coordinate.cpp
 g++ -c -Wall src/weapon/weapon.cpp
 g++ -c -Wall src/weapon/rangedWeapon.cpp
 g++ -c -Wall src/item/item.cpp
-g++ -c -Wall src/item/power.cpp
-g++ -c -Wall src/item/artifact.cpp
-g++ -o main main.o entity.o player.o enemy.o gameEnvironment.o game.o coordinate.o weapon.o rangedWeapon.o item.o power.o artifact.o  -lncursesw
+g++ -o main main.o entity.o player.o enemy.o gameEnvironment.o game.o coordinate.o weapon.o rangedWeapon.o item.o -lncursesw
 make: Leaving directory '/home/pxt/Asciion-daedalus'
  

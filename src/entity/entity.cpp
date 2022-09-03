@@ -1,68 +1,106 @@
 #include "entity.hpp"
 
-Entity::Entity(){}
-Entity::Entity(int x, int y, char skin, int lifepoints){
+Entity::Entity() {}
+Entity::Entity(int x, int y, char skin, int lifepoints)
+{
     this->x = x;
     this->y = y;
     this->direction = 0; // The entity is initially not moving
     this->skin = skin;
     this->lifepoints = lifepoints;
+    this->currentLp = lifepoints;
 }
 
-void Entity::setX(int x){
+void Entity::setX(int x)
+{
     this->x = x;
 }
-int Entity::getX(){
-    return(this->x);
+int Entity::getX()
+{
+    return (this->x);
 }
-void Entity::setY(int y){
+void Entity::setY(int y)
+{
     this->y = y;
 }
-int Entity::getY(){
-    return(this->y);
+int Entity::getY()
+{
+    return (this->y);
 }
 
-void Entity::setSkin(char skin){
+void Entity::setSkin(char skin)
+{
     this->skin = skin;
 }
-char Entity::getSkin(){
-    return(this->skin);
+char Entity::getSkin()
+{
+    return (this->skin);
 }
 
-void Entity::setLifePoints(int lifepoints){
+void Entity::setLifePoints(int lifepoints)
+{
     this->lifepoints = lifepoints;
 }
-int Entity::getLifePoints(){
-    return(this->lifepoints);
+int Entity::getLifePoints()
+{
+    return (this->lifepoints);
 }
-void Entity::increaseLifePoints(int lifepoints){
+void Entity::increaseLifePoints(int lifepoints)
+{
     this->lifepoints += lifepoints;
 }
-void Entity::decreaseLifePoints(int lifepoints){
+void Entity::decreaseLifePoints(int lifepoints)
+{
     this->lifepoints -= lifepoints;
 }
 
+void Entity::setCurrentLifePoints(int currentLp)
+{
+    this->currentLp = currentLp;
+}
+int Entity::getCurrentLifePoints()
+{
+    return (this->currentLp);
+}
+void Entity::increaseCurrentLifePoints(int currentLp)
+{
+    if (this->currentLp < this->lifepoints)
+        this->currentLp += currentLp;
+    if (this->currentLp >= this->lifepoints)
+        this->currentLp = this->lifepoints;
+}
+void Entity::decreaseCurrentLifePoints(int currentLp)
+{
+    this->currentLp -= currentLp;
+}
+
 // Keep in mind that is considered on ncurses
-void Entity::dirUp(){
+void Entity::dirUp()
+{
     this->y--;
 }
-void Entity::dirDown(){
+void Entity::dirDown()
+{
     this->y++;
 }
-void Entity::dirLeft(){
+void Entity::dirLeft()
+{
     this->x--;
 }
-void Entity::dirRight(){
+void Entity::dirRight()
+{
     this->x++;
 }
 
-void Entity::setRWeapon(RangedWeapon rWeapon){
+void Entity::setRWeapon(RangedWeapon rWeapon)
+{
     this->rWeapon = rWeapon;
 }
-RangedWeapon Entity::getRWeapon(){
-    return(this->rWeapon);
+RangedWeapon Entity::getRWeapon()
+{
+    return (this->rWeapon);
 }
-void Entity::setRWeaponDamage(int damage){
+void Entity::setRWeaponDamage(int damage)
+{
     this->rWeapon.setDamage(damage);
-    
 }

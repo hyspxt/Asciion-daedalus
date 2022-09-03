@@ -1,12 +1,20 @@
 #include "item.hpp"
 
 Item::Item(){}
-Item::Item(char itName[], int id, int x, int y, char skin){
+Item::Item(char itName[], int id, int x, int y, char skin, bool isArtifact){
     strcpy(this->itemName, itName);
     this->id = id;
     this->x = x;
     this->y = y;
     this->skin = skin;
+    this->isArtifact = isArtifact;
+}
+
+void Item::setItemName(char itName[]){
+    strcpy(this->itemName, itName);
+}
+char* Item::getItemName(){
+    return(this->itemName);
 }
 
 void Item::setId(int id){
@@ -36,3 +44,9 @@ char Item::getSkin(){
     return(this->skin);
 }
 
+void Item::setIsArtifact(bool isArtifact){
+    this->isArtifact = isArtifact;
+}
+bool Item::getIsArtifact(){
+    return(this->isArtifact);
+}

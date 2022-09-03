@@ -7,6 +7,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <locale.h>
+#include <tuple>
 
 int points = 0;
 
@@ -46,38 +47,218 @@ void Game::ncursesStop()
     getch();
 }
 
-Entity Game::gameInputs(GameEnvironment gameEnvironment, Entity entity, int direction)
+std::tuple<p_itemList, Entity, int> Game::determineItemEffect(GameEnvironment gameEnvironment, int x, int y, p_itemList h_itemList, Entity entity, int pnt, int keyCounter, RangedWeapon playerWeapon)
 {
-    int ch;
+    p_itemList tmpItem = h_itemList;
+    bool endFlag = false;
+    while (tmpItem->item.getX() != x || tmpItem->item.getY() != y )
+    {
+        tmpItem = tmpItem->next;
+    }
+    int identifier = tmpItem->item.getId();
+    switch (identifier)
+    {
+    case 0: // Ruby Necklace
+        entity.increaseLifePoints(6);
+        points += 350;
+        endFlag = true;
+        break;
+    case 1: // Sapphire Ring
+        entity.increaseLifePoints(3);
+        entity.increaseCurrentLifePoints(3);
+        points += 150;
+        endFlag = true;
+        break;
+    case 2: // Amethyst Bracelet
+        entity.increaseLifePoints(2);
+        playerWeapon.setBulletRange(playerWeapon.getBulletRange() + 2);
+        points += 150;
+        endFlag = true;
+        break;
+    case 3: // Zircon Earrings
+        entity.increaseLifePoints(1);
+        points += 400;
+        endFlag = true;
+        break;
+    case 4: // Diamond Flower
+        entity.increaseLifePoints(2);
+        playerWeapon.increaseDamage(5);
+        points += 500;
+        endFlag = true;
+        break;
+    case 5: // Pearl Piercing
+        entity.increaseLifePoints(1);
+        playerWeapon.increaseDamage(1);
+        points += 250;
+        endFlag = true;
+        break;
+    case 6: // Onyx Prism
+        entity.increaseLifePoints(3);
+        points += 250;
+        endFlag = true;
+        break;
+    case 7: // Fire Spirit
+        entity.increaseCurrentLifePoints(5);
+        keyCounter++;
+        points += 100;
+        endFlag = true;
+        break;
+    case 8: // Water Mind
+        entity.increaseCurrentLifePoints(3);
+        entity.increaseLifePoints(1);
+        points += 120;
+        keyCounter += 1;
+        endFlag = true;
+        break;
+    case 9: // Wind Fury
+        entity.increaseCurrentLifePoints(2);
+        playerWeapon.increaseDamage(2);
+        keyCounter += 1;
+        points += 190;
+        endFlag = true;
+        break;
+    case 10: // Earth Heart
+        entity.increaseCurrentLifePoints(10);
+        keyCounter += 1;
+        points += 200;
+        endFlag = true;
+        break;
+    case 11: // Light Halo
+        entity.increaseLifePoints(5);
+        entity.increaseCurrentLifePoints(5);
+        keyCounter += 1;
+        points += 450;
+        endFlag = true;
+        break;
+    case 12: // Dark Crown
+        entity.increaseCurrentLifePoints(5);
+        entity.getRWeapon().increaseDamage(5);
+        keyCounter += 1;
+        points += 450;
+        endFlag = true;
+        break;
+    case 13: // Chaos Effigy
+        entity.increaseLifePoints(2);
+        entity.increaseCurrentLifePoints(2);
+        playerWeapon.increaseDamage(3);
+        keyCounter += 1;
+        points += 750;
+        endFlag = true;
+        break;
+    }
 
+    if (endFlag)
+    {
+        entity.setRWeapon(playerWeapon);
+        h_itemList = deleteItem(tmpItem, h_itemList);
+        mvprintw(tmpItem->item.getY(), tmpItem->item.getX(), " ");
+    }
+    return std::make_tuple(h_itemList, entity, keyCounter);
+}
+
+p_itemList Game::deleteItem(p_itemList itemToDelete, p_itemList h_itemList)
+{
+    p_itemList tmpHead = h_itemList, tmpPrev = tmpHead, tmpItem;
+    bool flag = false;
+    while (h_itemList != NULL && !flag)
+    {
+        if (h_itemList->item.getX() == itemToDelete->item.getX() && h_itemList->item.getY() == itemToDelete->item.getY() && h_itemList->item.getSkin() == itemToDelete->item.getSkin()
+            && h_itemList->item.getId() == itemToDelete->item.getId())
+        {
+            if (h_itemList == tmpHead)
+            {
+                tmpItem = tmpHead;
+                tmpHead = h_itemList->next;
+                delete tmpItem;
+                tmpPrev = tmpHead;
+                h_itemList = tmpHead;
+            }
+            else
+            {
+                tmpItem = tmpPrev->next;
+                tmpPrev->next = h_itemList->next;
+                delete tmpItem;
+                h_itemList = tmpPrev->next;
+            }
+         //   mvprintw(h_itemList->item.getY(), h_itemList->item.getX(), " ");
+          flag = true;  // If there are errors remove me
+        }
+        else
+        {
+            tmpPrev = h_itemList;
+            h_itemList = h_itemList->next;
+        }
+    }
+    return tmpHead;
+}
+
+std::tuple<Entity, int> Game::gameInputs(GameEnvironment gameEnvironment, Entity entity, int direction, p_Room h_roomList, int points, int keyCounter)
+{
+    srand(time(0));
+    int itemId;
     if (direction == 115 || direction == 83) // Down
     {
         // ch = mvinch(entity.getY() + 1, entity.getX()) & A_CHARTEXT;
         if (isEmpty(entity.getX(), entity.getY() + 1))
         {
+            mvprintw(entity.getY(), entity.getX(), " ");
             entity.dirDown();
         }
-        else if (isItem(entity.getX(), entity.getY() - 1))
+        else if (isItem(entity.getX(), entity.getY() + 1))
         {
+            mvprintw(entity.getY()+1, entity.getX(), " ");
+          std::tie(h_roomList->itemList, entity, keyCounter) = determineItemEffect(gameEnvironment, entity.getX(), entity.getY() + 1,
+                                                                 h_roomList->itemList, entity, points, keyCounter, entity.getRWeapon());
+            // h_roomList->itemList = determineItemEffect(gameEnvironment, entity.getX(), entity.getY() + 1,
+            //                       h_roomList->itemList, entity, points, keyCounter);
+            mvprintw(entity.getY(), entity.getX(), " ");
+            entity.dirDown();
         }
-        move(3, 3);
-        printw("%i", entity.getY());
     }
     if (direction == 119 || direction == 87) // Up
     {
 
         if (isEmpty(entity.getX(), entity.getY() - 1))
         {
-            entity.setY(entity.getY() - 1);
+            mvprintw(entity.getY(), entity.getX(), " ");
+            entity.dirUp();
         }
-        move(3, 3);
-        printw("%i", direction + entity.getY());
+        else if (isItem(entity.getX(), entity.getY() - 1))
+        {
+            mvprintw(entity.getY()-1, entity.getX(), " ");
+             //std::tuple<p_itemList, Entity> answer = determineItemEffect(gameEnvironment, entity.getX(), entity.getY() - 1,
+             //                                                    h_roomList->itemList, entity, points, keyCounter);
+            std::tie(h_roomList->itemList, entity, keyCounter) = determineItemEffect(gameEnvironment, entity.getX(), entity.getY() - 1,
+                                                                 h_roomList->itemList, entity, points, keyCounter, entity.getRWeapon());
+            
+            // h_roomList->itemList = answer.first;
+            // entity = answer.second;
+            //std::tie(h_roomList->itemList, entity) = determineItemEffect(gameEnvironment, entity.getX(), entity.getY() + 1,
+                                                             //            h_roomList->itemList, entity, points, keyCounter);
+            // h_roomList->itemList = determineItemEffect(gameEnvironment, entity.getX(), entity.getY() - 1,
+            //                 h_roomList->itemList, entity, points, keyCounter);
+            mvprintw(entity.getY(), entity.getX(), " ");
+            entity.dirUp();
+        }
     }
     if (direction == 97 || direction == 65) // Left
     {
 
         if (isEmpty(entity.getX() - 1, entity.getY()))
         {
+            mvprintw(entity.getY(), entity.getX(), " ");
+            entity.dirLeft();
+        }
+        else if (isItem(entity.getX() - 1, entity.getY()))
+        {
+         mvprintw(entity.getY(), entity.getX()-1, " ");
+         std::tie(h_roomList->itemList, entity, keyCounter) = determineItemEffect(gameEnvironment, entity.getX()-1, entity.getY(),
+                                                                 h_roomList->itemList, entity, points, keyCounter, entity.getRWeapon());
+            //std::tie(h_roomList->itemList, entity) = determineItemEffect(gameEnvironment, entity.getX(), entity.getY() + 1,
+                                                                      //   h_roomList->itemList, entity, points, keyCounter);
+            // h_roomList->itemList = determineItemEffect(gameEnvironment, entity.getX() - 1, entity.getY(),
+            //                      h_roomList->itemList, entity, points, keyCounter);
+            mvprintw(entity.getY(), entity.getX(), " ");
             entity.dirLeft();
         }
     }
@@ -85,6 +266,19 @@ Entity Game::gameInputs(GameEnvironment gameEnvironment, Entity entity, int dire
     {
         if (isEmpty(entity.getX() + 1, entity.getY()))
         {
+            mvprintw(entity.getY(), entity.getX(), " ");
+            entity.dirRight();
+        }
+        else if (isItem(entity.getX() + 1, entity.getY()))
+        {
+            mvprintw(entity.getY(), entity.getX()+1, " ");
+             std::tie(h_roomList->itemList, entity, keyCounter) = determineItemEffect(gameEnvironment, entity.getX()+1, entity.getY(),
+                                                                 h_roomList->itemList, entity, points, keyCounter, entity.getRWeapon());
+            //std::tie(h_roomList->itemList, entity) = determineItemEffect(gameEnvironment, entity.getX(), entity.getY() + 1,
+                                                                       //  h_roomList->itemList, entity, points, keyCounter);
+            // h_roomList->itemList = determineItemEffect(gameEnvironment, entity.getX() + 1, entity.getY(),
+            //                        h_roomList->itemList, entity, points, keyCounter);
+            mvprintw(entity.getY(), entity.getX(), " ");
             entity.dirRight();
         }
     }
@@ -97,12 +291,25 @@ Entity Game::gameInputs(GameEnvironment gameEnvironment, Entity entity, int dire
         // they should be moving on their own until their range is 0
 
         // After that, verify the implementation with destroyBullet()
+        int flag = false;
+        int expansion = entity.getRWeapon().getBulletSpeed() + 1;
+        while (expansion > 0)
+        {
+            if (direction == 261 && !isEmpty(entity.getX() + expansion, entity.getY()))
+                flag = true;
+            if (direction == 260 && !isEmpty(entity.getX() - expansion, entity.getY()))
+                flag = true;
+            if (direction == 258 && !isEmpty(entity.getX(), entity.getY() + expansion))
+                flag = true;
+            if (direction == 259 && !isEmpty(entity.getX(), entity.getY() - expansion))
+                flag = true;
+            expansion--;
+        }
 
-        this->playerBullets = generateBullet(entity, this->playerBullets, direction, false);
-        moveBullets(this->playerBullets);
-        range--;
+        if (!flag)
+            this->playerBullets = generateBullet(entity, this->playerBullets, direction, false);
     }
-    return (entity);
+    return std::make_tuple(entity, keyCounter);
 }
 
 void Game::menuChoice(GameEnvironment gameEnvironment, int *key, int *choice)
@@ -158,21 +365,7 @@ void Game::choiceHandler(GameEnvironment gameEnvironment)
 
             pause = false;
             clear();
-            /*
-            RangedWeapon rWp("Luha", 3, '0', 2, 4);
-            Entity entity(46, 18, 'C', 30);
-            entity.setRWeapon(rWp);
 
-            // Fodder values
-            gameEnvironment.drawRoom(20, 7, 22, true, 0);
-
-            // O print the first room
-            // 14 print the second room
-
-            gameEnvironment.drawInfo(71, 20, 7, 22, true, entity, 100);
-
-            gameInputs(entity);
-            */
             gameHandler(gameEnvironment, key);
             clear();
             gameEnvironment.escLoss(key, points);
@@ -230,7 +423,9 @@ void Game::choiceHandler(GameEnvironment gameEnvironment)
 
 p_bullet Game::generateBullet(Entity entity, p_bullet &bulletList, int dir, bool enemyBull)
 {
+
     p_bullet h_bullet = new bullet;
+
     if (dir == 261)
     { // shooting right
         h_bullet->x = entity.getX() + 1;
@@ -305,6 +500,8 @@ void Game::moveBullets(p_bullet h_bulletList)
     while (h_bulletList != NULL)
     {
 
+        mvprintw(h_bulletList->y, h_bulletList->x, " ");
+
         if ((!h_bulletList->enemyBullet && h_bulletList->direction == 261) || (h_bulletList->enemyBullet && h_bulletList->direction == 260))
             h_bulletList->x += h_bulletList->speed;
         else if ((!h_bulletList->enemyBullet && h_bulletList->direction == 260) || (h_bulletList->enemyBullet && h_bulletList->direction == 261))
@@ -317,16 +514,19 @@ void Game::moveBullets(p_bullet h_bulletList)
         move(h_bulletList->y, h_bulletList->x);
         b_trail[0] = h_bulletList->skin;
 
-        if (!h_bulletList->enemyBullet)
-        { // If its a bullet enemy,  the bullet
-            init_pair(3, COLOR_RED, -1);
-            attron(COLOR_PAIR(3));
-            printw(b_trail);
-            attroff(COLOR_PAIR(3));
-        }
-        else
-            printw(b_trail);
+        if (isEmpty(h_bulletList->x, h_bulletList->y))
+        {
+            if (h_bulletList->enemyBullet)
+            { // If its a bullet enemy,  the bullet is red
 
+                init_pair(3, COLOR_RED, -1);
+                attron(COLOR_PAIR(3));
+                printw(b_trail);
+                attroff(COLOR_PAIR(3));
+            }
+            else
+                printw(b_trail);
+        }
         h_bulletList = h_bulletList->next;
     }
 }
@@ -350,54 +550,63 @@ void Game::destroyBullet(p_bullet &h_bulletList, int playerX, int playerY)
                 // Right
                 destroy = (!isEmpty(head->x + 1, head->y)) &&
                           (!isItem(head->x + 1, head->y)) &&
-                          (!isEnemy(head->x + 1, head->y));
+                          (!isBullet(head->x + 1, head->y));
+
+                int si;
+                if (destroy)
+                    si = 1;
+                else
+                    si = 0;
 
                 if (head->enemyBullet)
-                    destroy &= (!isBullet(head->x + 1, head->y));
+                    destroy &= (!isEnemy(head->x + 1, head->y));
             }
             else if ((!head->enemyBullet && head->direction == 260) || (head->enemyBullet && head->direction == 261))
             {
                 // Left
                 destroy = (!isEmpty(head->x - 1, head->y)) &&
                           (!isItem(head->x - 1, head->y)) &&
-                          (!isEnemy(head->x - 1, head->y));
+                          (!isBullet(head->x - 1, head->y));
 
                 if (head->enemyBullet)
-                    destroy &= (!isBullet(head->x - 1, head->y));
+                    destroy &= (!isEnemy(head->x - 1, head->y));
             }
             else if ((!head->enemyBullet && head->direction == 258) || (head->enemyBullet && head->direction == 259))
             {
                 // Down
                 destroy = (!isEmpty(head->x, head->y + 1)) &&
                           (!isItem(head->x, head->y + 1)) &&
-                          (!isEnemy(head->x, head->y + 1));
+                          (!isBullet(head->x, head->y + 1));
 
                 if (head->enemyBullet)
-                    destroy &= (!isBullet(head->x, head->y - 1));
+                    destroy &= (!isEnemy(head->x, head->y + 1));
             }
             else if ((!head->enemyBullet && head->direction == 259) || (head->enemyBullet && head->direction == 258))
             {
                 // Up
                 destroy = (!isEmpty(head->x, head->y - 1)) &&
                           (!isItem(head->x, head->y - 1)) &&
-                          (!isEnemy(head->x, head->y - 1));
+                          (!isBullet(head->x, head->y - 1));
 
                 if (head->enemyBullet)
-                    destroy &= (!isBullet(head->x, head->y + 1));
+                    destroy &= (!isEnemy(head->x, head->y - 1));
             }
 
-            if (destroy || head->x > (rightDistance - 1) || head->x < (leftDistance + 1) || head->y < bottomDistance + 1 || head->y > topDistance - 1)
+            if (destroy || head->x > 70 || head->x < (leftDistance + 1) || head->y > bottomDistance - 1 || head->y < (topDistance + 1))
             {
                 if (head == h_bulletList)
                 {
+                    mvprintw(head->y, head->x, " ");
                     tmp = h_bulletList;
                     h_bulletList = head->next;
                     delete tmp;
+
                     prev = h_bulletList;
                     head = h_bulletList;
                 }
                 else
                 {
+                    mvprintw(head->y, head->x, " ");
                     tmp = prev->next;
                     prev->next = head->next;
                     delete tmp;
@@ -416,22 +625,30 @@ void Game::destroyBullet(p_bullet &h_bulletList, int playerX, int playerY)
 bool Game::isEmpty(int x, int y)
 {
     if (mvinch(y, x) == ' ')
-        return true;
+        return (true);
+    else
+        return (false);
 }
 bool Game::isItem(int x, int y)
 {
-    if (mvinch(y, x) == 'A' || mvinch(y, x) == 'P' || mvinch(y, x) == '?')
+    if (mvinch(y, x) == 'A' || mvinch(y, x) == 'K' || mvinch(y, x) == '?')
         return true;
+    else
+        return (false);
 }
 bool Game::isBullet(int x, int y)
 {
-    if (mvinch(y, x) == '=' || mvinch(y, x) == '*' || mvinch(y, x) == '0')
+    if (mvinch(y, x) == '=' || mvinch(y, x) == '*' || mvinch(y, x) == 'o')
         return true;
+    else
+        return (false);
 }
 bool Game::isEnemy(int x, int y)
 {
-    if (mvinch(y, x) == '@')
-        ;
+    if (mvinch(y, x) == '@' || mvinch(y, x) == '@' || mvinch(y, x) == '@' || mvinch(y, x) == '@')
+        return true;
+    else
+        return (false);
 }
 
 p_EnemyList Game::destroyEnemy(p_EnemyList h_enemyList, Enemy enemy)
@@ -520,19 +737,16 @@ void Game::bulletCollision(p_bullet &h_bulletList, p_EnemyList h_enemyList, Enti
             h_enemyList = destroyEnemy(tmpEnemy, h_enemyList->enemy);
             increasePoints(points, h_enemyList->enemy.getKillScore());
         }
-        else if (playerHit)
-        {
-            entity.decreaseLifePoints(h_enemyList->enemy.getRWeapon().getDamage());
-            checkPlayerDeath(entity, false); // check player death
-            skinReplace[0] = entity.getSkin();
-            mvprintw(entity.getY(), entity.getX(), skinReplace);
-        }
-        else if (wallHit)
-        {
-            destroyBullet(h_bulletList, h_bulletList->x, h_bulletList->y);
-        }
-        attroff(COLOR_PAIR(3));
     }
+    else if (playerHit)
+    {
+        entity.decreaseLifePoints(h_enemyList->enemy.getRWeapon().getDamage());
+        checkPlayerDeath(entity, false); // check player death
+        skinReplace[0] = entity.getSkin();
+        mvprintw(entity.getY(), entity.getX(), skinReplace);
+    }
+
+    attroff(COLOR_PAIR(3));
 }
 
 void Game::checkPlayerDeath(Entity entity, bool pause)
@@ -568,29 +782,33 @@ void Game::getInput(int &key)
 p_EnemyList Game::generateEnemy(GameEnvironment gameEnvironment, int enemyCounter, int enemyType, p_EnemyList h_enemyList)
 {
 
-    char enemySkin;
     int enemyLp, enemyKs;
-    RangedWeapon enemyWeapon("Basic Weapon", 4, 'o', 1, 9);
+    char enemySkin;
+    RangedWeapon enemyWeapon("Basic Weapon", 3, 'o', 1, 9);
     switch (enemyType)
     {
     case 0: // First enemy type -> Snail
         enemySkin = '@';
         enemyLp = 25, enemyKs = 200;
+        break;
     case 1: // Second enemy type -> Smol Lynx
-        enemySkin = '§';
+        enemySkin = '$';
         enemyLp = 40, enemyKs = 350;
         enemyWeapon.setBulletSkin(',');
-        enemyWeapon.setDamage(6);
+        enemyWeapon.setDamage(5);
+        break;
     case 2: // Third enemy type -> Cobra
-        enemySkin = '£';
+        enemySkin = 'l';
         enemyLp = 65, enemyKs = 700;
-        enemyWeapon.setBulletSkin('°');
-        enemyWeapon.setDamage(9);
+        enemyWeapon.setBulletSkin('"');
+        enemyWeapon.setDamage(8);
+        break;
     case 3: // Fourth enemy type -> Bear
         enemySkin = '&';
         enemyLp = 100, enemyKs = 1000;
         enemyWeapon.setBulletSkin('#');
-        enemyWeapon.setDamage(13);
+        enemyWeapon.setDamage(10);
+        break;
     }
     int x, y;
     bool flag = true;
@@ -599,48 +817,70 @@ p_EnemyList Game::generateEnemy(GameEnvironment gameEnvironment, int enemyCounte
         x = gameEnvironment.randomCoordinate(39, 68).x;
         y = gameEnvironment.randomCoordinate(9, 19).y;
         p_EnemyList tmpHead = new EnemyList;
-        Enemy enemy(x, y, enemySkin, enemyLp, enemyKs, 1, 1, (h_enemyList->enemy).getRWeapon().getDamage());
+
+        Enemy enemy(x, y, enemySkin, enemyLp, enemyKs, 1, 1, 1);
         enemy.setRWeapon(enemyWeapon);
+        enemy.setMeleeDamage(enemy.getRWeapon().getDamage());
+
         tmpHead->enemy = enemy;
         tmpHead->next = h_enemyList;
-        enemyCounter--;
         h_enemyList = tmpHead;
+
         flag = false;
+        enemyCounter--;
     }
     if (!flag)
     { // In case let's create a puppet useless enemy, (for the fake enemy generation, utils for put at least one element in the list)
         enemyWeapon.setBulletSkin(' ');
         p_EnemyList tmpHead = new EnemyList;
         Enemy enemy(0, 0, ' ', enemyLp, enemyKs, 1, 1, 0);
+
         tmpHead->enemy = enemy;
         tmpHead->next = h_enemyList;
-        enemyCounter--;
         h_enemyList = tmpHead;
+
         flag = true;
     }
     return h_enemyList;
+}
+
+
+std::tuple<Entity, int> Game::calculateLives(Entity entity, int lives){
+     if (entity.getLifePoints() >= 20){
+        lives++;
+        entity.setCurrentLifePoints(10);
+        entity.setLifePoints(10);
+     }
+    return std::make_tuple(entity, lives);
 }
 
 void Game::gameHandler(GameEnvironment gameEnvironment, int direction)
 {
 
     RangedWeapon startWeapon("Magic gun", 8, 'o', 1, 10);
-    Entity player(46, 18, 'P', 30);
+    Entity player(46, 18, 'P', 10);
     player.setRWeapon(startWeapon);
 
+    bool passRooms[17];
+    for (int i = 0; i < 17; i++)
+        passRooms[i] = false;
+
     bool noEnemy = false;
-    int points = 0;
     int enemyCounter = 1;
+    int hearts = 3;
+    int keyCounter = 0;
 
     p_EnemyList h_enemyList = NULL;
     p_itemList h_itemList = NULL;
     p_Room h_roomList = new Room;
 
+    int roomTracker = 0;
+
     clear();
     h_roomList = gameEnvironment.mapGenerator(h_roomList);
 
     gameEnvironment.drawRoom(20, 7, 22, true, 0);
-    gameEnvironment.drawInfo(71, 20, 7, 22, true, player, points);
+    gameEnvironment.drawInfo(71, 20, 7, 22, true, player, points, keyCounter,hearts);
     while (!pause)
     {
 
@@ -648,17 +888,31 @@ void Game::gameHandler(GameEnvironment gameEnvironment, int direction)
         // 14 print the second room
 
         h_roomList = gameEnvironment.roomChange(player, h_enemyList, h_roomList, h_itemList,
-                                                bottomDistance, rightDistance, maxX, maxY, noEnemy, points);
-        gameEnvironment.drawRoom(bottomDistance, maxX, maxY, noEnemy, h_roomList->roomTracker);
+                                                bottomDistance, rightDistance, maxX, maxY, noEnemy, points,
+                                                enemyCounter, passRooms);
+
+        if (roomTracker != h_roomList->roomTracker)
+        {
+            roomTracker = h_roomList->roomTracker;
+            gameEnvironment.drawRoom(bottomDistance, maxX, maxY, noEnemy, h_roomList->roomTracker);
+        }
 
         gameEnvironment.drawCharacter(player.getX(), player.getY(), player.getSkin());
-        // h_enemyList = generateEnemy(gameEnvironment, enemyCounter, 0, h_enemyList);
+        gameEnvironment.drawItems(h_roomList->itemList);
+
+        h_enemyList = generateEnemy(gameEnvironment, enemyCounter, 0, h_enemyList);
         getInput(direction);
-        player = gameInputs(gameEnvironment, player, direction);
-        clear();
+        std::tie(player, keyCounter) = gameInputs(gameEnvironment, player, direction, h_roomList, points, keyCounter);
 
         gameEnvironment.drawCharacter(player.getX(), player.getY(), player.getSkin());
 
-        gameEnvironment.drawInfo(rightDistance, bottomDistance, maxX, maxY, noEnemy, player, points);
+        std::tie(player, hearts) = calculateLives(player, hearts);
+        gameEnvironment.drawInfo(rightDistance, bottomDistance, maxX, maxY, noEnemy, player, points, keyCounter, hearts);
+
+        moveBullets(this->playerBullets);
+
+        bulletCollision(this->playerBullets, h_enemyList, player, points);
+
+        destroyBullet(this->playerBullets, player.getX(), player.getY());
     }
 }

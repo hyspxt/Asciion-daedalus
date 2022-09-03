@@ -47,19 +47,22 @@ public:
 
     // Room drawing
     void drawRoom(int bottomDistance, int startX, int startY, bool noEnemy, int lineCounter);
-    void drawInfo(int rightDistance, int bottomDistance, int startX, int startY, bool noEnemy, Entity entity, int points);
+    void drawInfo(int rightDistance, int bottomDistance, int startX, int startY, bool noEnemy, Entity entity, int points, int keyCounter, int hearts);
 
     std::string readNthLine(int n);
+    bool checkItemPosition(p_itemList h_itemList, p_itemList tmpItem);
+    p_Room saveRoomState(p_itemList h_itemList, p_Room h_roomList, int roomTracker);
+    
+    int lenghtItemList(p_itemList h_itemList);
 
-    p_Room saveRoomStateUp(p_itemList h_itemList, p_Room up_roomList, int roomTracker);
-    p_Room saveRoomStateDown(p_itemList h_itemList, p_Room down_roomList, int roomTracker);
-    p_Room saveRoomStateLeft(p_itemList h_itemList, p_Room left_roomList, int roomTracker);
-    p_Room saveRoomStateRight(p_itemList h_itemList, p_Room right_roomList, int roomTracker);
-
-    p_Room roomChange(Entity &entity, p_EnemyList &h_enemyList, p_Room h_roomList, p_itemList h_itemList, int bottomDistance, int rightDistance, int startX, int startY, bool noEnemy, int points);
+    p_Room roomChange(Entity &entity, p_EnemyList &h_enemyList, p_Room h_roomList, p_itemList h_itemList, int bottomDistance, int rightDistance,
+                      int startX, int startY, bool noEnemy, int points, int enemyCounter, bool passRooms[]);
     p_Room mapGenerator(p_Room h_roomList);
 
+    void calculateEnemyNumber(int roomTracker, int enemyCounter);
+    void drawItems(p_itemList h_itemList);
     Position randomCoordinate(int start, int end);
+    p_itemList generateItem(int itemCounter, p_itemList h_itemList);
 
     // Player and elements moving
 

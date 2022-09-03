@@ -8,7 +8,7 @@ make: *** No rule to make target 'all'.  Stop.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Thu Aug 25 16:01:46 2022
+# Make data base, printed on Sat Sep  3 15:33:07 2022
 
 # Variables
 
@@ -91,7 +91,7 @@ GPG_AGENT_INFO = /run/user/1000/gnupg/S.gpg-agent:0:1
 # environment
 XCURSOR_THEME = DMZ-Black
 # environment
-SESSION_MANAGER = local/hys:@/tmp/.ICE-unix/1305,unix/hys:/tmp/.ICE-unix/1305
+SESSION_MANAGER = local/hys:@/tmp/.ICE-unix/1411,unix/hys:/tmp/.ICE-unix/1411
 # environment
 XDG_RUNTIME_DIR = /run/user/1000
 # environment
@@ -107,7 +107,7 @@ LS_COLORS =
 # environment
 XDG_SESSION_DESKTOP = plasma
 # environment
-SSH_AUTH_SOCK = /tmp/ssh-sBoPynxnSI0r/agent.1128
+SSH_AUTH_SOCK = /tmp/ssh-yqlZNj5OCNWj/agent.1129
 # automatic
 %F = $(notdir $%)
 # environment
@@ -121,7 +121,7 @@ KDE_SESSION_VERSION = 5
 # environment
 XDG_SEAT = seat0
 # environment
-SSH_AGENT_PID = 1211
+SSH_AGENT_PID = 1212
 # environment
 ORIGINAL_XDG_CURRENT_DESKTOP = KDE
 # environment
@@ -137,7 +137,7 @@ VSCODE_CODE_CACHE_PATH = /home/pxt/.config/Code/CachedData/e4503b30fc78200f846c6
 # environment
 LOGNAME = pxt
 # environment
-APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = true
+APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = 1
 # automatic
 +F = $(notdir $+)
 # environment
@@ -225,13 +225,13 @@ LC_IDENTIFICATION = it_IT.UTF-8
 # default
 .RECIPEPREFIX := 
 # makefile (from 'makefile', line 3)
-OBJECTS = main.o entity.o player.o enemy.o gameEnvironment.o game.o coordinate.o weapon.o rangedWeapon.o item.o power.o artifact.o 
+OBJECTS = main.o entity.o player.o enemy.o gameEnvironment.o game.o coordinate.o weapon.o rangedWeapon.o item.o
 # environment
 LC_ADDRESS = it_IT.UTF-8
 # environment
 LANG = C
 # environment
-VSCODE_PID = 2073
+VSCODE_PID = 2245
 # environment
 KDE_SESSION_UID = 1000
 # variable set hash-table stats:
@@ -266,21 +266,7 @@ enemy.o: src/entity/enemy.hpp src/entity/enemy.cpp
 #  recipe to execute (from 'makefile', line 19):
 		$(CC) $(CFLAGS) src/entity/enemy.cpp
 
-power.o: src/item/power.hpp src/item/power.cpp
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
-#  recipe to execute (from 'makefile', line 40):
-		$(CC) $(CFLAGS) src/item/power.cpp
-
 # Not a target:
-src/item/artifact.cpp:
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
-
-# Not a target:
- 
 all:
 #  Command line target.
 #  Implicit rule search has been done.
@@ -307,13 +293,8 @@ src/game/game.hpp:
 #  File has not been updated.
 
 # Not a target:
+ 
 src/gameEnvironment/coordinate.hpp:
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
-
-# Not a target:
-src/item/artifact.hpp:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
@@ -337,17 +318,10 @@ gameEnvironment.o: src/gameEnvironment/gameEnvironment.hpp src/gameEnvironment/g
 #  recipe to execute (from 'makefile', line 22):
 		$(CC) $(CFLAGS) src/gameEnvironment/gameEnvironment.cpp
 
-artifact.o: src/item/artifact.hpp src/item/artifact.cpp
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
-#  recipe to execute (from 'makefile', line 43):
-		$(CC) $(CFLAGS) src/item/artifact.cpp
-
 # Not a target:
 makefile:
 #  Implicit rule search has been done.
-#  Last modified 2022-08-23 15:23:07.493099545
+#  Last modified 2022-08-28 18:15:11.505496652
 #  File has been updated.
 #  Successfully updated.
 
@@ -426,7 +400,7 @@ clean:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'makefile', line 50):
+#  recipe to execute (from 'makefile', line 46):
 		rm *.o main
 
 # Not a target:
@@ -446,7 +420,7 @@ scoreboard:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'makefile', line 53):
+#  recipe to execute (from 'makefile', line 49):
 		sort -k 2 -r -o scoreboard.txt scoreboard.txt
 	
 
@@ -463,25 +437,19 @@ src/weapon/weapon.cpp:
 #  File has not been updated.
 
 # Not a target:
-src/item/power.cpp:
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
-
-# Not a target:
 src/entity/entity.hpp:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
 
-main: main.o entity.o player.o enemy.o gameEnvironment.o game.o coordinate.o weapon.o rangedWeapon.o item.o power.o artifact.o
+main: main.o entity.o player.o enemy.o gameEnvironment.o game.o coordinate.o weapon.o rangedWeapon.o item.o
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
 #  recipe to execute (from 'makefile', line 7):
 		$(CC) -o main $(OBJECTS) $(LIBRARY)
 
-main.o: main.cpp src/entity/entity.hpp src/entity/player.hpp src/entity/enemy.hpp src/gameEnvironment/gameEnvironment.hpp src/gameEnvironment/coordinate.hpp src/weapon/weapon.hpp src/weapon/rangedWeapon.hpp src/item/item.hpp src/item/power.hpp src/item/artifact.hpp
+main.o: main.cpp src/entity/entity.hpp src/entity/player.hpp src/entity/enemy.hpp src/gameEnvironment/gameEnvironment.hpp src/gameEnvironment/coordinate.hpp src/weapon/weapon.hpp src/weapon/rangedWeapon.hpp src/item/item.hpp
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
@@ -504,16 +472,10 @@ launch:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'makefile', line 46):
+#  recipe to execute (from 'makefile', line 42):
 		sort -k 2 -r -o scoreboard.txt scoreboard.txt
 		./main
 	
-
-# Not a target:
-src/item/power.hpp:
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
 
 # Not a target:
 src/game/game.cpp:
@@ -529,19 +491,19 @@ player.o: src/entity/player.hpp src/entity/player.cpp
 		$(CC) $(CFLAGS) src/entity/player.cpp
 
 # files hash-table stats:
-# Load=43/1024=4%, Rehash=0, Collisions=0/110=0%
+# Load=37/1024=4%, Rehash=0, Collisions=0/94=0%
 # VPATH Search Paths
 
 # No 'vpath' search paths.
 
 # No general ('VPATH' variable) search path.
 
-# strcache buffers: 1 (0) / strings = 54 / storage = 819 B / avg = 15 B
-# current buf: size = 8162 B / used = 819 B / count = 54 / avg = 15 B
+# strcache buffers: 1 (0) / strings = 50 / storage = 737 B / avg = 14 B
+# current buf: size = 8162 B / used = 737 B / count = 50 / avg = 14 B
 
-# strcache performance: lookups = 110 / hit rate = 50%
+# strcache performance: lookups = 98 / hit rate = 48%
 # hash-table stats:
-# Load=54/8192=1%, Rehash=0, Collisions=1/110=1%
-# Finished Make data base on Thu Aug 25 16:01:46 2022
+# Load=50/8192=1%, Rehash=0, Collisions=1/98=1%
+# Finished Make data base on Sat Sep  3 15:33:07 2022
 
  

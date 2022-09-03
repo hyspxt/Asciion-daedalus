@@ -40,7 +40,7 @@ public:
     void ncursesSetup();
     void ncursesStop();
 
-    Entity gameInputs(GameEnvironment gameEnvironment, Entity entity, int direction);
+    std::tuple<Entity, int> gameInputs(GameEnvironment gameEnvironment, Entity entity, int direction, p_Room h_roomList, int points, int keyCounter);
 
     void menuChoice(GameEnvironment gameEnvironment, int *key, int *selection);
     void choiceHandler(GameEnvironment gameEnvironment);
@@ -54,10 +54,16 @@ public:
     p_EnemyList destroyEnemy(p_EnemyList h_enemyList, Enemy enemy);
     p_EnemyList generateEnemy(GameEnvironment gameEnvironment, int enemyCounter, int enemyType, p_EnemyList h_enemyList);
 
+    std::tuple<Entity, int> calculateLives(Entity entity, int lives);
+
     void getInput(int &key);
     void increasePoints(int &points, int p_add);
     void pointsOverTime(double &points);
     void checkPlayerDeath(Entity entity, bool pause);
+
+    p_itemList deleteItem(p_itemList itemToDelete, p_itemList h_itemList);
+
+    std::tuple<p_itemList, Entity, int> determineItemEffect(GameEnvironment gameEnvironment, int x, int y, p_itemList h_itemList, Entity entity, int pnt, int keyCounter, RangedWeapon playerWeapon); 
 
     bool isEmpty(int x, int y);
     bool isItem(int x, int y);

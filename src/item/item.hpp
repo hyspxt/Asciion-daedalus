@@ -9,10 +9,14 @@ protected:
     int x;
     int y;
     char skin;
+    bool isArtifact;
 
 public:
     Item();
-    Item(char itName[], int id, int x, int y, char skin);
+    Item(char itName[], int id, int x, int y, char skin, bool isArtifact);
+
+    void setItemName(char itName[]);
+    char* getItemName();
 
     void setId(int id);
     int getId();
@@ -25,6 +29,9 @@ public:
 
     void setSkin(char skin);
     char getSkin();
+
+    void setIsArtifact(bool isArtifact);
+    bool getIsArtifact();
 };
 struct itemList {
     Item item;
