@@ -8,7 +8,7 @@ make: *** No rule to make target 'all'.  Stop.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Sat Sep  3 15:33:07 2022
+# Make data base, printed on Thu Sep 15 15:30:51 2022
 
 # Variables
 
@@ -47,7 +47,7 @@ SHELL = /bin/sh
 # environment
 GDM_LANG = it
 # environment
-VSCODE_NLS_CONFIG = {"locale":"it","availableLanguages":{"*":"it"},"_languagePackId":"733e63a346861b85a80ab453548d8e7a.it","_translationsConfigFile":"/home/pxt/.config/Code/clp/733e63a346861b85a80ab453548d8e7a.it/tcf.json","_cacheRoot":"/home/pxt/.config/Code/clp/733e63a346861b85a80ab453548d8e7a.it","_resolvedLanguagePackCoreLocation":"/home/pxt/.config/Code/clp/733e63a346861b85a80ab453548d8e7a.it/e4503b30fc78200f846c62cf8091b76ff5547662","_corruptedFile":"/home/pxt/.config/Code/clp/733e63a346861b85a80ab453548d8e7a.it/corrupted.info","_languagePackSupport":true}
+VSCODE_NLS_CONFIG = {"locale":"it","availableLanguages":{"*":"it"},"_languagePackId":"7a9ccbb39d855d2d5642a9a76174bf85.it","_translationsConfigFile":"/home/pxt/.config/Code/clp/7a9ccbb39d855d2d5642a9a76174bf85.it/tcf.json","_cacheRoot":"/home/pxt/.config/Code/clp/7a9ccbb39d855d2d5642a9a76174bf85.it","_resolvedLanguagePackCoreLocation":"/home/pxt/.config/Code/clp/7a9ccbb39d855d2d5642a9a76174bf85.it/e7f30e38c5a4efafeec8ad52861eb772a9ee4dfb","_corruptedFile":"/home/pxt/.config/Code/clp/7a9ccbb39d855d2d5642a9a76174bf85.it/corrupted.info","_languagePackSupport":true}
 # environment
 _ = /usr/share/code/code
 # environment
@@ -91,7 +91,7 @@ GPG_AGENT_INFO = /run/user/1000/gnupg/S.gpg-agent:0:1
 # environment
 XCURSOR_THEME = DMZ-Black
 # environment
-SESSION_MANAGER = local/hys:@/tmp/.ICE-unix/1411,unix/hys:/tmp/.ICE-unix/1411
+SESSION_MANAGER = local/hys:@/tmp/.ICE-unix/1298,unix/hys:/tmp/.ICE-unix/1298
 # environment
 XDG_RUNTIME_DIR = /run/user/1000
 # environment
@@ -107,7 +107,7 @@ LS_COLORS =
 # environment
 XDG_SESSION_DESKTOP = plasma
 # environment
-SSH_AUTH_SOCK = /tmp/ssh-yqlZNj5OCNWj/agent.1129
+SSH_AUTH_SOCK = /tmp/ssh-Fg7C5Obr0Rdk/agent.1121
 # automatic
 %F = $(notdir $%)
 # environment
@@ -121,7 +121,7 @@ KDE_SESSION_VERSION = 5
 # environment
 XDG_SEAT = seat0
 # environment
-SSH_AGENT_PID = 1212
+SSH_AGENT_PID = 1204
 # environment
 ORIGINAL_XDG_CURRENT_DESKTOP = KDE
 # environment
@@ -133,7 +133,7 @@ HOME = /home/pxt
 # environment
 LESSCLOSE = /usr/bin/lesspipe %s %s
 # environment
-VSCODE_CODE_CACHE_PATH = /home/pxt/.config/Code/CachedData/e4503b30fc78200f846c62cf8091b76ff5547662
+VSCODE_CODE_CACHE_PATH = /home/pxt/.config/Code/CachedData/e7f30e38c5a4efafeec8ad52861eb772a9ee4dfb
 # environment
 LOGNAME = pxt
 # environment
@@ -185,7 +185,7 @@ LANGUAGE = it:en_US
 # environment
 XDG_SEAT_PATH = /org/freedesktop/DisplayManager/Seat0
 # environment
-VSCODE_IPC_HOOK = /run/user/1000/vscode-f6366448-1.70.2-main.sock
+VSCODE_IPC_HOOK = /run/user/1000/vscode-f6366448-1.71.1-main.sock
 # makefile
 MAKEFLAGS = pqrR
 # environment
@@ -231,7 +231,7 @@ LC_ADDRESS = it_IT.UTF-8
 # environment
 LANG = C
 # environment
-VSCODE_PID = 2245
+VSCODE_PID = 1894
 # environment
 KDE_SESSION_UID = 1000
 # variable set hash-table stats:
@@ -243,9 +243,9 @@ KDE_SESSION_UID = 1000
 
 # Directories
 
-# . (device 66306, inode 25827708): 24 files, no impossibilities.
+# . (device 66306, inode 25827708): 22 files, no impossibilities.
 
-# 24 files, no impossibilities in 1 directories.
+# 22 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
@@ -280,6 +280,7 @@ src/gameEnvironment/gameEnvironment.cpp:
 #  File has not been updated.
 
 weapon.o: src/weapon/weapon.hpp src/weapon/weapon.cpp
+ 
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
@@ -293,7 +294,6 @@ src/game/game.hpp:
 #  File has not been updated.
 
 # Not a target:
- 
 src/gameEnvironment/coordinate.hpp:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
@@ -321,7 +321,7 @@ gameEnvironment.o: src/gameEnvironment/gameEnvironment.hpp src/gameEnvironment/g
 # Not a target:
 makefile:
 #  Implicit rule search has been done.
-#  Last modified 2022-08-28 18:15:11.505496652
+#  Last modified 2022-09-13 19:14:45.752963302
 #  File has been updated.
 #  Successfully updated.
 
@@ -421,7 +421,7 @@ scoreboard:
 #  Modification time never checked.
 #  File has not been updated.
 #  recipe to execute (from 'makefile', line 49):
-		sort -k 2 -r -o scoreboard.txt scoreboard.txt
+		sort -k2 -n -r -o scoreboard.txt scoreboard.txt
 	
 
 # Not a target:
@@ -473,7 +473,7 @@ launch:
 #  Modification time never checked.
 #  File has not been updated.
 #  recipe to execute (from 'makefile', line 42):
-		sort -k 2 -r -o scoreboard.txt scoreboard.txt
+		sort -k2 -n -r -o scoreboard.txt scoreboard.txt
 		./main
 	
 
@@ -498,12 +498,12 @@ player.o: src/entity/player.hpp src/entity/player.cpp
 
 # No general ('VPATH' variable) search path.
 
-# strcache buffers: 1 (0) / strings = 50 / storage = 737 B / avg = 14 B
-# current buf: size = 8162 B / used = 737 B / count = 50 / avg = 14 B
+# strcache buffers: 1 (0) / strings = 48 / storage = 718 B / avg = 14 B
+# current buf: size = 8162 B / used = 718 B / count = 48 / avg = 14 B
 
-# strcache performance: lookups = 98 / hit rate = 48%
+# strcache performance: lookups = 96 / hit rate = 50%
 # hash-table stats:
-# Load=50/8192=1%, Rehash=0, Collisions=1/98=1%
-# Finished Make data base on Sat Sep  3 15:33:07 2022
+# Load=48/8192=1%, Rehash=0, Collisions=1/96=1%
+# Finished Make data base on Thu Sep 15 15:30:51 2022
 
  

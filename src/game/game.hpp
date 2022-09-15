@@ -40,26 +40,32 @@ public:
     void ncursesSetup();
     void ncursesStop();
 
-    std::tuple<Entity, int> gameInputs(GameEnvironment gameEnvironment, Entity entity, int direction, p_Room h_roomList, int points, int keyCounter);
+    std::tuple<Entity, int> gameInputs(GameEnvironment gameEnvironment, Entity entity, int direction, p_Room h_roomList, int points, int keyCounter, bool noEnemy, int &timeCounter);
 
     void menuChoice(GameEnvironment gameEnvironment, int *key, int *selection);
     void choiceHandler(GameEnvironment gameEnvironment);
 
     p_bullet generateBullet(Entity entity, p_bullet &bulletList, int dir, bool enemyBull);
-    void handleEnemyBullets(Player player, p_EnemyList h_enemyList, p_bullet &h_enemyBulletList);
+    void handleEnemyBullets(Entity player, p_EnemyList h_enemyList, p_bullet &h_enemyBulletList);
     void moveBullets(p_bullet h_bulletList);
     void destroyBullet(p_bullet &h_bulletList, int bulletX, int bulletY);
-    void bulletCollision(p_bullet &h_bulletList, p_EnemyList h_enemyList, Entity entity, int &points);  //TODO add points here
+    void bulletCollision(p_bullet &h_bulletList, p_EnemyList h_enemyList, Entity &entity, int &points, int &hearts, bool &pause);  //TODO add points here
+
+    void destroySingleBullet(p_bullet &h_bulletList);
 
     p_EnemyList destroyEnemy(p_EnemyList h_enemyList, Enemy enemy);
-    p_EnemyList generateEnemy(GameEnvironment gameEnvironment, int enemyCounter, int enemyType, p_EnemyList h_enemyList);
+    p_EnemyList generateEnemy(GameEnvironment gameEnvironment, int enemyCounter, int roomTracker, p_EnemyList h_enemyList);
+
+    bool checkIfAllEnemiesAreDead(GameEnvironment gameEnvironment, p_EnemyList h_enemyList);
 
     std::tuple<Entity, int> calculateLives(Entity entity, int lives);
 
     void getInput(int &key);
     void increasePoints(int &points, int p_add);
-    void pointsOverTime(double &points);
-    void checkPlayerDeath(Entity entity, bool pause);
+    void increaseTimers(int &timer, int &enemyTimer);
+    void checkPlayerDeath(Entity &entity, bool &pause, int &hearts);
+
+    void checkMeleeDamage(p_EnemyList h_enemyList, Entity &entity, bool &pause, int &hearts);
 
     p_itemList deleteItem(p_itemList itemToDelete, p_itemList h_itemList);
 

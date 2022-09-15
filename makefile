@@ -39,14 +39,14 @@ item.o: src/item/item.hpp src/item/item.cpp
 
 
 launch: 
-		sort -k 2 -r -o scoreboard.txt scoreboard.txt
+		sort -k2 -n -r -o scoreboard.txt scoreboard.txt
 		./main
 	
 clean:
 		rm *.o main
 
 scoreboard:
-		sort -k 2 -r -o scoreboard.txt scoreboard.txt
+		sort -k2 -n -r -o scoreboard.txt scoreboard.txt
 
 	
 

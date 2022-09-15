@@ -42,24 +42,38 @@ public:
     void escScoreboard(int key);
     void printLoss(int score);
     void escLoss(int key, int score);
+    void escWin(int key, int score);
+    void printWin(int score);
     void save(char saveName[], int score);
     bool nameCheck(char saveName[]);
 
     // Room drawing
     void drawRoom(int bottomDistance, int startX, int startY, bool noEnemy, int lineCounter);
-    void drawInfo(int rightDistance, int bottomDistance, int startX, int startY, bool noEnemy, Entity entity, int points, int keyCounter, int hearts);
+    void drawInfo(int rightDistance, int bottomDistance, int startX, int startY, bool noEnemy, Entity entity, int points, int keyCounter, int hearts, p_EnemyList h_enemyList);
 
     std::string readNthLine(int n);
     bool checkItemPosition(p_itemList h_itemList, p_itemList tmpItem);
     p_Room saveRoomState(p_itemList h_itemList, p_Room h_roomList, int roomTracker);
+    void openDoorWithKey(Entity entity, int &keyCounter, int rightDistance, int bottomDistance, int startX, int startY, bool noEnemy);
+    
+    void drawActionBox(int rightDistance, int bottomDistance, int startX, int startY, int actionId);
+    void cleanActionBox(int rightDistance, int bottomDistance, int startX, int startY);
+    
+    void openAllDoors(int rightDistance, int bottomDistance, int startX, int startY, int lineCounter);
+
     
     int lenghtItemList(p_itemList h_itemList);
+     int lenghtEnemyList(p_EnemyList h_enemyList);
 
-    p_Room roomChange(Entity &entity, p_EnemyList &h_enemyList, p_Room h_roomList, p_itemList h_itemList, int bottomDistance, int rightDistance,
+    std::tuple<p_Room, int> roomChange(Entity &entity, p_EnemyList &h_enemyList, p_Room h_roomList, p_itemList h_itemList, int bottomDistance, int rightDistance,
                       int startX, int startY, bool noEnemy, int points, int enemyCounter, bool passRooms[]);
     p_Room mapGenerator(p_Room h_roomList);
 
-    void calculateEnemyNumber(int roomTracker, int enemyCounter);
+    void calculateEnemyNumber(int &roomTracker, int &enemyCounter);
+    void closeAllDoors(bool noEnemy, int rightDistance, int bottomDistance, int startX, int startY);
+
+    void clearInfo(int rightDistance, int bottomDistance, int startX, int startY);
+    void moveEnemies(p_EnemyList h_enemyList);
     void drawItems(p_itemList h_itemList);
     Position randomCoordinate(int start, int end);
     p_itemList generateItem(int itemCounter, p_itemList h_itemList);

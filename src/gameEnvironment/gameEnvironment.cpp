@@ -8,6 +8,7 @@
 #include <cmath>
 #include <fstream>
 #include <locale.h>
+#include <tuple>
 
 GameEnvironment::GameEnvironment(){};
 void GameEnvironment::printMenuLogo()
@@ -173,12 +174,12 @@ void GameEnvironment::printHowToPlay()
     mvprintw(LINES / 2 - 6, COLS / 2 - 49, "I like helping hopeless people like you, so i'll give you some hint to survive a little more here:");
     mvprintw(LINES / 2 - 4, COLS / 2 - 49, "First of all, you can move in the labirinth with [w][a][s][d] keys.");
     mvprintw(LINES / 2 - 3, COLS / 2 - 49, "Use [arrow keys] to shoot in the direction you desire,");
-    mvprintw(LINES / 2 - 2, COLS / 2 - 49, "this is mandatory to defeat this place and his inhabitants(E).");
+    mvprintw(LINES / 2 - 2, COLS / 2 - 49, "this is mandatory to defeat this place and his inhabitants(very evil folks).");
     mvprintw(LINES / 2, COLS / 2 - 49, "Keep attention to the legacies that past adventurers left here: ARTIFACTS and POWERS:");
     mvprintw(LINES / 2 + 1, COLS / 2 - 49, "ARTIFACTS are items that will make you stronger and more resilient. They look like an (A).");
     mvprintw(LINES / 2 + 2, COLS / 2 - 49, "POWERS are less effective, but they can open some doors here. They resemble somehow a (K).");
     mvprintw(LINES / 2 + 3, COLS / 2 - 49, "Rarely, both can appear as (?), thanks to the magic influence of the labirinth.");
-    mvprintw(LINES / 2 + 5, COLS / 2 - 49, "To proceed, some doors need to be opened. Some will need a POWER. Some will not. Cool, right?");
+    mvprintw(LINES / 2 + 5, COLS / 2 - 49, "To proceed, some doors need to be opened with [r] key. Cool, right?");
     mvprintw(LINES / 2 + 7, COLS / 2 - 49, "It's pretty obvious, but if your lifepoints drop down to 0 and you have no other lives...");
     mvprintw(LINES / 2 + 8, COLS / 2 - 49, "well, hope you understand what I mean.");
     mvprintw(LINES / 2 + 10, COLS / 2 - 49, "That sould be all, I think?");
@@ -212,9 +213,22 @@ void GameEnvironment::drawRoom(int bottomDistance, int startX, int startY, bool 
     // COMMANDS TODO
 }
 
-void GameEnvironment::drawInfo(int rightDistance, int bottomDistance, int startX, int startY, bool noEnemy, Entity entity, int points, int keyCounter, int hearts)
+void GameEnvironment::clearInfo(int rightDistance, int bottomDistance, int startX, int startY)
 {
 
+    for (int i = startX; i < bottomDistance; i++)
+    {
+        for (int j = rightDistance + 5; j < rightDistance + 32; j++)
+        {
+            mvprintw(i, j, " ");
+        }
+    }
+}
+
+void GameEnvironment::drawInfo(int rightDistance, int bottomDistance, int startX, int startY, bool noEnemy, Entity entity, int points, int keyCounter, int hearts, p_EnemyList h_enemyList)
+{
+
+    clearInfo(rightDistance, bottomDistance, startX, startY);
     for (int i = rightDistance + 5; i < rightDistance + 32; i++)
     {
         mvprintw(startX, i, "-");
@@ -250,12 +264,39 @@ void GameEnvironment::drawInfo(int rightDistance, int bottomDistance, int startX
         mvprintw(startX + 2, rightDistance + 19 + i, " ");
     }
     attroff(COLOR_PAIR(6));
-    attron(COLOR_PAIR(5));
-    for (int i = 0; i < 10; i++)
+    if (actualLp >= 6)
     {
-        mvprintw(startX + 2, rightDistance + 19 + i, " ");
+        if (actualLp > 10)
+        {
+            actualLp = 10;
+        }
+        attron(COLOR_PAIR(5));
+        for (int i = 0; i < actualLp; i++)
+        {
+            mvprintw(startX + 2, rightDistance + 19 + i, " ");
+        }
+        attroff(COLOR_PAIR(5));
     }
-    attroff(COLOR_PAIR(5));
+
+    else if (actualLp < 6 && actualLp >= 3)
+    {
+        attron(COLOR_PAIR(7));
+        for (int i = 0; i < actualLp; i++)
+        {
+            mvprintw(startX + 2, rightDistance + 19 + i, " ");
+        }
+        attroff(COLOR_PAIR(7));
+    }
+    else if (actualLp < 3)
+    {
+        attron(COLOR_PAIR(8));
+        for (int i = 0; i < actualLp; i++)
+        {
+            mvprintw(startX + 2, rightDistance + 19 + i, " ");
+        }
+        attroff(COLOR_PAIR(8));
+    }
+
     if (actualLp > 10)
     {
         attron(COLOR_PAIR(7));
@@ -276,6 +317,19 @@ void GameEnvironment::drawInfo(int rightDistance, int bottomDistance, int startX
 
     mvprintw(startX + 8, rightDistance + 6, "Damage: ");
     mvprintw(startX + 8, rightDistance + 18, "%i", entity.getRWeapon().getDamage());
+
+    int enemyLeft = lenghtEnemyList(h_enemyList);
+    if (enemyLeft > 0)
+    {
+        mvprintw(startX + 9, rightDistance + 6, "                        ");
+        mvprintw(startX + 9, rightDistance + 6, "Enemy left: ");
+        mvprintw(startX + 9, rightDistance + 18, "%i", lenghtEnemyList(h_enemyList));
+    }
+    else
+    {
+        mvprintw(startX + 9, rightDistance + 6, "                        ");
+        mvprintw(startX + 9, rightDistance + 6, "Room cleared!");
+    }
 
     std::string s = std::to_string(points);
     char const *pchar = s.c_str(); // use char const* as target type
@@ -401,7 +455,7 @@ void GameEnvironment::printLoss(int score)
     init_pair(10, COLOR_GREEN, 232);
 
     attron(COLOR_PAIR(9));
-    mvprintw(LINES / 2 - 8, COLS / 2 - 29, "So, in the End, you've meet you're FATE, uh...?");
+    mvprintw(LINES / 2 - 8, COLS / 2 - 29, "So, in the End, you've meet your FATE, uh...?");
     mvprintw(LINES / 2 - 7, COLS / 2 - 29, "The DAEDALUS is pretty harsh, but do not fear");
     mvprintw(LINES / 2 - 6, COLS / 2 - 29, "SOMEONE, or maybe something, will take this challenge again,");
     mvprintw(LINES / 2 - 5, COLS / 2 - 29, "SOONER or LATER...");
@@ -445,6 +499,87 @@ void GameEnvironment::escLoss(int key, int score)
     save(name, score); // Save here the play
 }
 
+void GameEnvironment::escWin(int key, int score)
+{
+    key = 0;
+    char name[10] = {'\0'};
+    char name2[10] = {'\0'};
+
+    init_pair(7, COLOR_YELLOW, 232);
+
+    while (key != 10)
+    {
+        printWin(score);
+        strcat(name, name2);
+
+        attron(COLOR_PAIR(7));
+
+        attron(COLOR_PAIR(7));
+        mvprintw(LINES / 2 + 3, COLS / 2 - 1, "___________");
+        mvprintw(LINES / 2 + 3, COLS / 2 - 14, "Insert name: %s ", name);
+        attroff(COLOR_PAIR(7));
+
+        refresh();
+        key = getnstr(name2, 1);
+        if (!strcmp(name2, "\0"))
+            key = 10;
+    }
+    save(name, score); // Save here the play
+}
+
+void GameEnvironment::printWin(int score)
+{
+    int stop = LINES / 2 - 14;
+    for (int y = 0; y < 20; y++)
+    {
+        init_pair(8, COLOR_BLACK, 232);
+        attron(COLOR_PAIR(8));
+        mvprintw(stop, COLS / 2 - 54,
+                 "                                                                 "
+                 "                                         ");
+        stop++;
+        attroff(COLOR_PAIR(8));
+    }
+    init_pair(11, COLOR_BLUE, 232);
+    attron(COLOR_PAIR(11));
+    mvprintw(
+        LINES / 2 - 14, COLS / 2 - 35,
+        " ___ ___                                                         __ __ ");
+    mvprintw(
+        LINES / 2 - 13, COLS / 2 - 35,
+        "|   |   |.-----.--.--.    .-----.-----.----.---.-.-----.-----.--|  |  |");
+    mvprintw(
+        LINES / 2 - 12, COLS / 2 - 35,
+        " \\     / |  _  |  |  |    |  -__|__ --|  __|  _  |  _  |  -__|  _  |__|");
+    mvprintw(
+        LINES / 2 - 11, COLS / 2 - 35,
+        "  |___|  |_____|_____|    |_____|_____|____|___._|   __|_____|_____|__|");
+    mvprintw(
+        LINES / 2 - 10, COLS / 2 - 35,
+        "                                                 |__|                  ");
+    attroff(COLOR_PAIR(11));
+
+    init_pair(9, COLOR_CYAN, 232);
+    init_pair(10, COLOR_GREEN, 232);
+
+    attron(COLOR_PAIR(9));
+    mvprintw(LINES / 2 - 8, COLS / 2 - 37, "Unbelievable...! You actually managed to ESCAPE this labirynth!");
+    mvprintw(LINES / 2 - 7, COLS / 2 - 37, "At least for now... *laughs disturbingly");
+    mvprintw(LINES / 2 - 6, COLS / 2 - 37, "What do I mean by that? You're CURSED from the moment you entered this place.");
+    mvprintw(LINES / 2 - 5, COLS / 2 - 37, "You will come back, again and again. Proving yourself in the DAEDALUS.");
+    mvprintw(LINES / 2 - 4, COLS / 2 - 37, "Try breaking if you would, for that is OUR curse.");
+    attroff(COLOR_PAIR(9));
+
+    attron(COLOR_PAIR(10));
+    mvprintw(LINES / 2 - 1, COLS / 2 - 8, "Your score: %i", score);
+    attroff(COLOR_PAIR(10));
+
+    attron(COLOR_PAIR(9));
+    mvprintw(LINES / 2, COLS / 2 - 14, "Brand your name & Exit [ENTER]");
+    mvprintw(LINES / 2 + 1, COLS / 2 - 29, "(or let this score fade in the Daedalus, inserting no name)");
+    attroff(COLOR_PAIR(9));
+}
+
 void GameEnvironment::save(char saveName[], int score)
 {
     bool flag = nameCheck(saveName);
@@ -479,7 +614,15 @@ void GameEnvironment::drawEnemies(GameEnvironment gameEnvironment, p_EnemyList h
 {
     while (h_enemyList != NULL)
     {
-        gameEnvironment.drawCharacter(h_enemyList->enemy.getX(), h_enemyList->enemy.getY(), h_enemyList->enemy.getSkin());
+        if (h_enemyList->enemy.getLifePoints() != h_enemyList->enemy.getCurrentLifePoints())
+        {
+            init_pair(3, COLOR_RED, -1);
+            attron(COLOR_PAIR(3));
+            gameEnvironment.drawCharacter(h_enemyList->enemy.getX(), h_enemyList->enemy.getY(), h_enemyList->enemy.getSkin());
+            attroff(COLOR_PAIR(3));
+        }
+        else
+            gameEnvironment.drawCharacter(h_enemyList->enemy.getX(), h_enemyList->enemy.getY(), h_enemyList->enemy.getSkin());
         h_enemyList = h_enemyList->next;
     }
 }
@@ -571,7 +714,7 @@ p_Room GameEnvironment::mapGenerator(p_Room h_roomList)
     map[9]->left = NULL;
 
     map[10]->up = NULL;
-    map[10]->down = map[10];
+    map[10]->down = map[9];
     map[10]->right = NULL;
     map[10]->left = map[11];
 
@@ -608,12 +751,13 @@ p_Room GameEnvironment::mapGenerator(p_Room h_roomList)
     return (map[0]);
 }
 
-p_Room GameEnvironment::roomChange(Entity &entity, p_EnemyList &h_enemyList, p_Room h_roomList, p_itemList h_itemList,
-                                   int bottomDistance, int rightDistance, int startX, int startY, bool noEnemy,
-                                   int points, int enemyCounter, bool passRooms[])
+std::tuple<p_Room, int> GameEnvironment::roomChange(Entity &entity, p_EnemyList &h_enemyList, p_Room h_roomList, p_itemList h_itemList,
+                                                    int bottomDistance, int rightDistance, int startX, int startY, bool noEnemy,
+                                                    int points, int enemyCounter, bool passRooms[])
 {
     if (entity.getX() >= 71)
     {
+
         entity.setX(23);
         h_roomList = h_roomList->right;
     }
@@ -624,8 +768,22 @@ p_Room GameEnvironment::roomChange(Entity &entity, p_EnemyList &h_enemyList, p_R
     }
     if (entity.getY() <= 7)
     {
-        entity.setY(19);
-        h_roomList = h_roomList->up;
+        if (h_roomList->roomTracker / 14 == 16)
+        {
+            clear();
+            escWin(11, points);
+
+            refresh();
+            clear();
+            endwin();
+            std::cout << "Thank you for playing! Hope you enjoyed!" << std::endl;
+            exit(1);
+        }
+        else
+        {
+            entity.setY(19);
+            h_roomList = h_roomList->up;
+        }
     }
     if (entity.getY() >= 20)
     {
@@ -634,12 +792,12 @@ p_Room GameEnvironment::roomChange(Entity &entity, p_EnemyList &h_enemyList, p_R
     }
 
     int itemCounter = 1;
-    if ((h_roomList->roomTracker) / 14 <= 1)
+    if ((h_roomList->roomTracker) / 14 <= 1 || (h_roomList->roomTracker) / 14 == 16)
         itemCounter = 0;
     else
     {
         srand(time(0));
-        itemCounter = rand() % 6 + 1;
+        itemCounter = rand() % 2 + 2;
     }
 
     if (!passRooms[h_roomList->roomTracker / 14])
@@ -650,12 +808,7 @@ p_Room GameEnvironment::roomChange(Entity &entity, p_EnemyList &h_enemyList, p_R
         calculateEnemyNumber(h_roomList->roomTracker, enemyCounter);
         passRooms[h_roomList->roomTracker / 14] = true;
     }
-
-    move(3, 3);
-    printw("%i", lenghtItemList(h_roomList->itemList));
-
-    return (h_roomList);
-    // TODO add enemies generation and items generation
+    return std::make_tuple(h_roomList, enemyCounter);
 }
 
 void GameEnvironment::drawItems(p_itemList h_itemList)
@@ -676,6 +829,154 @@ int GameEnvironment::lenghtItemList(p_itemList h_itemList)
         h_itemList = h_itemList->next;
     }
     return (i);
+}
+
+void GameEnvironment::moveEnemies(p_EnemyList h_enemyList)
+{
+    srand(unsigned(time(0)));
+    while (h_enemyList != NULL)
+    {
+        int enemyDirection = rand() % 9;
+
+        switch (enemyDirection)
+        {
+        case 0: // Move up
+            if (mvinch(h_enemyList->enemy.getY() - 1, h_enemyList->enemy.getX()) == ' ')
+            {
+                mvprintw(h_enemyList->enemy.getY(), h_enemyList->enemy.getX(), " ");
+                h_enemyList->enemy.dirUp();
+            }
+            break;
+        case 1: // Move down
+            if (mvinch(h_enemyList->enemy.getY() + 1, h_enemyList->enemy.getX()) == ' ')
+            {
+                mvprintw(h_enemyList->enemy.getY(), h_enemyList->enemy.getX(), " ");
+                h_enemyList->enemy.dirDown();
+            }
+            break; // Move left
+        case 2:
+            if (mvinch(h_enemyList->enemy.getY(), h_enemyList->enemy.getX() - 1) == ' ')
+            {
+                mvprintw(h_enemyList->enemy.getY(), h_enemyList->enemy.getX(), " ");
+                h_enemyList->enemy.dirLeft();
+            }
+            break;
+        case 3: // Move right
+            if (mvinch(h_enemyList->enemy.getY(), h_enemyList->enemy.getX() + 1) == ' ')
+            {
+                mvprintw(h_enemyList->enemy.getY(), h_enemyList->enemy.getX(), " ");
+                h_enemyList->enemy.dirRight();
+            }
+            break;
+        case 4:
+            // Do nothing
+            break;
+        case 5:
+            break;
+        case 6:
+            // Do nothing
+            break;
+        case 7:
+            break;
+        case 8: 
+            break;
+        }
+        h_enemyList = h_enemyList->next;
+    }
+}
+
+void GameEnvironment::openAllDoors(int rightDistance, int bottomDistance, int startX, int startY, int lineCounter)
+{
+    // TODO CHECK WITH GETLINE
+    std::string map1, map2;
+    bool flag1 = true, flag2 = true;
+    int j = 0;
+
+    map1 = readNthLine(lineCounter + 13);
+    map2 = readNthLine(lineCounter);
+    const char *cmap1 = map1.c_str();
+    const char *cmap2 = map2.c_str();
+
+    for (int i = startY; i <= rightDistance; i++) // Horizontal
+    {
+        if (cmap1[j] != mvinch(bottomDistance, i))
+            flag1 = false;
+        if (cmap2[j] != mvinch(startX, i))
+            flag2 = false;
+        j++;
+    }
+    if (!flag1)
+    {
+        for (int i = startY; i < rightDistance; i++)
+        {
+            if (mvinch(bottomDistance, i) == 'X')
+                mvprintw(bottomDistance, i, " ");
+        }
+    }
+    if (!flag2)
+    {
+        for (int i = startY; i < rightDistance; i++)
+        {
+
+            if (mvinch(startX, i) == 'X')
+                mvprintw(startX, i, " ");
+        }
+    }
+
+    flag1 = true;
+    flag2 = true;
+
+    j = 0;
+
+    for (int i = startX; i <= bottomDistance; i++)
+    {
+        map1 = readNthLine(lineCounter + j);
+        cmap1 = map1.c_str();
+        // 49th is the last char of the string
+        if (cmap1[0] != mvinch(i, startY))
+        {
+            flag1 = false;
+        }
+        if (cmap1[49] != mvinch(i, rightDistance))
+        {
+            flag2 = false;
+        }
+        j++;
+    }
+
+    if (!flag1)
+    {
+        for (int i = startX; i < bottomDistance; i++)
+        {
+            if (mvinch(i, startY) == 'X')
+                mvprintw(i, startY, " ");
+        }
+    }
+    if (!flag2)
+    {
+        for (int i = startX; i < bottomDistance; i++)
+        {
+            if (mvinch(i, rightDistance) == 'X')
+                mvprintw(i, rightDistance, " ");
+        }
+    }
+}
+
+int GameEnvironment::lenghtEnemyList(p_EnemyList h_enemyList)
+{
+    int i = 0;
+    while (h_enemyList != NULL)
+    {
+        if (h_enemyList->enemy.getSkin() != ' ')
+        {
+            i += 1;
+        }
+        h_enemyList = h_enemyList->next;
+    }
+    if (i == 0)
+        return (i);
+    else
+        return (i);
 }
 
 p_itemList GameEnvironment::generateItem(int itemCounter, p_itemList h_itemList)
@@ -782,13 +1083,18 @@ p_itemList GameEnvironment::generateItem(int itemCounter, p_itemList h_itemList)
     return (h_itemList);
 }
 
-void GameEnvironment::calculateEnemyNumber(int roomTracker, int enemyCounter)
+void GameEnvironment::calculateEnemyNumber(int &roomTracker, int &enemyCounter)
 {
     srand(time(0));
-    if ((roomTracker / 14) < 6)
-        enemyCounter = roomTracker + (rand() % 2);
+    int roomId = roomTracker / 14;
+    if (roomId == 0 || roomId == 16)
+        enemyCounter = 0;
+    else if (roomId == 1)
+        enemyCounter = 3;
+    else if (roomId < 6)
+        enemyCounter = (roomId - 1) + (rand() % 2);
     else
-        enemyCounter = 3 + (rand() % 4);
+        enemyCounter = 2 + (rand() % 4);
 }
 
 Position GameEnvironment::randomCoordinate(int start, int end)
@@ -802,6 +1108,174 @@ Position GameEnvironment::randomCoordinate(int start, int end)
         tmpPos.y = start + (std::rand() % (end - start + 1));
     }
     return tmpPos;
+}
+
+void GameEnvironment::cleanActionBox(int rightDistance, int bottomDistance, int startX, int startY)
+{
+    for (int i = startY; i < rightDistance; i++)
+    {
+        mvprintw(bottomDistance + 2, i, " ");
+        mvprintw(bottomDistance + 3, i, " ");
+        mvprintw(bottomDistance + 4, i, " ");
+    }
+    for (int i = bottomDistance + 2; i <= bottomDistance + 4; i++)
+    {
+        mvprintw(i, startY, " ");
+        mvprintw(i, rightDistance, " ");
+    }
+}
+
+void GameEnvironment::drawActionBox(int rightDistance, int bottomDistance, int startX, int startY, int actionId)
+{
+
+    cleanActionBox(rightDistance, bottomDistance, startX, startY);
+    for (int i = startY; i < rightDistance; i++)
+    {
+        mvprintw(bottomDistance + 2, i, "-");
+        mvprintw(bottomDistance + 4, i, "-");
+    }
+    for (int i = bottomDistance + 2; i < bottomDistance + 4; i++)
+    {
+        mvprintw(i, startY, "|");
+        mvprintw(i, rightDistance, "|");
+    }
+
+    mvprintw(bottomDistance + 2, startY, "+");
+    mvprintw(bottomDistance + 2, rightDistance, "+");
+    mvprintw(bottomDistance + 4, startY, "+");
+    mvprintw(bottomDistance + 4, rightDistance, "+");
+
+    switch (actionId)
+    {
+    case 0:
+        mvprintw(bottomDistance + 3, startY + 2, "%s", "You picked up Ruby Necklace!");
+        break;
+    case 1:
+        mvprintw(bottomDistance + 3, startY + 2, "%s", "You picked up Sapphire Ring!");
+        break;
+    case 2:
+        mvprintw(bottomDistance + 3, startY + 2, "%s", "You picked up Amethyst Bracelet!");
+        break;
+    case 3:
+        mvprintw(bottomDistance + 3, startY + 2, "%s", "You picked up Zircon Earrings!");
+        break;
+    case 4:
+        mvprintw(bottomDistance + 3, startY + 2, "%s", "You picked up Diamond Flower!");
+        break;
+    case 5:
+        mvprintw(bottomDistance + 3, startY + 2, "%s", "You picked up Pearl Piercing!");
+        break;
+    case 6:
+        mvprintw(bottomDistance + 3, startY + 2, "%s", "You picked up Onyx Prism!");
+        break;
+    case 7:
+        mvprintw(bottomDistance + 3, startY + 2, "%s", "You picked up Fire Spirit!");
+        break;
+    case 8:
+        mvprintw(bottomDistance + 3, startY + 2, "%s", "You picked up Water Mind!");
+        break;
+    case 9:
+        mvprintw(bottomDistance + 3, startY + 2, "%s", "You picked up Wind Fury!");
+        break;
+    case 10:
+        mvprintw(bottomDistance + 3, startY + 2, "%s", "You picked up Earth Heart!");
+        break;
+    case 11:
+        mvprintw(bottomDistance + 3, startY + 2, "%s", "You picked up Light Halo!");
+        break;
+    case 12:
+        mvprintw(bottomDistance + 3, startY + 2, "%s", "You picked up Dark Crown!");
+        break;
+    case 13:
+        mvprintw(bottomDistance + 3, startY + 2, "%s", "You picked up Chaos Effigy!");
+        break;
+    case 14:
+        mvprintw(bottomDistance + 3, startY + 2, "%s", "Your majestic powers opened the door!");
+        break;
+    case 15:
+        mvprintw(bottomDistance + 3, startY + 2, "%s", "You killed a Snail!");
+        break;
+    case 16:
+        mvprintw(bottomDistance + 3, startY + 2, "%s", "You killed a smol Lynx!");
+        break;
+    case 17:
+        mvprintw(bottomDistance + 3, startY + 2, "%s", "You killed a Cobra!");
+        break;
+    case 18:
+        mvprintw(bottomDistance + 3, startY + 2, "%s", "You killed a Bear!");
+        break;
+    }
+}
+
+void GameEnvironment::closeAllDoors(bool noEnemy, int rightDistance, int bottomDistance, int startX, int startY)
+{
+    if (!noEnemy)
+    {
+        for (int i = startY; i < rightDistance; i++)
+        {
+            if (mvinch(startX, i) == ' ')
+                mvprintw(startX, i, "X");
+            if (mvinch(bottomDistance, i) == ' ')
+                mvprintw(bottomDistance, i, "X");
+        }
+        for (int i = startX; i < bottomDistance; i++)
+        {
+            if (mvinch(i, startY) == ' ')
+                mvprintw(i, startY, "X");
+            if (mvinch(i, rightDistance) == ' ')
+                mvprintw(i, rightDistance, "X");
+        }
+    }
+}
+
+void GameEnvironment::openDoorWithKey(Entity entity, int &keyCounter, int rightDistance, int bottomDistance, int startX, int startY, bool noEnemy)
+{
+    if (noEnemy)
+    {
+        if (keyCounter >= 1)
+        {
+            if (mvinch(entity.getY() + 1, entity.getX()) == 'X')
+            { // Down
+                for (int i = startY; i < rightDistance; i++)
+                {
+                    if (mvinch(entity.getY() + 1, i) == 'X')
+                        mvprintw(entity.getY() + 1, i, " ");
+                }
+                keyCounter--;
+                // drawActionBox(rightDistance, bottomDistance, startX, startY, 14);
+            }
+            else if (mvinch(entity.getY() - 1, entity.getX()) == 'X')
+            { // Up
+                for (int i = startY; i < rightDistance; i++)
+                {
+                    if (mvinch(entity.getY() - 1, i) == 'X')
+                        mvprintw(entity.getY() - 1, i, " ");
+                }
+                keyCounter--;
+                // drawActionBox(rightDistance, bottomDistance, startX, startY, 14);
+            }
+            else if (mvinch(entity.getY(), entity.getX() - 1) == 'X')
+            { // Left
+                for (int i = startX; i < bottomDistance; i++)
+                {
+                    if (mvinch(i, startY) == 'X')
+                        mvprintw(i, startY, " ");
+                }
+                keyCounter--;
+                // drawActionBox(rightDistance, bottomDistance, startX, startY, 14);
+            }
+            else if (mvinch(entity.getY(), entity.getX() + 1) == 'X')
+            { // Right
+                for (int i = startX; i < bottomDistance; i++)
+                {
+                    if (mvinch(i, rightDistance) == 'X')
+                        mvprintw(i, rightDistance, " ");
+                }
+                keyCounter--;
+                // drawActionBox(rightDistance, bottomDistance, startX, startY, 14);
+            }
+        }
+    }
 }
 
 bool GameEnvironment::checkItemPosition(p_itemList h_itemList, p_itemList tmpItem)
