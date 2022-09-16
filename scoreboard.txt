@@ -1,9 +1,12 @@
 patt        29590
+cina        23500
+wee         19970
 beella      15440
 nig         13130
 francib     12740
 Alb         12600
 lll         5550
+lol         4870
 Cccc        2700
 Bbbb        2000
 Aaaa        1100

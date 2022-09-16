@@ -77,8 +77,12 @@ public:
     void drawItems(p_itemList h_itemList);
     Position randomCoordinate(int start, int end);
     p_itemList generateItem(int itemCounter, p_itemList h_itemList);
+    std::string readScoreboard(int n);
 
     // Player and elements moving
+
+    void printLore();
+    void escLore(int key);
 
     void drawCharacter(int x, int y, char c);
 

@@ -67,7 +67,7 @@ void GameEnvironment::printMenuChoices(int choice)
     mvprintw(LINES / 2 + 7, COLS / 2 - 17,
              "                             ");
     mvprintw(LINES / 2 + 8, COLS / 2 - 17,
-             "           SETTINGS          ");
+             "           THE LORE          ");
     mvprintw(LINES / 2 + 9, COLS / 2 - 17,
              "                             ");
 
@@ -115,7 +115,7 @@ void GameEnvironment::printMenuChoices(int choice)
         mvprintw(LINES / 2 + 7, COLS / 2 - 17,
                  "                             ");
         mvprintw(LINES / 2 + 8, COLS / 2 - 17,
-                 "           SETTINGS          ");
+                 "           THE LORE          ");
         mvprintw(LINES / 2 + 9, COLS / 2 - 17,
                  "                             ");
         attroff(COLOR_PAIR(2));
@@ -151,19 +151,19 @@ void GameEnvironment::printHowToPlay()
     }
     init_pair(3, COLOR_YELLOW, 232);
     attron(COLOR_PAIR(3));
-    mvprintw(LINES / 2 - 14, COLS / 2 - 51,
+    mvprintw(LINES / 2 - 14, COLS / 2 - 52,
              "                             _  _              _              _           "
              "                           ");
-    mvprintw(LINES / 2 - 13, COLS / 2 - 51,
+    mvprintw(LINES / 2 - 13, COLS / 2 - 52,
              "                            | || |_____ __ __ | |_ ___   _ __| |__ _ _  _ "
              "                           ");
-    mvprintw(LINES / 2 - 12, COLS / 2 - 51,
+    mvprintw(LINES / 2 - 12, COLS / 2 - 52,
              "                            | __ / _ \\ V  V / |  _/ _ \\ | '_ \\ / _` | || |"
              "                           ");
-    mvprintw(LINES / 2 - 11, COLS / 2 - 51,
+    mvprintw(LINES / 2 - 11, COLS / 2 - 52,
              "                            |_||_\\___/\\_/\\_/   \\__\\___/ | .__/_\\__,_|\\_, |"
              "                           ");
-    mvprintw(LINES / 2 - 10, COLS / 2 - 51,
+    mvprintw(LINES / 2 - 10, COLS / 2 - 52,
              "                                                        |_|          |__/ "
              "                           ");
     attroff(COLOR_PAIR(3));
@@ -171,11 +171,11 @@ void GameEnvironment::printHowToPlay()
     init_pair(1, COLOR_CYAN, 232);
     attron(COLOR_PAIR(1));
     mvprintw(LINES / 2 - 8, COLS / 2 - 49, "So, a new soul enters the Daedalus, what a rare event!");
-    mvprintw(LINES / 2 - 6, COLS / 2 - 49, "I like helping hopeless people like you, so i'll give you some hint to survive a little more here:");
+    mvprintw(LINES / 2 - 6, COLS / 2 - 49, "I like helping hopeless people like you, so I'll give you some hints to survive a little more here:");
     mvprintw(LINES / 2 - 4, COLS / 2 - 49, "First of all, you can move in the labirinth with [w][a][s][d] keys.");
     mvprintw(LINES / 2 - 3, COLS / 2 - 49, "Use [arrow keys] to shoot in the direction you desire,");
-    mvprintw(LINES / 2 - 2, COLS / 2 - 49, "this is mandatory to defeat this place and his inhabitants(very evil folks).");
-    mvprintw(LINES / 2, COLS / 2 - 49, "Keep attention to the legacies that past adventurers left here: ARTIFACTS and POWERS:");
+    mvprintw(LINES / 2 - 2, COLS / 2 - 49, "this is mandatory to defeat this place and his inhabitants (very evil folks).");
+    mvprintw(LINES / 2, COLS / 2 - 49, "Keep attention to the legacies past adventurers left here: ARTIFACTS and POWERS:");
     mvprintw(LINES / 2 + 1, COLS / 2 - 49, "ARTIFACTS are items that will make you stronger and more resilient. They look like an (A).");
     mvprintw(LINES / 2 + 2, COLS / 2 - 49, "POWERS are less effective, but they can open some doors here. They resemble somehow a (K).");
     mvprintw(LINES / 2 + 3, COLS / 2 - 49, "Rarely, both can appear as (?), thanks to the magic influence of the labirinth.");
@@ -183,9 +183,12 @@ void GameEnvironment::printHowToPlay()
     mvprintw(LINES / 2 + 7, COLS / 2 - 49, "It's pretty obvious, but if your lifepoints drop down to 0 and you have no other lives...");
     mvprintw(LINES / 2 + 8, COLS / 2 - 49, "well, hope you understand what I mean.");
     mvprintw(LINES / 2 + 10, COLS / 2 - 49, "That sould be all, I think?");
-    mvprintw(LINES / 2 + 11, COLS / 2 - 49, "Oh! In the end, remember to write your name on some wall. The King loves it.");
-
+    mvprintw(LINES / 2 + 11, COLS / 2 - 49, "Oh! In the end, remember to write your name on some wall. The King LOVES it.");
     attroff(COLOR_PAIR(1));
+
+    attron(COLOR_PAIR(3));
+    mvprintw(LINES / 2 + 13, COLS / 2 - 14, "Press [ENTER] to continue");
+    attron(COLOR_PAIR(3));
 }
 
 void GameEnvironment::escHowToPlay(int key)
@@ -196,6 +199,52 @@ void GameEnvironment::escHowToPlay(int key)
         printHowToPlay();
         key = getch();
     }
+}
+
+void GameEnvironment::escLore(int key)
+{
+    key = 0;
+    while (key != 10)
+    {
+        printLore();
+        key = getch();
+    }
+}
+
+void GameEnvironment::printLore()
+{
+    int stop = LINES / 2 - 13;
+    for (int y = 0; y < 23; y++)
+    {
+        init_pair(8, COLOR_BLACK, 232);
+        attron(COLOR_PAIR(8));
+        mvprintw(stop, COLS / 2 - 54,
+                 "                                                                 "
+                 "                                         ");
+        stop++;
+        attroff(COLOR_PAIR(8));
+    }
+    init_pair(1, COLOR_CYAN, 232);
+    attron(COLOR_PAIR(1));
+    mvprintw(LINES / 2 - 8, COLS / 2 - 49, "The evil king ASCIION for some unknown reasons, captured and imprisoned you");
+    mvprintw(LINES / 2 - 7, COLS / 2 - 49, "in his dangerous labyrinth: THE DAEDALUS. According to the kingdom bards,");
+    mvprintw(LINES / 2 - 6, COLS / 2 - 49, "the king's hobby is to recreate WILD animals in an ascii-art version: ");
+    mvprintw(LINES / 2 - 5, COLS / 2 - 49, "the Deadalus contains all his works.");
+
+    mvprintw(LINES / 2 - 3, COLS / 2 - 49, "To keep the kindom safe from these strange creatures,");
+    mvprintw(LINES / 2 - 2, COLS / 2 - 49, "the labyinth was made to be completely UNESCAPABLE.");
+    mvprintw(LINES / 2 - 1, COLS / 2 - 49, "Your end is near, but since we're here you'll want to");
+    mvprintw(LINES / 2, COLS / 2 - 49, "at least become the STRONGEST in the Deadalus, right? ");
+    mvprintw(LINES / 2 + 1, COLS / 2 - 49, "Then take your weapons and make HIS labyrinth YOUR labyrinth!");
+
+    mvprintw(LINES / 2 + 3, COLS / 2 - 49, "...");
+    mvprintw(LINES / 2 + 5, COLS / 2 - 49, "");
+    attroff(COLOR_PAIR(1));
+
+    init_pair(3, COLOR_YELLOW, 232);
+    attron(COLOR_PAIR(3));
+    mvprintw(LINES / 2 + 6, COLS / 2 - 14, "Press [ENTER] to continue");
+    attron(COLOR_PAIR(3));
 }
 
 void GameEnvironment::drawRoom(int bottomDistance, int startX, int startY, bool noEnemy, int lineCounter)
@@ -297,6 +346,15 @@ void GameEnvironment::drawInfo(int rightDistance, int bottomDistance, int startX
         attroff(COLOR_PAIR(8));
     }
 
+    std::string s = std::to_string(points);
+    char const *pchar = s.c_str(); // use char const* as target type
+    mvprintw(startX + 5, rightDistance + 6, "Score: ");
+    mvprintw(startX + 5, rightDistance + 13, pchar);
+
+    mvprintw(startX + 3, rightDistance + 21, "%i", entity.getCurrentLifePoints());
+    mvprintw(startX + 3, rightDistance + 23, "%s", "/");
+    mvprintw(startX + 3, rightDistance + 25, "%i", entity.getLifePoints());
+
     if (actualLp > 10)
     {
         attron(COLOR_PAIR(7));
@@ -306,36 +364,32 @@ void GameEnvironment::drawInfo(int rightDistance, int bottomDistance, int startX
     else
         mvprintw(startX + 2, rightDistance + 29, " ");
 
-    mvprintw(startX + 5, rightDistance + 6, "Current: ");
-    mvprintw(startX + 5, rightDistance + 18, "%i", entity.getCurrentLifePoints());
-
-    mvprintw(startX + 6, rightDistance + 6, "Lifepoints: ");
-    mvprintw(startX + 6, rightDistance + 18, "%i", entity.getLifePoints());
-
     mvprintw(startX + 7, rightDistance + 6, "Keys: ");
     mvprintw(startX + 7, rightDistance + 18, "%i", keyCounter);
 
     mvprintw(startX + 8, rightDistance + 6, "Damage: ");
     mvprintw(startX + 8, rightDistance + 18, "%i", entity.getRWeapon().getDamage());
 
+    mvprintw(startX + 9, rightDistance + 6, "Weapon: ");
+    if (entity.getRWeapon().getDamage() < 15)
+        mvprintw(startX + 9, rightDistance + 14, "Basic Weapon");
+    else if (entity.getRWeapon().getDamage() >= 15 && entity.getRWeapon().getDamage() < 23)
+        mvprintw(startX + 9, rightDistance + 14, "Advanced Weapon");
+    else
+        mvprintw(startX + 9, rightDistance + 14, "Ultima Weapon");
+
     int enemyLeft = lenghtEnemyList(h_enemyList);
     if (enemyLeft > 0)
     {
-        mvprintw(startX + 9, rightDistance + 6, "                        ");
-        mvprintw(startX + 9, rightDistance + 6, "Enemy left: ");
-        mvprintw(startX + 9, rightDistance + 18, "%i", lenghtEnemyList(h_enemyList));
+        mvprintw(startX + 11, rightDistance + 6, "                        ");
+        mvprintw(startX + 11, rightDistance + 6, "Enemy left: ");
+        mvprintw(startX + 11, rightDistance + 18, "%i", lenghtEnemyList(h_enemyList));
     }
     else
     {
-        mvprintw(startX + 9, rightDistance + 6, "                        ");
-        mvprintw(startX + 9, rightDistance + 6, "Room cleared!");
+        mvprintw(startX + 11, rightDistance + 6, "                        ");
+        mvprintw(startX + 11, rightDistance + 6, "Room cleared!");
     }
-
-    std::string s = std::to_string(points);
-    char const *pchar = s.c_str(); // use char const* as target type
-
-    mvprintw(startX + 4, rightDistance + 6, "Score: ");
-    mvprintw(startX + 4, rightDistance + 13, pchar);
 }
 
 void GameEnvironment::drawCharacter(int x, int y, char c)
@@ -384,29 +438,32 @@ void GameEnvironment::printScoreboard()
     mvprintw(LINES / 2 + 13, COLS / 2 - 14, "Press [ENTER] to continue");
     attroff(COLOR_PAIR(3));
 
-    std::ifstream scoreboard("scoreboard.txt");
     std::string line;
 
-    if (scoreboard.is_open())
+    int i = 0;
+
+    for (int nameChar = 0; nameChar < 9; nameChar++)
     {
-        int i = LINES / 2 - 6;
-        int nameChar = 0, column = 0;
-        init_pair(4, COLOR_WHITE, COLOR_BLACK);
-        attron(COLOR_PAIR(4));
-        while (column < 4)
-        {
-            nameChar = 0;
-            while ((nameChar <= 10) && (getline(scoreboard, line)))
-            {
-                mvprintw(i, COLS / 2 - 46 + (column * 25), "%s", line.c_str());
-                i += 2;
-                nameChar++;
-            }
-            column++;
-        }
-        attroff(COLOR_PAIR(4));
-        scoreboard.close();
+
+        line = readScoreboard(nameChar);
+        mvprintw(LINES / 2 - 6 + i, COLS / 2 - 46, "%s", line.c_str());
+        i += 2;
     }
+}
+
+std::string GameEnvironment::readScoreboard(int n)
+{
+    std::ifstream sb("scoreboard.txt");
+    std::string s;
+
+    s.reserve(22); // Prior to boost performance a little
+
+    // skip N lines
+    for (int i = 0; i < n; ++i)
+        std::getline(sb, s);
+
+    std::getline(sb, s);
+    return s;
 }
 
 void GameEnvironment::escScoreboard(int key)
@@ -415,7 +472,9 @@ void GameEnvironment::escScoreboard(int key)
     while (key != 10)
     {
         printScoreboard();
+        // in case of error put refresh here
         key = getch();
+        refresh();
     }
 }
 
@@ -878,7 +937,7 @@ void GameEnvironment::moveEnemies(p_EnemyList h_enemyList)
             break;
         case 7:
             break;
-        case 8: 
+        case 8:
             break;
         }
         h_enemyList = h_enemyList->next;
@@ -899,9 +958,9 @@ void GameEnvironment::openAllDoors(int rightDistance, int bottomDistance, int st
 
     for (int i = startY; i <= rightDistance; i++) // Horizontal
     {
-        if (cmap1[j] != mvinch(bottomDistance, i))
+        if (cmap1[j] != signed(mvinch(bottomDistance, i)))
             flag1 = false;
-        if (cmap2[j] != mvinch(startX, i))
+        if (cmap2[j] != signed(mvinch(startX, i)))
             flag2 = false;
         j++;
     }
@@ -933,11 +992,11 @@ void GameEnvironment::openAllDoors(int rightDistance, int bottomDistance, int st
         map1 = readNthLine(lineCounter + j);
         cmap1 = map1.c_str();
         // 49th is the last char of the string
-        if (cmap1[0] != mvinch(i, startY))
+        if (cmap1[0] != signed(mvinch(i, startY)))
         {
             flag1 = false;
         }
-        if (cmap1[49] != mvinch(i, rightDistance))
+        if (cmap1[49] != signed(mvinch(i, rightDistance)))
         {
             flag2 = false;
         }
@@ -1034,46 +1093,46 @@ p_itemList GameEnvironment::generateItem(int itemCounter, p_itemList h_itemList)
         switch (idTracker)
         {
         case 0:
-            tmpItem->item.setItemName("Ruby Necklace");
+            tmpItem->item.setItemName((char *)"Ruby Necklace");
             break;
         case 1:
-            tmpItem->item.setItemName("Sapphire Ring");
+            tmpItem->item.setItemName((char *)"Sapphire Ring");
             break;
         case 2:
-            tmpItem->item.setItemName("Amethyst Bracelet");
+            tmpItem->item.setItemName((char *)"Amethyst Bracelet");
             break;
         case 3:
-            tmpItem->item.setItemName("Zircon Earrings");
+            tmpItem->item.setItemName((char *)"Zircon Earrings");
             break;
         case 4:
-            tmpItem->item.setItemName("Diamond Flower");
+            tmpItem->item.setItemName((char *)"Diamond Flower");
             break;
         case 5:
-            tmpItem->item.setItemName("Pearl Piercing");
+            tmpItem->item.setItemName((char *)"Pearl Piercing");
             break;
         case 6:
-            tmpItem->item.setItemName("Onyx Prism");
+            tmpItem->item.setItemName((char *)"Onyx Prism");
             break;
         case 7:
-            tmpItem->item.setItemName("Fire Spirit");
+            tmpItem->item.setItemName((char *)"Fire Spirit");
             break;
         case 8:
-            tmpItem->item.setItemName("Water Mind");
+            tmpItem->item.setItemName((char *)"Water Mind");
             break;
         case 9:
-            tmpItem->item.setItemName("Wind Fury");
+            tmpItem->item.setItemName((char *)"Wind Fury");
             break;
         case 10:
-            tmpItem->item.setItemName("Earth Heart");
+            tmpItem->item.setItemName((char *)"Earth Heart");
             break;
         case 11:
-            tmpItem->item.setItemName("Light Halo");
+            tmpItem->item.setItemName((char *)"Light Halo");
             break;
         case 12:
-            tmpItem->item.setItemName("Dark Crown");
+            tmpItem->item.setItemName((char *)"Dark Crown");
             break;
         case 13:
-            tmpItem->item.setItemName("Chaos Effigy");
+            tmpItem->item.setItemName((char *)"Chaos Effigy");
             break;
         }
         tmpItem->next = h_itemList;
@@ -1242,7 +1301,7 @@ void GameEnvironment::openDoorWithKey(Entity entity, int &keyCounter, int rightD
                         mvprintw(entity.getY() + 1, i, " ");
                 }
                 keyCounter--;
-                // drawActionBox(rightDistance, bottomDistance, startX, startY, 14);
+                drawActionBox(rightDistance, bottomDistance, startX, startY, 14);
             }
             else if (mvinch(entity.getY() - 1, entity.getX()) == 'X')
             { // Up
@@ -1252,7 +1311,7 @@ void GameEnvironment::openDoorWithKey(Entity entity, int &keyCounter, int rightD
                         mvprintw(entity.getY() - 1, i, " ");
                 }
                 keyCounter--;
-                // drawActionBox(rightDistance, bottomDistance, startX, startY, 14);
+                drawActionBox(rightDistance, bottomDistance, startX, startY, 14);
             }
             else if (mvinch(entity.getY(), entity.getX() - 1) == 'X')
             { // Left
@@ -1262,7 +1321,7 @@ void GameEnvironment::openDoorWithKey(Entity entity, int &keyCounter, int rightD
                         mvprintw(i, startY, " ");
                 }
                 keyCounter--;
-                // drawActionBox(rightDistance, bottomDistance, startX, startY, 14);
+                drawActionBox(rightDistance, bottomDistance, startX, startY, 14);
             }
             else if (mvinch(entity.getY(), entity.getX() + 1) == 'X')
             { // Right
@@ -1272,7 +1331,7 @@ void GameEnvironment::openDoorWithKey(Entity entity, int &keyCounter, int rightD
                         mvprintw(i, rightDistance, " ");
                 }
                 keyCounter--;
-                // drawActionBox(rightDistance, bottomDistance, startX, startY, 14);
+                drawActionBox(rightDistance, bottomDistance, startX, startY, 14);
             }
         }
     }
