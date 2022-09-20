@@ -5,10 +5,10 @@ Entity::Entity(int x, int y, char skin, int lifepoints)
 {
     this->x = x;
     this->y = y;
-    this->direction = 0; // The entity is initially not moving
+    this->direction = 0; // The entity is initially not moving in any direction
     this->skin = skin;
-    this->lifepoints = lifepoints;
-    this->currentLp = lifepoints;
+    this->lifepoints = lifepoints; // This is the max amount that the entity can reach-> used only for the player
+    this->currentLp = lifepoints;  // Current amount of LP
 }
 
 void Entity::setX(int x)
@@ -64,6 +64,7 @@ int Entity::getCurrentLifePoints()
 }
 void Entity::increaseCurrentLifePoints(int currentLp)
 {
+    // Current LP can't go over maxLp
     if (this->currentLp < this->lifepoints)
         this->currentLp += currentLp;
     if (this->currentLp >= this->lifepoints)

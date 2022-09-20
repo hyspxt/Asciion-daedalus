@@ -1,10 +1,16 @@
 patt        29590
 cina        23500
 wee         19970
+sip         19140
+pony        18950
+essi        17790
 beella      15440
+mhaz        14210
 nig         13130
 francib     12740
 Alb         12600
+lai         10330
+watte       8150
 lll         5550
 lol         4870
 Cccc        2700
@@ -12,3 +18,5 @@ Bbbb        2000
 Aaaa        1100
 lota        1000
 Gio         1000
+lol         600
+w           400

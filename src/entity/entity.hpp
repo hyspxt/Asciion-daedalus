@@ -4,9 +4,9 @@
 struct bullet{
     int x;
     int y;
-    char skin;
+    char skin;   // Bullet Skin, based on Ranged Weapon
     double speed;     
-    int direction;
+    int direction;  // The direction the bullet is flying (chtype)
     bool enemyBullet; // True: enemy shot, False: player shot
     bullet *next;
 };
@@ -17,8 +17,8 @@ class Entity{
     protected:
         int x;
         int y;
-        int direction;  // ncurses Getch() char
-        char skin;
+        int direction;  //  taken with ncurses Getch() char
+        char skin;     // what char appears on screen 
         int lifepoints; 
         int currentLp;
         bool enemy;   // true if the entity is an enemy, false otherwise
@@ -27,7 +27,7 @@ class Entity{
 
     public:
         Entity();
-        Entity(int x, int y, char skin, int lifepoints); // The rest of the parameters aren't needed
+        Entity(int x, int y, char skin, int lifepoints); 
 
         void setX(int x);
         int getX();

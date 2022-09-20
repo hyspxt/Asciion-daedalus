@@ -9,6 +9,8 @@
 #include <locale.h>
 #include <tuple>
 
+#define ROOM_OFFSET 14
+
 int points = 0;
 
 Game::Game() {}
@@ -29,12 +31,15 @@ Game::Game(int leftDistance, int rightDistance, int topDistance, int bottomDista
 
 void Game::ncursesSetup()
 {
+
+    // Starts the cursor
+
     setlocale(LC_ALL, "");
     initscr();
     cbreak();
     curs_set(0);
     noecho();
-    // nodelay(stdscr, TRUE);
+    // nodelay(stdscr, TRUE);  // decomment here if there are any problem with fluidity
     keypad(stdscr, TRUE);
     use_default_colors(); // Not essential, but i noticed in some tests some bug so here it is
     start_color();
@@ -42,6 +47,8 @@ void Game::ncursesSetup()
 
 void Game::ncursesStop()
 {
+    // End the cursor and free the memory
+
     refresh();
     noraw();
     endwin(); // Remember to delete the Getch and deallocation of ncurses!! TODO
@@ -49,6 +56,13 @@ void Game::ncursesStop()
 
 std::tuple<p_itemList, Entity, int> Game::determineItemEffect(GameEnvironment gameEnvironment, int x, int y, p_itemList h_itemList, Entity entity, int pnt, int keyCounter, RangedWeapon playerWeapon)
 {
+
+    /*
+    Determine effects of taken items by their id.
+    Effects are boost to player's stats.
+    K items garant a key, needed to open doors.
+    */
+
     p_itemList tmpItem = h_itemList;
     bool endFlag = false;
     while (tmpItem->item.getX() != x || tmpItem->item.getY() != y)
@@ -56,6 +70,7 @@ std::tuple<p_itemList, Entity, int> Game::determineItemEffect(GameEnvironment ga
         tmpItem = tmpItem->next;
     }
     int identifier = tmpItem->item.getId();
+    // The actionBox shows what item the player has picked-up
     gameEnvironment.drawActionBox(rightDistance, bottomDistance, maxX, maxY, identifier);
 
     switch (identifier)
@@ -151,6 +166,7 @@ std::tuple<p_itemList, Entity, int> Game::determineItemEffect(GameEnvironment ga
 
     if (endFlag)
     {
+        // After an item is taken, remove it from the Room.
         entity.setRWeapon(playerWeapon);
         h_itemList = deleteItem(tmpItem, h_itemList);
         mvprintw(tmpItem->item.getY(), tmpItem->item.getX(), " ");
@@ -160,6 +176,12 @@ std::tuple<p_itemList, Entity, int> Game::determineItemEffect(GameEnvironment ga
 
 p_itemList Game::deleteItem(p_itemList itemToDelete, p_itemList h_itemList)
 {
+
+    /*
+    Delete itemToDelete from h_itemList.
+    Used after an item is picked-up by the player.
+    */
+
     p_itemList tmpHead = h_itemList, tmpPrev = tmpHead, tmpItem;
     bool flag = false;
     while (h_itemList != NULL && !flag)
@@ -181,8 +203,7 @@ p_itemList Game::deleteItem(p_itemList itemToDelete, p_itemList h_itemList)
                 delete tmpItem;
                 h_itemList = tmpPrev->next;
             }
-            //   mvprintw(h_itemList->item.getY(), h_itemList->item.getX(), " ");
-            flag = true; // If there are errors remove me
+            flag = true; // If there are errors remove me due to infinite items generation
         }
         else
         {
@@ -195,27 +216,30 @@ p_itemList Game::deleteItem(p_itemList itemToDelete, p_itemList h_itemList)
 
 std::tuple<Entity, int> Game::gameInputs(GameEnvironment gameEnvironment, Entity entity, int direction, p_Room h_roomList, int points, int keyCounter, bool noEnemy, int &timeCounter)
 {
+    /*
+    Perform some action (only player) after a input is taken with getch().
+    Action like movements (in four directions), shooting, opening doors...
+    */
+
     srand(time(0));
-    if (direction == 115 || direction == 83) // Down
+    if (direction == 115 || direction == 83) // Down Movement [s] key
     {
-        // ch = mvinch(entity.getY() + 1, entity.getX()) & A_CHARTEXT;
+
         if (isEmpty(entity.getX(), entity.getY() + 1))
         {
             mvprintw(entity.getY(), entity.getX(), " ");
             entity.dirDown();
         }
-        else if (isItem(entity.getX(), entity.getY() + 1))
+        else if (isItem(entity.getX(), entity.getY() + 1)) // Check if it's an item
         {
             mvprintw(entity.getY() + 1, entity.getX(), " ");
             std::tie(h_roomList->itemList, entity, keyCounter) = determineItemEffect(gameEnvironment, entity.getX(), entity.getY() + 1,
                                                                                      h_roomList->itemList, entity, points, keyCounter, entity.getRWeapon());
-            // h_roomList->itemList = determineItemEffect(gameEnvironment, entity.getX(), entity.getY() + 1,
-            //                       h_roomList->itemList, entity, points, keyCounter);
             mvprintw(entity.getY(), entity.getX(), " ");
             entity.dirDown();
         }
     }
-    if (direction == 119 || direction == 87) // Up
+    if (direction == 119 || direction == 87) // Up Movement [w] key
     {
 
         if (isEmpty(entity.getX(), entity.getY() - 1))
@@ -226,22 +250,13 @@ std::tuple<Entity, int> Game::gameInputs(GameEnvironment gameEnvironment, Entity
         else if (isItem(entity.getX(), entity.getY() - 1))
         {
             mvprintw(entity.getY() - 1, entity.getX(), " ");
-            // std::tuple<p_itemList, Entity> answer = determineItemEffect(gameEnvironment, entity.getX(), entity.getY() - 1,
-            //                                                     h_roomList->itemList, entity, points, keyCounter);
             std::tie(h_roomList->itemList, entity, keyCounter) = determineItemEffect(gameEnvironment, entity.getX(), entity.getY() - 1,
                                                                                      h_roomList->itemList, entity, points, keyCounter, entity.getRWeapon());
-
-            // h_roomList->itemList = answer.first;
-            // entity = answer.second;
-            // std::tie(h_roomList->itemList, entity) = determineItemEffect(gameEnvironment, entity.getX(), entity.getY() + 1,
-            //            h_roomList->itemList, entity, points, keyCounter);
-            // h_roomList->itemList = determineItemEffect(gameEnvironment, entity.getX(), entity.getY() - 1,
-            //                 h_roomList->itemList, entity, points, keyCounter);
             mvprintw(entity.getY(), entity.getX(), " ");
             entity.dirUp();
         }
     }
-    if (direction == 97 || direction == 65) // Left
+    if (direction == 97 || direction == 65) // Left Movement [a] key
     {
 
         if (isEmpty(entity.getX() - 1, entity.getY()))
@@ -254,15 +269,11 @@ std::tuple<Entity, int> Game::gameInputs(GameEnvironment gameEnvironment, Entity
             mvprintw(entity.getY(), entity.getX() - 1, " ");
             std::tie(h_roomList->itemList, entity, keyCounter) = determineItemEffect(gameEnvironment, entity.getX() - 1, entity.getY(),
                                                                                      h_roomList->itemList, entity, points, keyCounter, entity.getRWeapon());
-            // std::tie(h_roomList->itemList, entity) = determineItemEffect(gameEnvironment, entity.getX(), entity.getY() + 1,
-            //    h_roomList->itemList, entity, points, keyCounter);
-            // h_roomList->itemList = determineItemEffect(gameEnvironment, entity.getX() - 1, entity.getY(),
-            //                      h_roomList->itemList, entity, points, keyCounter);
             mvprintw(entity.getY(), entity.getX(), " ");
             entity.dirLeft();
         }
     }
-    if (direction == 100 || direction == 68) // Right
+    if (direction == 100 || direction == 68) // Right Movement [d] key
     {
         if (isEmpty(entity.getX() + 1, entity.getY()))
         {
@@ -274,20 +285,14 @@ std::tuple<Entity, int> Game::gameInputs(GameEnvironment gameEnvironment, Entity
             mvprintw(entity.getY(), entity.getX() + 1, " ");
             std::tie(h_roomList->itemList, entity, keyCounter) = determineItemEffect(gameEnvironment, entity.getX() + 1, entity.getY(),
                                                                                      h_roomList->itemList, entity, points, keyCounter, entity.getRWeapon());
-            // std::tie(h_roomList->itemList, entity) = determineItemEffect(gameEnvironment, entity.getX(), entity.getY() + 1,
-            //   h_roomList->itemList, entity, points, keyCounter);
-            // h_roomList->itemList = determineItemEffect(gameEnvironment, entity.getX() + 1, entity.getY(),
-            //                        h_roomList->itemList, entity, points, keyCounter);
             mvprintw(entity.getY(), entity.getX(), " ");
             entity.dirRight();
         }
     }
     if (direction == 261 || direction == 260 || direction == 258 || direction == 259)
     {
-        // Correction needed here: the bullet fly but only with the command
-        // they should be moving on their own until their range is 0
-
-        // After that, verify the implementation with destroyBullet()
+        // Shoot a single bullet in one of the four directions
+        //  (up, down, left, right) [arrow keys]
         int flag = false;
         int expansion = entity.getRWeapon().getBulletSpeed() + 1;
         while (expansion > 0)
@@ -306,12 +311,12 @@ std::tuple<Entity, int> Game::gameInputs(GameEnvironment gameEnvironment, Entity
         if (!flag)
             this->playerBullets = generateBullet(entity, this->playerBullets, direction, false);
     }
-    if (direction == 114 || direction == 82)
+    if (direction == 114 || direction == 82) // Open door pressing [r] key
     {
         gameEnvironment.openDoorWithKey(entity, keyCounter, rightDistance, bottomDistance, maxX, maxY, noEnemy);
     }
 
-    if (timeCounter >= 10)
+    if (timeCounter >= 10) // Auto clear the actionBox
     {
         timeCounter = 0;
         gameEnvironment.cleanActionBox(rightDistance, bottomDistance, maxX, maxY);
@@ -324,7 +329,10 @@ std::tuple<Entity, int> Game::gameInputs(GameEnvironment gameEnvironment, Entity
 
 void Game::menuChoice(GameEnvironment gameEnvironment, int *key, int *choice)
 {
-    // This function select between the menu choices based on the hovered button
+    /*
+     This function select between the menu choices based on the hovered button.
+    menuCounter handle the button that should be colored when selected.
+    */
     int menuCounter = 0;
     gameEnvironment.printMenuLogo();
     gameEnvironment.printMenuChoices(menuCounter);
@@ -360,7 +368,9 @@ void Game::menuChoice(GameEnvironment gameEnvironment, int *key, int *choice)
 
 void Game::choiceHandler(GameEnvironment gameEnvironment)
 {
-    // This function initialize the game based on the choice made in the menu section
+    /*
+    This function initialize the game based on the choice made in the menu section.
+    */
     int key, choice;
     ncursesSetup();
     menuChoice(gameEnvironment, &key, &choice);
@@ -381,24 +391,22 @@ void Game::choiceHandler(GameEnvironment gameEnvironment)
             clear();
             refresh();
             gameEnvironment.escLoss(key, points);
-            
+
             choice = 5;
             break;
         }
-            // TODO FINISH
+
         case 1: // Prints How to Play
         {
             clear();
-
-            refresh();
             gameEnvironment.escHowToPlay(key);
             refresh();
             choice = 5;
             break;
         }
 
-        case 2: // Scoreboard TODO
-        {       // FODDER
+        case 2: // Scoreboard
+        {
 
             clear();
 
@@ -442,6 +450,10 @@ void Game::choiceHandler(GameEnvironment gameEnvironment)
 p_bullet Game::generateBullet(Entity entity, p_bullet &bulletList, int dir, bool enemyBull)
 {
 
+    /*
+    Generate a bullet based on the key with it was shooted.
+    */
+
     p_bullet h_bullet = new bullet;
 
     if (dir == 261)
@@ -465,8 +477,6 @@ p_bullet Game::generateBullet(Entity entity, p_bullet &bulletList, int dir, bool
         h_bullet->y = entity.getY() + 1;
     }
 
-    // The bullets fly a little too fast, try with a cooldown
-
     h_bullet->skin = entity.getRWeapon().getBulletSkin();
     h_bullet->speed = entity.getRWeapon().getBulletSpeed();
     h_bullet->direction = dir;
@@ -478,7 +488,9 @@ p_bullet Game::generateBullet(Entity entity, p_bullet &bulletList, int dir, bool
 
 void Game::handleEnemyBullets(Entity player, p_EnemyList h_enemyList, p_bullet &h_enemyBulletList) // keep attention that Entity is refered to the player
 {
-    // This function handle the generation of enemy bullets (but not their movements!!)
+    /*
+     This function handle the generation of enemy bullets (but not their movements!!).
+    */
     int distanceX, distanceY, direction;
 
     while (h_enemyList != NULL)
@@ -487,7 +499,6 @@ void Game::handleEnemyBullets(Entity player, p_EnemyList h_enemyList, p_bullet &
         distanceX = player.getX() - h_enemyList->enemy.getX();
         distanceY = player.getY() - h_enemyList->enemy.getY();
 
-        // TODO get an eye on this piece of code
         if (this->enemyTimer % 22 == 0)
         {
             if (distanceX < distanceY)
@@ -506,19 +517,19 @@ void Game::handleEnemyBullets(Entity player, p_EnemyList h_enemyList, p_bullet &
             }
             switch (direction)
             {
-            case 260:
+            case 260: // Up
                 if (isEmpty(h_enemyList->enemy.getX() - 1, h_enemyList->enemy.getY()))
                     h_enemyBulletList = generateBullet(h_enemyList->enemy, h_enemyBulletList, direction, true);
                 break;
-            case 261:
+            case 261: // Down
                 if (isEmpty(h_enemyList->enemy.getX() + 1, h_enemyList->enemy.getY()))
                     h_enemyBulletList = generateBullet(h_enemyList->enemy, h_enemyBulletList, direction, true);
                 break;
-            case 259:
+            case 259: // Left
                 if (isEmpty(h_enemyList->enemy.getX(), h_enemyList->enemy.getY() - 1))
                     h_enemyBulletList = generateBullet(h_enemyList->enemy, h_enemyBulletList, direction, true);
                 break;
-            case 258:
+            case 258: // Right
                 if (isEmpty(h_enemyList->enemy.getX(), h_enemyList->enemy.getY() + 1))
                     h_enemyBulletList = generateBullet(h_enemyList->enemy, h_enemyBulletList, direction, true);
                 break;
@@ -530,7 +541,10 @@ void Game::handleEnemyBullets(Entity player, p_EnemyList h_enemyList, p_bullet &
 
 void Game::moveBullets(p_bullet h_bulletList)
 {
-    // This function handle the bullet movements, both for player and enemies
+    /*
+    This function handle the bullet movements, both for player and enemies
+    */
+
     char b_trail[2]; // Bullet trail keep count of the bullet skins along the firing, one char will be always "" and the other will be the bullet skin
     while (h_bulletList != NULL)
     {
@@ -577,7 +591,6 @@ void Game::destroyBullet(p_bullet &h_bulletList, int playerX, int playerY)
         p_bullet tmp;
         bool destroy;
 
-        // qui mettere le direzioni
         while (head != NULL)
         {
             if ((!head->enemyBullet && head->direction == 261) || (head->enemyBullet && head->direction == 260))
@@ -653,6 +666,11 @@ void Game::destroyBullet(p_bullet &h_bulletList, int playerX, int playerY)
 
 void Game::destroySingleBullet(p_bullet &h_bulletList)
 {
+
+    /*
+    Actually not used, but it should destroy only the first bullet in the bullet list.
+    */
+
     p_bullet head = h_bulletList, prev = h_bulletList;
     p_bullet tmp;
     if (h_bulletList != NULL)
@@ -694,7 +712,7 @@ bool Game::isItem(int x, int y)
 }
 bool Game::isBullet(int x, int y)
 {
-    if (mvinch(y, x) == '"' || mvinch(y, x) == '*' || mvinch(y, x) == 'o')
+    if (mvinch(y, x) == '"' || mvinch(y, x) == '#' || mvinch(y, x) == 'o' || mvinch(y, x) == ',')
         return true;
     else
         return (false);
@@ -709,14 +727,18 @@ bool Game::isEnemy(int x, int y)
 
 p_EnemyList Game::destroyEnemy(p_EnemyList h_enemyList, Enemy enemy)
 {
+
+    /*
+    Destroy an enemy when is killed.
+    The condition is determined in the collision function.
+    */
+
     p_EnemyList head = h_enemyList, prev = h_enemyList, tmp;
     while (h_enemyList != NULL)
     {
         if ((h_enemyList->enemy.getX() == enemy.getX()) &&
             (h_enemyList->enemy.getY() == enemy.getY()))
         {
-
-            // mvprintw(h_enemyList->enemy.getY(), h_enemyList->enemy.getX(), "a");
             if (h_enemyList == head)
             {
                 tmp = head;
@@ -744,6 +766,11 @@ p_EnemyList Game::destroyEnemy(p_EnemyList h_enemyList, Enemy enemy)
 
 void Game::bulletCollision(p_bullet &h_bulletList, p_EnemyList h_enemyList, Entity &entity, int &points, int &hearts, bool &pause)
 {
+
+    /*
+    This function handle the various cases when a bullet collides with something.
+    */
+
     bool wallHit = false, enemyHit = false, playerHit = false;
     int enemyX, enemyY, playerX, playerY;
     p_bullet head = h_bulletList;
@@ -785,17 +812,18 @@ void Game::bulletCollision(p_bullet &h_bulletList, p_EnemyList h_enemyList, Enti
         h_bulletList = head;
         if (wallHit || enemyHit || playerHit)
         {
-            // So, the bullet must be destroyed
+            // So, the bullet must be destroyed.
             break;
         }
         else
             h_enemyList = h_enemyList->next;
     }
+
     char skinReplace[2];
     init_pair(3, COLOR_RED, -1);
     attron(COLOR_PAIR(3));
 
-    if (enemyHit)
+    if (enemyHit) // When the enemy take a hit, paint his body red.
     {
         skinReplace[0] = h_enemyList->enemy.getSkin();
         mvprintw(h_enemyList->enemy.getY(), h_enemyList->enemy.getX(), skinReplace);
@@ -813,9 +841,8 @@ void Game::bulletCollision(p_bullet &h_bulletList, p_EnemyList h_enemyList, Enti
     }
     else if (playerHit)
     {
-        mvprintw(5, 5, "PLAYERHITDIOCAN");
         entity.decreaseCurrentLifePoints(h_enemyList->enemy.getMeleeDamage());
-        checkPlayerDeath(entity, pause, hearts); // check player death
+        checkPlayerDeath(entity, pause, hearts); // If playerLives > 0, then the player is still alive.
         skinReplace[0] = entity.getSkin();
         mvprintw(entity.getY(), entity.getX(), skinReplace);
     }
@@ -825,6 +852,11 @@ void Game::bulletCollision(p_bullet &h_bulletList, p_EnemyList h_enemyList, Enti
 
 void Game::checkPlayerDeath(Entity &entity, bool &pause, int &hearts)
 {
+
+    /*
+    Every time the player take damage, this should trigger.
+    Check if the playerLives > 0 and if not make player die and print Lose screen.
+    */
     if (entity.getCurrentLifePoints() <= 0)
     {
         if (hearts >= 1)
@@ -841,18 +873,32 @@ void Game::checkPlayerDeath(Entity &entity, bool &pause, int &hearts)
 
 void Game::increasePoints(int &gamePoints, int p_add)
 {
-    // This function increase the game points with the specified quantity
+    /*
+    This function increase the game points with the specified quantity
+    */
     gamePoints += p_add;
 }
 
 void Game::increaseTimers(int &timer, int &enemyTimer)
 {
+
+    /*
+    Increase the two timers that manage the game clock.
+    The first handle some time-limited elements like actionBox.
+    The second handle enemy actions like bullet shooting.
+    */
+
     timer++;
     enemyTimer++;
 }
 
 void Game::setPause(int direction)
 {
+
+    /*
+    It blocks the game when the condition lead to a lose/win.
+    */
+
     if (direction == 10)
         pause = true;
 }
@@ -863,6 +909,11 @@ void Game::getInput(int &key)
 
 p_EnemyList Game::generateEnemy(GameEnvironment gameEnvironment, int enemyCounter, int roomTracker, p_EnemyList h_enemyList)
 {
+
+    /*
+    Generate random type enemies, based on which Room the player is.
+    */
+
     srand(unsigned(time(0)));
 
     int enemyLp, enemyKs, enemyType;
@@ -875,11 +926,11 @@ p_EnemyList Game::generateEnemy(GameEnvironment gameEnvironment, int enemyCounte
     while (enemyCounter > 0)
     { // The list here should be not NULL
 
-        if (roomTracker / 14 <= 2)
+        if (roomTracker / ROOM_OFFSET <= 2)
             enemyType = 0;
-        else if (roomTracker / 14 <= 6)
+        else if (roomTracker / ROOM_OFFSET <= 6)
             enemyType = rand() % 2;
-        else if (roomTracker / 14 <= 10)
+        else if (roomTracker /  ROOM_OFFSET <= 10)
             enemyType = rand() % 3;
         else
             enemyType = rand() % 4;
@@ -911,7 +962,7 @@ p_EnemyList Game::generateEnemy(GameEnvironment gameEnvironment, int enemyCounte
             enemyWeapon.setDamage(10);
             break;
         }
-        if (roomTracker / 14 == 2)
+        if (roomTracker / ROOM_OFFSET == 2)
         {
             x = gameEnvironment.randomCoordinate(39, 48).x;
             y = gameEnvironment.randomCoordinate(9, 19).y;
@@ -951,6 +1002,11 @@ p_EnemyList Game::generateEnemy(GameEnvironment gameEnvironment, int enemyCounte
 
 bool Game::checkIfAllEnemiesAreDead(GameEnvironment gameEnvironment, p_EnemyList h_enemyList)
 {
+
+    /*
+    Check if a Room is cleared, so the doors (exept the locked one) can be opened.
+    */
+
     if (gameEnvironment.lenghtEnemyList(h_enemyList) == 0)
         return (true);
     else
@@ -959,6 +1015,12 @@ bool Game::checkIfAllEnemiesAreDead(GameEnvironment gameEnvironment, p_EnemyList
 
 std::tuple<Entity, int> Game::calculateLives(Entity entity, int lives)
 {
+
+    /*
+    When the player maxLife doubles its original value (10 -> 20)
+    the player gains a life. And his currentLife points heal completely.
+    */
+
     if (entity.getLifePoints() >= 20)
     {
         lives++;
@@ -970,6 +1032,12 @@ std::tuple<Entity, int> Game::calculateLives(Entity entity, int lives)
 
 void Game::checkMeleeDamage(p_EnemyList h_enemyList, Entity &entity, bool &pause, int &hearts)
 {
+
+    /*
+    When the player is very close to an enemy, it will deal a certain amount of damage
+    depending on the enemy type, to the player.
+    */
+
     while (h_enemyList != NULL)
     {
         if (((entity.getX() == h_enemyList->enemy.getX() + 1) && (entity.getY() == h_enemyList->enemy.getY())) ||
@@ -986,6 +1054,10 @@ void Game::checkMeleeDamage(p_EnemyList h_enemyList, Entity &entity, bool &pause
 
 void Game::gameHandler(GameEnvironment gameEnvironment, int direction)
 {
+
+    /* 
+    Main game engine. Most of the function are called here.
+    */
 
     RangedWeapon startWeapon((char *)"Magic gun", 8, 'o', 1, 10);
     Entity player(46, 18, 'P', 10);
@@ -1032,13 +1104,13 @@ void Game::gameHandler(GameEnvironment gameEnvironment, int direction)
         {
             roomTracker = h_roomList->roomTracker;
             gameEnvironment.drawRoom(bottomDistance, maxX, maxY, noEnemy, h_roomList->roomTracker);
-            if (!passRoomsEnemies[roomTracker / 14])
+            if (!passRoomsEnemies[roomTracker / ROOM_OFFSET])
             {
                 h_enemyList = generateEnemy(gameEnvironment, enemyCounter, roomTracker, h_enemyList);
                 noEnemy = false;
                 gameEnvironment.closeAllDoors(noEnemy, rightDistance, bottomDistance, maxX, maxY);
 
-                passRoomsEnemies[roomTracker / 14] = true;
+                passRoomsEnemies[roomTracker / ROOM_OFFSET] = true;
             }
             gameEnvironment.cleanActionBox(rightDistance, bottomDistance, maxX, maxY);
         }
@@ -1051,7 +1123,8 @@ void Game::gameHandler(GameEnvironment gameEnvironment, int direction)
 
         gameEnvironment.drawCharacter(player.getX(), player.getY(), player.getSkin());
 
-        if (roomTracker / 14 > 0) gameEnvironment.drawItems(h_roomList->itemList);
+        if (roomTracker / ROOM_OFFSET > 0)
+            gameEnvironment.drawItems(h_roomList->itemList);
 
         gameEnvironment.drawEnemies(gameEnvironment, h_enemyList);
 
@@ -1080,6 +1153,5 @@ void Game::gameHandler(GameEnvironment gameEnvironment, int direction)
         destroyBullet(h_enemyBulletList, player.getX(), player.getY());
 
         checkMeleeDamage(h_enemyList, player, pause, hearts);
-
     }
 }

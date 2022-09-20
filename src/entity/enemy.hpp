@@ -11,7 +11,7 @@ protected:
     int killScore; // n. of points given to player when the enemy is killed
     int height;
     int width;
-    int meleeDamage; // When the player touch the enemy, it deal this amount of damage
+    int meleeDamage; // When the player touch the enemy with body or bullet, it deal this amount of damage
 
 public:
     Enemy();

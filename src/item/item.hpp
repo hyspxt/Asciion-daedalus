@@ -5,11 +5,11 @@ class Item
 
 protected:
     char itemName[30];
-    int id;
+    int id;        // Id determines the effect on the player based on item
     int x;
     int y;
-    char skin;
-    bool isArtifact;
+    char skin;      // 'A' -> Artifact, 'K' powers, '?' can be both
+    bool isArtifact;     
 
 public:
     Item();

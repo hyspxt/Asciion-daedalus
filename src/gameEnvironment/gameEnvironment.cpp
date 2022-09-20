@@ -10,9 +10,20 @@
 #include <locale.h>
 #include <tuple>
 
+#define ROOM_OFFSET 14 // Room height
+#define LEFT_DISTANCE 22
+#define RIGHT_DISTANCE 71
+#define TOP_DISTANCE 7
+#define BOTTOM_DISTANCE 20
+#define START_X 7
+#define START_Y 22
+
 GameEnvironment::GameEnvironment(){};
 void GameEnvironment::printMenuLogo()
 {
+    /*
+    This function print the title logo on the first window in game.
+    */
     initscr();
     start_color();
     init_pair(1, COLOR_CYAN, 232);
@@ -39,7 +50,11 @@ void GameEnvironment::printMenuLogo()
 }
 
 void GameEnvironment::printMenuChoices(int choice)
-{ // Choice variable colors active button
+{
+    /*
+    Draw buttons (and colored hover button) in the logo window.
+    Each button lead to a different option of the game (Quit option included).
+    */
 
     init_pair(2, COLOR_BLACK, COLOR_CYAN);
 
@@ -78,8 +93,9 @@ void GameEnvironment::printMenuChoices(int choice)
     mvprintw(LINES / 2 + 12, COLS / 2 - 17,
              "                             ");
 
+    // This switch draw the selected / active button
     switch (choice)
-    { // This switch draw the selected colored button
+    {
     case 0:
         attron(COLOR_PAIR(2));
         mvprintw(LINES / 2 - 2, COLS / 2 - 17,
@@ -138,6 +154,11 @@ void GameEnvironment::printMenuChoices(int choice)
 void GameEnvironment::printHowToPlay()
 {
 
+    /*
+    This function draws the HtP screen.
+    Things like controls, gamemodes, user guide are written here.
+    (BUT NON DEFINED).
+    */
     int stop = LINES / 2 - 14;
     for (int y = 0; y < 30; y++)
     {
@@ -149,6 +170,7 @@ void GameEnvironment::printHowToPlay()
         stop++;
         attroff(COLOR_PAIR(8));
     }
+
     init_pair(3, COLOR_YELLOW, 232);
     attron(COLOR_PAIR(3));
     mvprintw(LINES / 2 - 14, COLS / 2 - 52,
@@ -187,15 +209,15 @@ void GameEnvironment::printHowToPlay()
     attroff(COLOR_PAIR(1));
 
     attron(COLOR_PAIR(3));
-    mvprintw(LINES / 2 + 13, COLS / 2 - 14, "Press [ENTER] to continue");
+    mvprintw(LINES / 2 + 13, COLS / 2 - 15, "Press [ENTER] to continue");
     attron(COLOR_PAIR(3));
 }
 
 void GameEnvironment::escHowToPlay(int key)
 {
     key = 0;
-    while (key != 10)
-    { // spacebar key
+    while (key != 10) // 10 = getch() chtype of ENTER key
+    {
         printHowToPlay();
         key = getch();
     }
@@ -213,6 +235,8 @@ void GameEnvironment::escLore(int key)
 
 void GameEnvironment::printLore()
 {
+    // This function draws the Lore screen.
+
     int stop = LINES / 2 - 13;
     for (int y = 0; y < 23; y++)
     {
@@ -224,6 +248,7 @@ void GameEnvironment::printLore()
         stop++;
         attroff(COLOR_PAIR(8));
     }
+
     init_pair(1, COLOR_CYAN, 232);
     attron(COLOR_PAIR(1));
     mvprintw(LINES / 2 - 8, COLS / 2 - 49, "The evil king ASCIION for some unknown reasons, captured and imprisoned you");
@@ -238,7 +263,6 @@ void GameEnvironment::printLore()
     mvprintw(LINES / 2 + 1, COLS / 2 - 49, "Then take your weapons and make HIS labyrinth YOUR labyrinth!");
 
     mvprintw(LINES / 2 + 3, COLS / 2 - 49, "...");
-    mvprintw(LINES / 2 + 5, COLS / 2 - 49, "");
     attroff(COLOR_PAIR(1));
 
     init_pair(3, COLOR_YELLOW, 232);
@@ -250,20 +274,28 @@ void GameEnvironment::printLore()
 void GameEnvironment::drawRoom(int bottomDistance, int startX, int startY, bool noEnemy, int lineCounter)
 {
 
-    std::string s;
+    /*
+    This function draws the room based on lines in .../assets/map.txt
+    Each line is drawn one per time.
+    The offset for every room = 14 -> 'cause room_height = 14;
+    */
 
+    std::string s;
     for (int i = startX; i <= bottomDistance; i++)
     {
         s = readNthLine(lineCounter);
         mvprintw(i, startY, "%s", s.c_str());
         lineCounter++;
     }
-
-    // COMMANDS TODO
 }
 
 void GameEnvironment::clearInfo(int rightDistance, int bottomDistance, int startX, int startY)
 {
+
+    /*
+    This function serves to refresh the Info window.
+    (clear and then write info updated, quite basic).
+    */
 
     for (int i = startX; i < bottomDistance; i++)
     {
@@ -277,7 +309,15 @@ void GameEnvironment::clearInfo(int rightDistance, int bottomDistance, int start
 void GameEnvironment::drawInfo(int rightDistance, int bottomDistance, int startX, int startY, bool noEnemy, Entity entity, int points, int keyCounter, int hearts, p_EnemyList h_enemyList)
 {
 
+    /*
+    This function print the infoBox and information after it has been cleared.
+    This contains Player Stats (LP, Lives,Damage, etc) and RoomInfo (enemies remaining).
+    */
+
+    // Clear the box
     clearInfo(rightDistance, bottomDistance, startX, startY);
+
+    // Draw borders
     for (int i = rightDistance + 5; i < rightDistance + 32; i++)
     {
         mvprintw(startX, i, "-");
@@ -288,11 +328,13 @@ void GameEnvironment::drawInfo(int rightDistance, int bottomDistance, int startX
         mvprintw(i, rightDistance + 5, "|");
         mvprintw(i, rightDistance + 32, "|");
     }
+    // Corners
     mvprintw(startX, rightDistance + 5, "+");
     mvprintw(startX, rightDistance + 32, "+");
     mvprintw(bottomDistance, rightDistance + 5, "+");
     mvprintw(bottomDistance, rightDistance + 32, "+");
 
+    // Draw Stats
     mvprintw(startX + 1, rightDistance + 6, "Lives: ");
     for (int i = 0; i < hearts; i++)
     {
@@ -300,20 +342,24 @@ void GameEnvironment::drawInfo(int rightDistance, int bottomDistance, int startX
         printw("\u2665");
     }
 
-    mvprintw(startX + 2, rightDistance + 6, "Lifepoints: ");
-    int actualLp = entity.getCurrentLifePoints();
-
     init_pair(5, 232, COLOR_CYAN);
     init_pair(6, -1, 232);
     init_pair(7, 232, COLOR_YELLOW);
     init_pair(8, 232, COLOR_RED);
-    attron(COLOR_PAIR(6));
+
+    mvprintw(startX + 2, rightDistance + 6, "Lifepoints: ");
+    int actualLp = entity.getCurrentLifePoints();
+
+    // Draw the colored lifebar based on how much LP player has (currently, not max).
+
+    attron(COLOR_PAIR(6)); // Draw the black bar behind the colored one
     for (int i = 0; i < 10; i++)
     {
         mvprintw(startX + 2, rightDistance + 19 + i, " ");
     }
     attroff(COLOR_PAIR(6));
-    if (actualLp >= 6)
+
+    if (actualLp >= 6) // Cyan bar
     {
         if (actualLp > 10)
         {
@@ -326,8 +372,7 @@ void GameEnvironment::drawInfo(int rightDistance, int bottomDistance, int startX
         }
         attroff(COLOR_PAIR(5));
     }
-
-    else if (actualLp < 6 && actualLp >= 3)
+    else if (actualLp < 6 && actualLp >= 3) // Yellow bar
     {
         attron(COLOR_PAIR(7));
         for (int i = 0; i < actualLp; i++)
@@ -336,7 +381,7 @@ void GameEnvironment::drawInfo(int rightDistance, int bottomDistance, int startX
         }
         attroff(COLOR_PAIR(7));
     }
-    else if (actualLp < 3)
+    else if (actualLp < 3) // Red bar
     {
         attron(COLOR_PAIR(8));
         for (int i = 0; i < actualLp; i++)
@@ -347,7 +392,7 @@ void GameEnvironment::drawInfo(int rightDistance, int bottomDistance, int startX
     }
 
     std::string s = std::to_string(points);
-    char const *pchar = s.c_str(); // use char const* as target type
+    char const *pchar = s.c_str();
     mvprintw(startX + 5, rightDistance + 6, "Score: ");
     mvprintw(startX + 5, rightDistance + 13, pchar);
 
@@ -355,7 +400,7 @@ void GameEnvironment::drawInfo(int rightDistance, int bottomDistance, int startX
     mvprintw(startX + 3, rightDistance + 23, "%s", "/");
     mvprintw(startX + 3, rightDistance + 25, "%i", entity.getLifePoints());
 
-    if (actualLp > 10)
+    if (actualLp > 10) // Draw the "shield" bar -> currentLP > LP
     {
         attron(COLOR_PAIR(7));
         mvprintw(startX + 2, rightDistance + 29, " ");
@@ -378,12 +423,13 @@ void GameEnvironment::drawInfo(int rightDistance, int bottomDistance, int startX
     else
         mvprintw(startX + 9, rightDistance + 14, "Ultima Weapon");
 
+    // Prints how many enemies remain to defeat to clear the current room
     int enemyLeft = lenghtEnemyList(h_enemyList);
     if (enemyLeft > 0)
     {
         mvprintw(startX + 11, rightDistance + 6, "                        ");
         mvprintw(startX + 11, rightDistance + 6, "Enemy left: ");
-        mvprintw(startX + 11, rightDistance + 18, "%i", lenghtEnemyList(h_enemyList));
+        mvprintw(startX + 11, rightDistance + 18, "%i", enemyLeft);
     }
     else
     {
@@ -394,12 +440,21 @@ void GameEnvironment::drawInfo(int rightDistance, int bottomDistance, int startX
 
 void GameEnvironment::drawCharacter(int x, int y, char c)
 {
+    /*
+    This function print a single character in a position determined by the cursor.
+    Useful and used in many other functions (see for example movements).
+    */
     move(y, x);
     printw("%c", c);
 }
 
 void GameEnvironment::printScoreboard()
 {
+
+    /*
+    This function print the scoreboard based on the scoreboard.txt file.
+    The leaderboard is made with the top 9 scores.
+    */
 
     int stop = LINES / 2 - 14;
     for (int y = 0; y < 30; y++)
@@ -412,9 +467,9 @@ void GameEnvironment::printScoreboard()
         stop++;
         attroff(COLOR_PAIR(8));
     }
+
     init_pair(3, COLOR_YELLOW, 232);
     attron(COLOR_PAIR(3));
-
     mvprintw(
         LINES / 2 - 14, COLS / 2 - 29,
         "                              __                         __");
@@ -434,17 +489,13 @@ void GameEnvironment::printScoreboard()
     mvprintw(LINES / 2 - 8, COLS / 2 - 46,
              "---------------------------------------------------------------"
              "-------------------------");
-
     mvprintw(LINES / 2 + 13, COLS / 2 - 14, "Press [ENTER] to continue");
     attroff(COLOR_PAIR(3));
 
     std::string line;
-
     int i = 0;
-
     for (int nameChar = 0; nameChar < 9; nameChar++)
     {
-
         line = readScoreboard(nameChar);
         mvprintw(LINES / 2 - 6 + i, COLS / 2 - 46, "%s", line.c_str());
         i += 2;
@@ -453,15 +504,19 @@ void GameEnvironment::printScoreboard()
 
 std::string GameEnvironment::readScoreboard(int n)
 {
+    /*
+    This function reads the Nth line of scoreboard.txt.
+    */
     std::ifstream sb("scoreboard.txt");
     std::string s;
 
     s.reserve(22); // Prior to boost performance a little
 
-    // skip N lines
+    // Skip N lines
     for (int i = 0; i < n; ++i)
         std::getline(sb, s);
 
+    // Read N+1 line
     std::getline(sb, s);
     return s;
 }
@@ -480,6 +535,11 @@ void GameEnvironment::escScoreboard(int key)
 
 void GameEnvironment::printLoss(int score)
 {
+
+    /*
+    When the player dies, print this screen.
+    */
+
     int stop = LINES / 2 - 14;
     for (int y = 0; y < 20; y++)
     {
@@ -491,6 +551,7 @@ void GameEnvironment::printLoss(int score)
         stop++;
         attroff(COLOR_PAIR(8));
     }
+
     init_pair(8, COLOR_RED, 232);
     attron(COLOR_PAIR(8));
     mvprintw(
@@ -532,6 +593,11 @@ void GameEnvironment::printLoss(int score)
 
 void GameEnvironment::escLoss(int key, int score)
 {
+
+    /*
+    This function save in scoreboard.txt name and score.
+    */
+
     key = 0;
     char name[10] = {'\0'};
     char name2[10] = {'\0'};
@@ -555,17 +621,21 @@ void GameEnvironment::escLoss(int key, int score)
         if (!strcmp(name2, "\0"))
             key = 10;
     }
-    save(name, score); // Save here the play
+    save(name, score); // Save here the play in scoreboard.txt
 }
 
 void GameEnvironment::escWin(int key, int score)
 {
+
+    /*
+    This function save in scoreboard.txt name and score.
+    */
+
     key = 0;
     char name[10] = {'\0'};
     char name2[10] = {'\0'};
 
     init_pair(7, COLOR_YELLOW, 232);
-
     while (key != 10)
     {
         printWin(score);
@@ -583,11 +653,17 @@ void GameEnvironment::escWin(int key, int score)
         if (!strcmp(name2, "\0"))
             key = 10;
     }
-    save(name, score); // Save here the play
+    save(name, score); // Save here the play in scoreboard.txt
 }
 
 void GameEnvironment::printWin(int score)
 {
+
+    /*
+    This function print this screen when the player escapes the Deadalus.
+    Only possible in Room n.17.
+    */
+
     int stop = LINES / 2 - 14;
     for (int y = 0; y < 20; y++)
     {
@@ -599,6 +675,7 @@ void GameEnvironment::printWin(int score)
         stop++;
         attroff(COLOR_PAIR(8));
     }
+
     init_pair(11, COLOR_BLUE, 232);
     attron(COLOR_PAIR(11));
     mvprintw(
@@ -625,8 +702,8 @@ void GameEnvironment::printWin(int score)
     mvprintw(LINES / 2 - 8, COLS / 2 - 37, "Unbelievable...! You actually managed to ESCAPE this labirynth!");
     mvprintw(LINES / 2 - 7, COLS / 2 - 37, "At least for now... *laughs disturbingly");
     mvprintw(LINES / 2 - 6, COLS / 2 - 37, "What do I mean by that? You're CURSED from the moment you entered this place.");
-    mvprintw(LINES / 2 - 5, COLS / 2 - 37, "You will come back, again and again. Proving yourself in the DAEDALUS.");
-    mvprintw(LINES / 2 - 4, COLS / 2 - 37, "Try breaking if you would, for that is OUR curse.");
+    mvprintw(LINES / 2 - 5, COLS / 2 - 37, "You will come back, again and again, proving yourself in the DAEDALUS.");
+    mvprintw(LINES / 2 - 4, COLS / 2 - 37, "Try breaking it if you would, for that is OUR curse.");
     attroff(COLOR_PAIR(9));
 
     attron(COLOR_PAIR(10));
@@ -641,6 +718,12 @@ void GameEnvironment::printWin(int score)
 
 void GameEnvironment::save(char saveName[], int score)
 {
+
+    /*
+    After a Win / Lose, this function saves name and score in
+    scoreboard.txt.
+    */
+
     bool flag = nameCheck(saveName);
     int len = strlen(saveName), maxLen = 12;
     std::fstream scoreboard;
@@ -655,12 +738,14 @@ void GameEnvironment::save(char saveName[], int score)
         }
         scoreboard << score << "\n";
     }
-
     scoreboard.close();
 }
 
 bool GameEnvironment::nameCheck(char saveName[])
 {
+    /*
+    This function check if the name in input respects costraints before being saved.
+    */
     bool flag = true;
     for (int i = 0; i < 10; i++)
     {
@@ -671,6 +756,9 @@ bool GameEnvironment::nameCheck(char saveName[])
 
 void GameEnvironment::drawEnemies(GameEnvironment gameEnvironment, p_EnemyList h_enemyList)
 {
+    /*
+    Draw all enemies in the list in thei respective positions with cursor (based on x and y).
+    */
     while (h_enemyList != NULL)
     {
         if (h_enemyList->enemy.getLifePoints() != h_enemyList->enemy.getCurrentLifePoints())
@@ -688,6 +776,16 @@ void GameEnvironment::drawEnemies(GameEnvironment gameEnvironment, p_EnemyList h
 
 std::string GameEnvironment::readNthLine(int n)
 {
+
+    /*
+    This function read and return as a string the Nth line of map.txt,
+    that contains all maps (rooms) -> offset between Room 0 and Room 1 = 14
+    Ex. N = 0 means the first line of the first room
+        N = 14 means the first line of the second room
+        N = 15 meand the second line of the second room
+        ...
+    */
+
     std::ifstream map("assets/map.txt");
     std::string s;
 
@@ -703,6 +801,9 @@ std::string GameEnvironment::readNthLine(int n)
 
 p_Room GameEnvironment::saveRoomState(p_itemList h_itemList, p_Room h_roomList, int roomTracker)
 {
+
+    // Actually not used, but it should modify the state of the room.
+
     p_Room tmpHead = new Room;
     tmpHead->down = h_roomList->down;
     tmpHead->up = h_roomList->up;
@@ -715,11 +816,23 @@ p_Room GameEnvironment::saveRoomState(p_itemList h_itemList, p_Room h_roomList, 
 
 p_Room GameEnvironment::mapGenerator(p_Room h_roomList)
 {
+
+    /*
+    This function create the logical structure of the various Rooms.
+    This is mandatory to do almost everything related to roomChange.
+    RoomTracker is meant to reprent the id of the Room (determined by position in map.txt)
+    and it has to be evaluated considering the offset constant (14).
+
+    The pointers represents the four direction where it can be another Room accessible through door, or not.
+    Ex. map[0] is the first room in the file. It has only a Door placed up-> that leads to map[1].
+    When a pointer point NULL, it means there are no Door (and so no Room) in that direction.
+    */
+
     p_Room map[17];
     for (int i = 0; i < 17; i++)
     {
         map[i] = new Room;
-        map[i]->roomTracker = i * 14;
+        map[i]->roomTracker = i * ROOM_OFFSET;
     }
 
     map[0]->up = map[1];
@@ -813,21 +926,24 @@ p_Room GameEnvironment::mapGenerator(p_Room h_roomList)
 std::tuple<p_Room, int> GameEnvironment::roomChange(Entity &entity, p_EnemyList &h_enemyList, p_Room h_roomList, p_itemList h_itemList,
                                                     int bottomDistance, int rightDistance, int startX, int startY, bool noEnemy,
                                                     int points, int enemyCounter, bool passRooms[])
-{
-    if (entity.getX() >= 71)
-    {
+/*
+ This function handle the events that happen when the player pass through a Door, changing Room.
+*/
 
-        entity.setX(23);
+{
+    if (entity.getX() >= RIGHT_DISTANCE) // Right Door
+    {
+        entity.setX(LEFT_DISTANCE + 1);
         h_roomList = h_roomList->right;
     }
-    if (entity.getX() <= 22)
+    if (entity.getX() <= LEFT_DISTANCE) // Left Door
     {
-        entity.setX(70);
+        entity.setX(RIGHT_DISTANCE - 1);
         h_roomList = h_roomList->left;
     }
-    if (entity.getY() <= 7)
+    if (entity.getY() <= TOP_DISTANCE) // Up Door
     {
-        if (h_roomList->roomTracker / 14 == 16)
+        if (h_roomList->roomTracker / ROOM_OFFSET == 16) // if it is the last Room, the player win
         {
             clear();
             escWin(11, points);
@@ -835,23 +951,24 @@ std::tuple<p_Room, int> GameEnvironment::roomChange(Entity &entity, p_EnemyList 
             refresh();
             clear();
             endwin();
-            std::cout << "Thank you for playing! Hope you enjoyed!" << std::endl;
+            std::cout << "Thank you for playing! Hope you enjoyed this game!" << std::endl;
             exit(1);
         }
         else
         {
-            entity.setY(19);
+            entity.setY(BOTTOM_DISTANCE - 1);
             h_roomList = h_roomList->up;
         }
     }
-    if (entity.getY() >= 20)
+    if (entity.getY() >= BOTTOM_DISTANCE) // Down Door
     {
-        entity.setY(8);
+        entity.setY(TOP_DISTANCE + 1);
         h_roomList = h_roomList->down;
     }
 
     int itemCounter = 1;
-    if ((h_roomList->roomTracker) / 14 <= 1 || (h_roomList->roomTracker) / 14 == 16)
+    // Determine how many Items should spawn in the Room
+    if ((h_roomList->roomTracker) / ROOM_OFFSET <= 1 || (h_roomList->roomTracker) / ROOM_OFFSET == 16)
         itemCounter = 0;
     else
     {
@@ -859,19 +976,23 @@ std::tuple<p_Room, int> GameEnvironment::roomChange(Entity &entity, p_EnemyList 
         itemCounter = rand() % 2 + 2;
     }
 
-    if (!passRooms[h_roomList->roomTracker / 14])
+    // This array block some generations more than once per Room, once per game
+    if (!passRooms[h_roomList->roomTracker / ROOM_OFFSET])
     {
         h_roomList->itemList = generateItem(itemCounter, h_itemList);
-        // h_roomList = saveRoomState(h_roomList->itemList, h_roomList,roomTracker);
-
         calculateEnemyNumber(h_roomList->roomTracker, enemyCounter);
-        passRooms[h_roomList->roomTracker / 14] = true;
+        passRooms[h_roomList->roomTracker / ROOM_OFFSET] = true;
     }
     return std::make_tuple(h_roomList, enemyCounter);
 }
 
 void GameEnvironment::drawItems(p_itemList h_itemList)
 {
+
+    /*
+    This function print all items in the list based on their position.
+    */
+
     while (h_itemList != NULL)
     {
         drawCharacter(h_itemList->item.getX(), h_itemList->item.getY(), h_itemList->item.getSkin());
@@ -881,6 +1002,11 @@ void GameEnvironment::drawItems(p_itemList h_itemList)
 
 int GameEnvironment::lenghtItemList(p_itemList h_itemList)
 {
+
+    /*
+    Returns the number of items in the current Room.
+    */
+
     int i = 0;
     while (h_itemList != NULL)
     {
@@ -892,6 +1018,12 @@ int GameEnvironment::lenghtItemList(p_itemList h_itemList)
 
 void GameEnvironment::moveEnemies(p_EnemyList h_enemyList)
 {
+
+    /*
+    Move all enemies in the list randomly.
+    Keep in mind that shooting != movement.
+    */
+
     srand(unsigned(time(0)));
     while (h_enemyList != NULL)
     {
@@ -946,7 +1078,11 @@ void GameEnvironment::moveEnemies(p_EnemyList h_enemyList)
 
 void GameEnvironment::openAllDoors(int rightDistance, int bottomDistance, int startX, int startY, int lineCounter)
 {
-    // TODO CHECK WITH GETLINE
+    /*
+    This function open all doors that are not locked by a key when the Room is cleared.
+    The check is done by map.txt.
+    */
+
     std::string map1, map2;
     bool flag1 = true, flag2 = true;
     int j = 0;
@@ -985,8 +1121,7 @@ void GameEnvironment::openAllDoors(int rightDistance, int bottomDistance, int st
     flag1 = true;
     flag2 = true;
 
-    j = 0;
-
+    j = 0; // Vertical
     for (int i = startX; i <= bottomDistance; i++)
     {
         map1 = readNthLine(lineCounter + j);
@@ -1023,6 +1158,11 @@ void GameEnvironment::openAllDoors(int rightDistance, int bottomDistance, int st
 
 int GameEnvironment::lenghtEnemyList(p_EnemyList h_enemyList)
 {
+
+    /*
+    Returns the number of enemies in the current Room.
+    */
+
     int i = 0;
     while (h_enemyList != NULL)
     {
@@ -1032,14 +1172,18 @@ int GameEnvironment::lenghtEnemyList(p_EnemyList h_enemyList)
         }
         h_enemyList = h_enemyList->next;
     }
-    if (i == 0)
-        return (i);
-    else
-        return (i);
+    return (i);
 }
 
 p_itemList GameEnvironment::generateItem(int itemCounter, p_itemList h_itemList)
 {
+
+    /*
+    Handle the item generation in the Room when is entered,
+    determines the type of item that is generated (A, K or ?)
+    and its effect (based on id, but not applied here!).
+    */
+
     srand(time(0));
     p_itemList tmpItem = NULL;
     int skinTracker, idTracker, prevItemId = 15;
@@ -1144,8 +1288,13 @@ p_itemList GameEnvironment::generateItem(int itemCounter, p_itemList h_itemList)
 
 void GameEnvironment::calculateEnemyNumber(int &roomTracker, int &enemyCounter)
 {
+
+    /*
+    Considering the roomId (roomTracker), it evaluate how many enemy spawn in that Room.
+    */
+
     srand(time(0));
-    int roomId = roomTracker / 14;
+    int roomId = roomTracker / ROOM_OFFSET;
     if (roomId == 0 || roomId == 16)
         enemyCounter = 0;
     else if (roomId == 1)
@@ -1158,6 +1307,12 @@ void GameEnvironment::calculateEnemyNumber(int &roomTracker, int &enemyCounter)
 
 Position GameEnvironment::randomCoordinate(int start, int end)
 {
+
+    /*
+    Generate random values between range in input.
+    Serves to generate random position of Enemies and Items.
+    */
+
     Position tmpPos;
     tmpPos.x = start + (std::rand() % (end - start + 1));
     tmpPos.y = start + (std::rand() % (end - start + 1));
@@ -1171,6 +1326,11 @@ Position GameEnvironment::randomCoordinate(int start, int end)
 
 void GameEnvironment::cleanActionBox(int rightDistance, int bottomDistance, int startX, int startY)
 {
+
+    /*
+    It clears the action box (items pick-up screen, opened door screen...).
+    */
+
     for (int i = startY; i < rightDistance; i++)
     {
         mvprintw(bottomDistance + 2, i, " ");
@@ -1186,6 +1346,10 @@ void GameEnvironment::cleanActionBox(int rightDistance, int bottomDistance, int 
 
 void GameEnvironment::drawActionBox(int rightDistance, int bottomDistance, int startX, int startY, int actionId)
 {
+
+    /*
+    Based on actionId, it draws the box along with a variable text line.
+    */
 
     cleanActionBox(rightDistance, bottomDistance, startX, startY);
     for (int i = startY; i < rightDistance; i++)
@@ -1268,6 +1432,11 @@ void GameEnvironment::drawActionBox(int rightDistance, int bottomDistance, int s
 
 void GameEnvironment::closeAllDoors(bool noEnemy, int rightDistance, int bottomDistance, int startX, int startY)
 {
+
+    /*
+    When entering a Room, close all the doors in the Room if there are any enemy.
+    The Doors re-open when all enemies in the Room are defeated.
+    */
     if (!noEnemy)
     {
         for (int i = startY; i < rightDistance; i++)
@@ -1289,6 +1458,13 @@ void GameEnvironment::closeAllDoors(bool noEnemy, int rightDistance, int bottomD
 
 void GameEnvironment::openDoorWithKey(Entity entity, int &keyCounter, int rightDistance, int bottomDistance, int startX, int startY, bool noEnemy)
 {
+
+    /*
+    When the player press the 'open door' command, check the closest door and it opens it.
+    Note that the command can be pressed only against a door.
+    Using this command spends a key in the player inventory.
+    */
+
     if (noEnemy)
     {
         if (keyCounter >= 1)
@@ -1339,6 +1515,13 @@ void GameEnvironment::openDoorWithKey(Entity entity, int &keyCounter, int rightD
 
 bool GameEnvironment::checkItemPosition(p_itemList h_itemList, p_itemList tmpItem)
 {
+
+    /*
+    This function check the correct position of the items.
+    Not really a fundamental check, but helps preventing some bugs during
+    the item drawing.
+    */
+
     // If true, there are no duplicates
     bool flag = true;
     p_itemList tmpHead = h_itemList;
