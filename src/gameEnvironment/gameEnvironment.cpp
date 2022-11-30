@@ -361,9 +361,11 @@ void GameEnvironment::drawInfo(int rightDistance, int bottomDistance, int startX
 
     if (actualLp >= 6) // Cyan bar
     {
-        if (actualLp > 10)
+        if (actualLp >= 10 )
         {
-            actualLp = 10;
+            if (entity.getLifePoints() > actualLp)
+                actualLp = 9;
+            else actualLp = 10;
         }
         attron(COLOR_PAIR(5));
         for (int i = 0; i < actualLp; i++)

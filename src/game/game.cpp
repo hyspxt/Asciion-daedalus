@@ -316,7 +316,7 @@ std::tuple<Entity, int> Game::gameInputs(GameEnvironment gameEnvironment, Entity
         gameEnvironment.openDoorWithKey(entity, keyCounter, rightDistance, bottomDistance, maxX, maxY, noEnemy);
     }
 
-    if (timeCounter >= 10) // Auto clear the actionBox
+    if (timeCounter >= 20) // Auto clear the actionBox
     {
         timeCounter = 0;
         gameEnvironment.cleanActionBox(rightDistance, bottomDistance, maxX, maxY);
