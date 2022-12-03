@@ -201,11 +201,12 @@ void GameEnvironment::printHowToPlay()
     mvprintw(LINES / 2 + 1, COLS / 2 - 49, "ARTIFACTS are items that will make you stronger and more resilient. They look like an (A).");
     mvprintw(LINES / 2 + 2, COLS / 2 - 49, "POWERS are less effective, but they can open some doors here. They resemble somehow a (K).");
     mvprintw(LINES / 2 + 3, COLS / 2 - 49, "Rarely, both can appear as (?), thanks to the magic influence of the labirinth.");
-    mvprintw(LINES / 2 + 5, COLS / 2 - 49, "To proceed, some doors need to be opened with [r] key. Cool, right?");
+    mvprintw(LINES / 2 + 4, COLS / 2 - 49, "To proceed, some doors need to be opened with [r] key. Cool, right?");
+    mvprintw(LINES / 2 + 6, COLS / 2 - 49, "Enemies shoots some dangerous red things that hurts you and your life bar.");
     mvprintw(LINES / 2 + 7, COLS / 2 - 49, "It's pretty obvious, but if your lifepoints drop down to 0 and you have no other lives...");
     mvprintw(LINES / 2 + 8, COLS / 2 - 49, "well, hope you understand what I mean.");
-    mvprintw(LINES / 2 + 10, COLS / 2 - 49, "That sould be all, I think?");
-    mvprintw(LINES / 2 + 11, COLS / 2 - 49, "Oh! In the end, remember to write your name on some wall. The King LOVES it.");
+    mvprintw(LINES / 2 + 9, COLS / 2 - 49, "That sould be all, I think?");
+    mvprintw(LINES / 2 + 10, COLS / 2 - 49, "Oh! In the end, remember to write your name on some wall. The King LOVES it.");
     attroff(COLOR_PAIR(1));
 
     attron(COLOR_PAIR(3));
@@ -361,11 +362,12 @@ void GameEnvironment::drawInfo(int rightDistance, int bottomDistance, int startX
 
     if (actualLp >= 6) // Cyan bar
     {
-        if (actualLp >= 10 )
+        if (actualLp >= 10)
         {
             if (entity.getLifePoints() > actualLp)
                 actualLp = 9;
-            else actualLp = 10;
+            else
+                actualLp = 10;
         }
         attron(COLOR_PAIR(5));
         for (int i = 0; i < actualLp; i++)
