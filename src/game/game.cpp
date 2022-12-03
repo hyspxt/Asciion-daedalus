@@ -974,7 +974,7 @@ p_EnemyList Game::generateEnemy(GameEnvironment gameEnvironment, int enemyCounte
         }
         p_EnemyList tmpHead = new EnemyList;
 
-        Enemy enemy(x, y, enemySkin, enemyLp, enemyKs, 1, 1, 1);
+        Enemy enemy(x, y, enemySkin, enemyLp, enemyKs, 1);
         enemy.setRWeapon(enemyWeapon);
         enemy.setMeleeDamage(enemyWeapon.getDamage());
 
@@ -988,7 +988,7 @@ p_EnemyList Game::generateEnemy(GameEnvironment gameEnvironment, int enemyCounte
     if (!flag)
     { // In case let's create a puppet useless enemy, (for the fake enemy generation, utils for put at least one element in the list)
         p_EnemyList tmpHead = new EnemyList;
-        Enemy enemy(0, 0, ' ', enemyLp, enemyKs, 1, 1, 0);
+        Enemy enemy(0, 0, ' ', enemyLp, enemyKs, 0);
         enemy.setRWeapon(fakeWeapon);
 
         tmpHead->enemy = enemy;
