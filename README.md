@@ -11,6 +11,7 @@ The game is implemented in C++ and built with gcc/make toolchain.
   </tr>
 </table>
  </div>
+ 
 ## Synopsis
 The evil king Asciion for some unknown reasons, captured and imprisoned you in his dangerous labyrinth: the Daedalus.
 According to the kingdom bards, the king's hobby is to recreate wild animals in an ascii-art version: 
