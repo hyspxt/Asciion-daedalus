@@ -1,6 +1,8 @@
 # Asciion Daedalus
 The game is implemented in C++ and built with gcc/make toolchain.
-/
+\
+`makefile` compiles the source files automatically and (re)build only the files that have changed.
+
 <div align="center">
  <table style="width:100%">
   <tr>
